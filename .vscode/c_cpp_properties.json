@@ -8,9 +8,9 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/media/edu/emeneses/Projetos/Puara/puara-manager/include",
-                "/media/edu/emeneses/Projetos/Puara/puara-manager/src",
-                "/media/edu/emeneses/Projetos/Puara/puara-manager/.pio/libdeps/tinypico/libmapper/src",
+                "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
+                "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -223,9 +223,9 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/media/edu/emeneses/Projetos/Puara/puara-manager/include",
-                    "/media/edu/emeneses/Projetos/Puara/puara-manager/src",
-                    "/media/edu/emeneses/Projetos/Puara/puara-manager/.pio/libdeps/tinypico/libmapper/src",
+                    "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
+                    "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                    "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -437,7 +437,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=60100",
+                "PLATFORMIO=60101",
                 "ARDUINO_TINYPICO",
                 "BOARD_HAS_PSRAM",
                 "BOARD_HAS_PSRAM",

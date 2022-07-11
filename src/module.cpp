@@ -93,6 +93,29 @@ int Puara::get_version() {
     return VERSION;
 };
 
+void Puara::start() {
+    printf("\n");
+    printf("**********************************************************\n");
+    printf("* Puara Module Manager                                   *\n");
+    printf("* Metalab - Société des Arts Technologiques (SAT)        *\n");
+    printf("* Input Devices and Music Interaction Laboratory (IDMIL) *\n");
+    printf("* Edu Meneses (2022) - https://www.edumeneses.com        *\n");
+    printf("* Firmware version %d                                *\n", VERSION);                 
+    printf("**********************************************************\n\n");
+    
+    config_spiffs();    
+    read_config_json();
+    read_settings_json();
+    start_wifi();
+    start_webserver();
+    start_serial_listening();
+    start_mdns_service(dmiName, dmiName);
+    start_communication();
+    wifi_scan();
+
+    printf("Done!\n");
+}
+
 void Puara::sta_event_handler(void* arg, esp_event_base_t event_base, 
                                int event_id, void* event_data) {
     //int counter = 0;
@@ -1219,8 +1242,8 @@ void Puara::serial_monitor(void *pvParameters) {
 
 bool Puara::start_serial_listening() {
     std::cout << "starting serial monitor \n";
-    xTaskCreate(this->serial_monitor, "serial_monitor", 1024, NULL, 10, NULL);
-    xTaskCreate(this->interpret_serial, "interpret_serial", 2048, NULL, 10, NULL);
+    xTaskCreate(serial_monitor, "serial_monitor", 1024, NULL, 10, NULL);
+    xTaskCreate(interpret_serial, "interpret_serial", 2048, NULL, 10, NULL);
     return 1;
 }
 

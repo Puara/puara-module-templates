@@ -16,37 +16,7 @@ extern "C" {
 
 void app_main() {
 
-    //vTaskDelay(10000 / portTICK_PERIOD_MS);
-    
-    printf("\n");
-    printf("**********************************************************\n");
-    printf("* Puara Module Manager                                   *\n");
-    printf("* Metalab - Société des Arts Technologiques (SAT)        *\n");
-    printf("* Input Devices and Music Interaction Laboratory (IDMIL) *\n");
-    printf("* Edu Meneses (2022) - https://www.edumeneses.com        *\n");
-    printf("* Firmware version %d                                *\n", puara.get_version());                 
-    printf("**********************************************************\n\n");
-
-
-    puara.config_spiffs();
-    
-    puara.read_config_json();
-
-    puara.read_settings_json();
-
-    puara.start_wifi();
-
-    puara.start_webserver();
-
-    puara.start_serial_listening();
-
-    puara.start_mdns_service(puara.get_dmi_name(), puara.get_dmi_name());
-
-    puara.start_communication();
-
-    puara.wifi_scan();
-
-    printf("Done!\n");
+    puara.start();
 
     // dummy sensor data
     float sensor;

@@ -49,7 +49,7 @@
 class Puara {
     
     private:
-        static const unsigned int VERSION = 220707;
+        static const unsigned int VERSION = 220711;
         static std::string dmiName;
 
         struct settingsVariables {
@@ -106,7 +106,7 @@ class Puara {
         static short int connect_counter;
         static void sta_event_handler(void* arg, esp_event_base_t event_base, int event_id, void* event_data);
         static void ap_event_handler(void* arg, esp_event_base_t event_base, int event_id, void* event_data);
-        void wifi_init();
+        static void wifi_init();
 
         static httpd_handle_t webserver;
         static httpd_config_t webserver_config;
@@ -147,21 +147,22 @@ class Puara {
         static std::string urlDecode(std::string text);
     
     public:
+        static void start(); 
         static void config_spiffs();
         static httpd_handle_t start_webserver(void);
         static void stop_webserver(void);
-        void start_wifi();
+        static void start_wifi();
         std::string get_dmi_name();
         static int get_version();
         static void mount_spiffs();
         static void unmount_spiffs();
-        void read_config_json();
+        static void read_config_json();
         static void write_config_json();
-        void read_settings_json();
+        static void read_settings_json();
         static void write_settings_json();
-        bool start_serial_listening();
-        void start_mdns_service(const char * device_name, const char * instance_name);
-        void start_mdns_service(std::string device_name, std::string instance_name);
+        static bool start_serial_listening();
+        static void start_mdns_service(const char * device_name, const char * instance_name);
+        static void start_mdns_service(std::string device_name, std::string instance_name);
         static void wifi_scan(void);
         static double getVarNumber (std::string varName);
         static std::string getVarText(std::string varName);
