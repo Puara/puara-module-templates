@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+.pio
