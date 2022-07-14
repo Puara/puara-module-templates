@@ -6,7 +6,7 @@ It includes a Wi-Fi manager (set SSID/password for wireless networks), a [OSC](h
 
 This pseudo-library currently has the following dependencies:
 
-- [libmapper-arduino](https://github.com/mathiasbredholt/libmapper-arduino.git)
+- [libmapper-arduino](https://github.com/puara/libmapper-arduino.git) (cloned from the [original library](https://github.com/mathiasbredholt/libmapper-arduino)).
 
 ## How to use
 

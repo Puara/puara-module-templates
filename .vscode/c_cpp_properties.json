@@ -10,6 +10,7 @@
             "includePath": [
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/OSC",
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
@@ -225,6 +226,7 @@
                 "path": [
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                    "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/OSC",
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
@@ -455,7 +457,7 @@
                 "ARDUINO=10812",
                 "ARDUINO_VARIANT=\"um_tinypico\"",
                 "ARDUINO_BOARD=\"Unexpected Maker TinyPICO\"",
-                "ARDUINO_PARTITION_min_spiffs",
+                "ARDUINO_PARTITION_min_spiffs_no_OTA",
                 ""
             ],
             "cStandard": "c99",

@@ -12,7 +12,7 @@ Edu Meneses (2022) - https://www.edumeneses.com
 
 */
 
-#include <module.h>
+#include <puara.h>
 
 // Defining static members
 std::string Puara::dmiName;
@@ -51,15 +51,6 @@ std::unordered_map<std::string,int> Puara::config_fields = {
 std::vector<Puara::settingsVariables> Puara::variables;
 std::unordered_map<std::string,int> Puara::variables_fields;
 
-mapper::Device* Puara::lmDev;
-std::vector<mapper::Signal> Puara::lmSignals;
-std::unordered_map<std::string,int> Puara::lm_fields;
-std::vector<float> Puara::lmMin;
-std::vector<float> Puara::lmMax;
-
-lo_address Puara::lo_oscIP1;
-lo_address Puara::lo_oscIP2;
-
 std::string Puara::currentSTA_IP;
 std::string Puara::currentSTA_MAC;
 std::string Puara::currentAP_IP;
@@ -77,7 +68,7 @@ httpd_handle_t Puara::webserver;
 httpd_config_t Puara::webserver_config;
 httpd_uri_t Puara::index;
 httpd_uri_t Puara::style;
-httpd_uri_t Puara::factory;
+//httpd_uri_t Puara::factory;
 httpd_uri_t Puara::reboot;
 httpd_uri_t Puara::scan;
 //httpd_uri_t Puara::update;
@@ -94,26 +85,34 @@ int Puara::get_version() {
 };
 
 void Puara::start() {
-    printf("\n");
-    printf("**********************************************************\n");
-    printf("* Puara Module Manager                                   *\n");
-    printf("* Metalab - Société des Arts Technologiques (SAT)        *\n");
-    printf("* Input Devices and Music Interaction Laboratory (IDMIL) *\n");
-    printf("* Edu Meneses (2022) - https://www.edumeneses.com        *\n");
-    printf("* Firmware version %d                                *\n", VERSION);                 
-    printf("**********************************************************\n\n");
+    std::cout 
+    << "\n"
+    << "**********************************************************\n"
+    << "* Puara Module Manager                                   *\n"
+    << "* Metalab - Société des Arts Technologiques (SAT)        *\n"
+    << "* Input Devices and Music Interaction Laboratory (IDMIL) *\n"
+    << "* Edu Meneses (2022) - https://www.edumeneses.com        *\n"
+    << "* Firmware version: " << VERSION << "                             *\n"
+    << "**********************************************************\n"
+    << std::endl;
     
     config_spiffs();    
     read_config_json();
     read_settings_json();
     start_wifi();
     start_webserver();
-    start_serial_listening();
     start_mdns_service(dmiName, dmiName);
-    start_communication();
     wifi_scan();
-
-    printf("Done!\n");
+    
+    // some delay added as start listening blocks the hw monitor
+    std::cout << "Starting serial monitor..." << std::endl;
+    vTaskDelay(50 / portTICK_RATE_MS);
+    if (start_serial_listening()) {
+    };
+    vTaskDelay(50 / portTICK_RATE_MS);
+    std::cout << "serial listening ready" << std::endl;
+    
+    std::cout << "Puara Start Done!\n\n  Type \"reboot\" in the serial monitor to reset the ESP32.\n\n";
 }
 
 void Puara::sta_event_handler(void* arg, esp_event_base_t event_base, 
@@ -127,11 +126,11 @@ void Puara::sta_event_handler(void* arg, esp_event_base_t event_base,
         if (Puara::connect_counter < Puara::wifi_maximum_retry) {
             Puara::connect_counter++;
             esp_wifi_connect();
-            std::cout << "wifi/sta_event_handler: retry to connect to the AP" << "\n";
+            std::cout << "wifi/sta_event_handler: retry to connect to the AP" << std::endl;
         } else {
             xEventGroupSetBits(s_wifi_event_group, Puara::wifi_fail_bit);
         }
-        std::cout << "wifi/sta_event_handler: connect to the AP fail" << "\n";
+        std::cout << "wifi/sta_event_handler: connect to the AP fail" << std::endl;
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
 
@@ -141,7 +140,7 @@ void Puara::sta_event_handler(void* arg, esp_event_base_t event_base,
         tempBuf << esp_ip4_addr3_16(&event->ip_info.ip) << ".";
         tempBuf << esp_ip4_addr4_16(&event->ip_info.ip);
         Puara::currentSTA_IP = tempBuf.str();
-        std::cout << "wifi/sta_event_handler: got ip:" << Puara::currentSTA_IP << "\n";
+        std::cout << "wifi/sta_event_handler: got ip:" << Puara::currentSTA_IP << std::endl;
         Puara::connect_counter = 0;
         xEventGroupSetBits(s_wifi_event_group, Puara::wifi_connected_bit);
     }
@@ -164,9 +163,9 @@ void Puara::wifi_init() {
     esp_err_t setname = tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, 
                                                   dmiName.c_str());
     if(setname != ESP_OK ){
-        std::cout << "wifi_init: failed to set hostname: " << dmiName  << "\n";  
+        std::cout << "wifi_init: failed to set hostname: " << dmiName  << std::endl;  
     } else {
-        std::cout << "wifi_init: hostname: " << dmiName << "\n";  
+        std::cout << "wifi_init: hostname: " << dmiName << std::endl;  
     }
 
     esp_event_handler_instance_t instance_any_id;
@@ -182,22 +181,22 @@ void Puara::wifi_init() {
                                                         NULL,
                                                         &instance_got_ip));
 
-    std::cout << "wifi_init: setting wifi mode" << "\n";
+    std::cout << "wifi_init: setting wifi mode" << std::endl;
     if (persistentAP) {
-        std::cout << "wifi_init:     AP-STA mode" << "\n";
+        std::cout << "wifi_init:     AP-STA mode" << std::endl;
         ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
-        std::cout << "wifi_init: loading AP config" << "\n";
+        std::cout << "wifi_init: loading AP config" << std::endl;
         ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config_ap));
     } else {
-        std::cout << "wifi_init:     STA mode" << "\n";
+        std::cout << "wifi_init:     STA mode" << std::endl;
         ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     }
-    std::cout << "wifi_init: loading STA config" << "\n";
+    std::cout << "wifi_init: loading STA config" << std::endl;
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config_sta) );
-    std::cout << "wifi_init: esp_wifi_start" << "\n";
+    std::cout << "wifi_init: esp_wifi_start" << std::endl;
     ESP_ERROR_CHECK(esp_wifi_start());
 
-    std::cout << "wifi_init: wifi_init finished." << "\n";
+    std::cout << "wifi_init: wifi_init finished." << std::endl;
 
     /* Waiting until either the connection is established (Puara::wifi_connected_bit)
      * or connection failed for the maximum number of re-tries (Puara::wifi_fail_bit).
@@ -211,23 +210,23 @@ void Puara::wifi_init() {
     /* xEventGroupWaitBits() returns the bits before the call returned, hence we
      * can test which event actually happened. */
     if (bits & Puara::wifi_connected_bit) {
-        std::cout << "wifi_init: Connected to SSID: " << Puara::wifiSSID  << "\n";
+        std::cout << "wifi_init: Connected to SSID: " << Puara::wifiSSID  << std::endl;
         currentSSID = wifiSSID;
         Puara::StaIsConnected = true;
     } else if (bits & Puara::wifi_fail_bit) {
-        std::cout << "wifi_init: Failed to connect to SSID: " << Puara::wifiSSID  << "\n";
+        std::cout << "wifi_init: Failed to connect to SSID: " << Puara::wifiSSID  << std::endl;
         if (!persistentAP) {
-            std::cout << "wifi_init: Failed to connect to SSID: " << Puara::wifiSSID << "Switching to AP/STA mode" << "\n";
+            std::cout << "wifi_init: Failed to connect to SSID: " << Puara::wifiSSID << "Switching to AP/STA mode" << std::endl;
             ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
-            std::cout << "wifi_init: loading AP config" << "\n";
+            std::cout << "wifi_init: loading AP config" << std::endl;
             ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config_ap));
-            std::cout << "wifi_init: Trying to connect one more time to SSID before giving up." << "\n";
+            std::cout << "wifi_init: Trying to connect one more time to SSID before giving up." << std::endl;
             ESP_ERROR_CHECK(esp_wifi_start());
         } else {
             Puara::StaIsConnected = false;
         }
     } else {
-        std::cout << "wifi_init: UNEXPECTED EVENT" << "\n";
+        std::cout << "wifi_init: UNEXPECTED EVENT" << std::endl;
     }
 
     /* The event will not be processed after unregister */
@@ -278,20 +277,21 @@ void Puara::start_wifi() {
 
     // Check if wifiSSID is empty and wifiPSK have less than 8 characteres
     if (dmiName.empty() ) {
-        std::cout << "start_wifi: Module name unpopulated. Using default name: Puara" << "\n";
+        std::cout << "start_wifi: Module name unpopulated. Using default name: Puara" << std::endl;
        dmiName = "Puara";
     }
     if ( APpasswd.empty() || APpasswd.length() < 8 || APpasswd == "password" ) {
-        std::cout << "startWifi: AP password error. Possible causes:" << "\n";
-        std::cout << "startWifi:   - no AP password" << "\n";
-        std::cout << "startWifi:   - password is less than 8 characteres long" << "\n";
-        std::cout << "startWifi:   - password is set to \"password\"" << "\n";
-        std::cout << "startWifi: Using default AP password: password" << "\n";
-        std::cout << "startWifi: It is strongly recommended to change the password" << "\n";
+        std::cout 
+        << "startWifi: AP password error. Possible causes:" << "\n"
+        << "startWifi:   - no AP password" << "\n"
+        << "startWifi:   - password is less than 8 characteres long" << "\n"
+        << "startWifi:   - password is set to \"password\"" << "\n"
+        << "startWifi: Using default AP password: password" << "\n"
+        << "startWifi: It is strongly recommended to change the password" << std::endl;
         APpasswd = "password";
     }
     if ( wifiSSID.empty() ) {
-        std::cout << "start_wifi: No blank SSID allowed. Using default name: Puara" << "\n";
+        std::cout << "start_wifi: No blank SSID allowed. Using default name: Puara" << std::endl;
         wifiSSID = "Puara";
     }
 
@@ -316,7 +316,7 @@ void Puara::start_wifi() {
         }
         ESP_ERROR_CHECK(ret);
 
-    std::cout << "startWifi: Starting WiFi config" << "\n";
+    std::cout << "startWifi: Starting WiFi config" << std::endl;
     Puara::connect_counter = 0;
     wifi_init();
     ApStarted = true;
@@ -329,7 +329,7 @@ void Puara::config_spiffs() {
 void Puara::mount_spiffs() {
 
     if (!esp_spiffs_mounted(spiffs_config.partition_label)) {
-        std::cout << "spiffs: Initializing SPIFFS" << "\n";
+        std::cout << "spiffs: Initializing SPIFFS" << std::endl;
 
         spiffs_config.base_path = Puara::spiffs_base_path.c_str();
         spiffs_config.max_files = Puara::spiffs_max_files;
@@ -342,11 +342,11 @@ void Puara::mount_spiffs() {
 
         if (ret != ESP_OK) {
             if (ret == ESP_FAIL) {
-                std::cout << "spiffs: Failed to mount or format filesystem" << "\n";
+                std::cout << "spiffs: Failed to mount or format filesystem" << std::endl;
             } else if (ret == ESP_ERR_NOT_FOUND) {
-                std::cout << "spiffs: Failed to find SPIFFS partition" << "\n";
+                std::cout << "spiffs: Failed to find SPIFFS partition" << std::endl;
             } else {
-                std::cout << "spiffs: Failed to initialize SPIFFS (" << esp_err_to_name(ret) << ")"  << "\n";
+                std::cout << "spiffs: Failed to initialize SPIFFS (" << esp_err_to_name(ret) << ")"  << std::endl;
             }
             return;
         }
@@ -354,12 +354,12 @@ void Puara::mount_spiffs() {
         size_t total = 0, used = 0;
         ret = esp_spiffs_info(spiffs_config.partition_label, &total, &used);
         if (ret != ESP_OK) {
-            std::cout << "spiffs: Failed to get SPIFFS partition information (" << esp_err_to_name(ret) << ")"  << "\n";
+            std::cout << "spiffs: Failed to get SPIFFS partition information (" << esp_err_to_name(ret) << ")"  << std::endl;
         } else {
-            std::cout << "spiffs: Partition size: total: " << total << ", used: " << used  << "\n";
+            std::cout << "spiffs: Partition size: total: " << total << ", used: " << used  << std::endl;
         }
     } else {
-        std::cout << "spiffs: SPIFFS already initialized" << "\n";
+        std::cout << "spiffs: SPIFFS already initialized" << std::endl;
     }
 }
 
@@ -367,30 +367,30 @@ void Puara::unmount_spiffs() {
     // All done, unmount partition and disable SPIFFS
     if (esp_spiffs_mounted(spiffs_config.partition_label)) {
         esp_vfs_spiffs_unregister(spiffs_config.partition_label);
-        std::cout << "spiffs: SPIFFS unmounted" << "\n";
+        std::cout << "spiffs: SPIFFS unmounted" << std::endl;
     } else {
-        std::cout << "spiffs: SPIFFS not found" << "\n";
+        std::cout << "spiffs: SPIFFS not found" << std::endl;
     }
 }
 
 void Puara::read_config_json() { // Deserialize
     
-    std::cout << "json: Mounting FS" << "\n";
+    std::cout << "json: Mounting FS" << std::endl;
     Puara::mount_spiffs();
 
-    std::cout << "json: Opening config json file" << "\n";
+    std::cout << "json: Opening config json file" << std::endl;
     FILE* f = fopen("/spiffs/config.json", "r");
     if (f == NULL) {
-        std::cout << "json: Failed to open file" << "\n";
+        std::cout << "json: Failed to open file" << std::endl;
         return;
     }
 
-    std::cout << "json: Reading json file" << "\n";
+    std::cout << "json: Reading json file" << std::endl;
     std::ifstream in("/spiffs/config.json");
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
 
-    std::cout << "json: Getting data" << "\n";
+    std::cout << "json: Getting data" << std::endl;
     cJSON *root = cJSON_Parse(contents.c_str());
     if (cJSON_GetObjectItem(root, "device")) {
         Puara::device = cJSON_GetObjectItem(root,"device")->valuestring;
@@ -432,20 +432,21 @@ void Puara::read_config_json() { // Deserialize
         Puara::localPORT = cJSON_GetObjectItem(root,"localPORT")->valueint;
     }
     
-    std::cout << "json: Data collected:" << "\n";
-    std::cout << "\ndevice: " << device << "\n";
-    std::cout << "id: " << id << "\n";
-    std::cout << "author: " << author << "\n";
-    std::cout << "institution: " << institution << "\n";
-    std::cout << "APpasswd: " << APpasswd << "\n";
-    std::cout << "wifiSSID: " << wifiSSID << "\n";
-    std::cout << "wifiPSK: " << wifiPSK << "\n";
-    std::cout << "persistentAP: " << persistentAP << "\n";
-    std::cout << "oscIP1: " << oscIP1 << "\n";
-    std::cout << "oscPORT1: " << oscPORT1 << "\n";
-    std::cout << "oscIP2: " << oscIP2 << "\n";
-    std::cout << "oscPORT2: " << oscPORT2 << "\n";
-    std::cout << "localPORT: " << localPORT << "\n\n";
+    std::cout << "\njson: Data collected:\n\n"
+    << "device: " << device << "\n"
+    << "id: " << id << "\n"
+    << "author: " << author << "\n"
+    << "institution: " << institution << "\n"
+    << "APpasswd: " << APpasswd << "\n"
+    << "wifiSSID: " << wifiSSID << "\n"
+    << "wifiPSK: " << wifiPSK << "\n"
+    << "persistentAP: " << persistentAP << "\n"
+    << "oscIP1: " << oscIP1 << "\n"
+    << "oscPORT1: " << oscPORT1 << "\n"
+    << "oscIP2: " << oscIP2 << "\n"
+    << "oscPORT2: " << oscPORT2 << "\n"
+    << "localPORT: " << localPORT << "\n"
+    << std::endl;
     
     cJSON_Delete(root);
 
@@ -454,41 +455,38 @@ void Puara::read_config_json() { // Deserialize
     Puara::dmiName = tempBuf.str();
     printf("Device unique name defined: %s\n",dmiName.c_str());
 
-    Puara::lo_oscIP1 = lo_address_new(oscIP1.c_str(), std::to_string(oscPORT1).c_str());
-    Puara::lo_oscIP2 = lo_address_new(oscIP2.c_str(), std::to_string(oscPORT2).c_str());
-
     fclose(f);
     Puara::unmount_spiffs();
 }
 
 void Puara::read_settings_json() {
 
-    std::cout << "json: Mounting FS" << "\n";
+    std::cout << "json: Mounting FS" << std::endl;
     Puara::mount_spiffs();
 
-    std::cout << "json: Opening settings json file" << "\n";
+    std::cout << "json: Opening settings json file" << std::endl;
     FILE* f = fopen("/spiffs/settings.json", "r");
     if (f == NULL) {
-        std::cout << "json: Failed to open file" << "\n";
+        std::cout << "json: Failed to open file" << std::endl;
         return;
     }
 
-    std::cout << "json: Reading json file" << "\n";
+    std::cout << "json: Reading json file" << std::endl;
     std::ifstream in("/spiffs/settings.json");
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
 
-    std::cout << "json: Getting data" << "\n";
+    std::cout << "json: Getting data" << std::endl;
     cJSON *root = cJSON_Parse(contents.c_str());
     cJSON *setting = NULL;
     cJSON *settings = NULL;
 
-    std::cout << "json: Parse settings information" << "\n";
+    std::cout << "json: Parse settings information" << std::endl;
     settings = cJSON_GetObjectItemCaseSensitive(root, "settings");
    
     settingsVariables temp;
     variables.clear();
-    std::cout << "json: Extract info" << "\n";
+    std::cout << "json: Extract info" << std::endl;
     cJSON_ArrayForEach(setting, settings) {
         cJSON *name = cJSON_GetObjectItemCaseSensitive(setting, "name");
         cJSON *value = cJSON_GetObjectItemCaseSensitive(setting, "value");
@@ -519,7 +517,7 @@ void Puara::read_settings_json() {
             std::cout << it.numberValue << "\n";
         }
     }
-    std::cout << "\n";
+    std::cout << std::endl;
     
     cJSON_Delete(root);
 
@@ -530,13 +528,13 @@ void Puara::read_settings_json() {
 
 void Puara::write_config_json() {
     
-    std::cout << "SPIFFS: Mounting FS" << "\n";
+    std::cout << "SPIFFS: Mounting FS" << std::endl;
     Puara::mount_spiffs();
 
-    std::cout << "SPIFFS: Opening config.json file" << "\n";
+    std::cout << "SPIFFS: Opening config.json file" << std::endl;
     FILE* f = fopen("/spiffs/config.json", "w");
     if (f == NULL) {
-        std::cout << "SPIFFS: Failed to open config.json file" << "\n";
+        std::cout << "SPIFFS: Failed to open config.json file" << std::endl;
         return;
     }
 
@@ -595,45 +593,46 @@ void Puara::write_config_json() {
     localPORT_json = cJSON_CreateNumber(localPORT);
     cJSON_AddItemToObject(root, "localPORT", localPORT_json);
 
-    std::cout << "json: Data stored:" << "\n";
-    std::cout << "\ndevice: " << device << "\n";
-    std::cout << "id: " << id << "\n";
-    std::cout << "author: " << author << "\n";
-    std::cout << "institution: " << institution << "\n";
-    std::cout << "APpasswd: " << APpasswd << "\n";
-    std::cout << "wifiSSID: " << wifiSSID << "\n";
-    std::cout << "wifiPSK: " << wifiPSK << "\n";
-    std::cout << "persistentAP: " << persistentAP << "\n";
-    std::cout << "oscIP1: " << oscIP1 << "\n";
-    std::cout << "oscPORT1: " << oscPORT1 << "\n";
-    std::cout << "oscIP2: " << oscIP2 << "\n";
-    std::cout << "oscPORT2: " << oscPORT2 << "\n";
-    std::cout << "localPORT: " << localPORT << "\n\n";
+    std::cout << "\njson: Data stored:\n"
+    << "\ndevice: " << device << "\n"
+    << "id: " << id << "\n"
+    << "author: " << author << "\n"
+    << "institution: " << institution << "\n"
+    << "APpasswd: " << APpasswd << "\n"
+    << "wifiSSID: " << wifiSSID << "\n"
+    << "wifiPSK: " << wifiPSK << "\n"
+    << "persistentAP: " << persistentAP << "\n"
+    << "oscIP1: " << oscIP1 << "\n"
+    << "oscPORT1: " << oscPORT1 << "\n"
+    << "oscIP2: " << oscIP2 << "\n"
+    << "oscPORT2: " << oscPORT2 << "\n"
+    << "localPORT: " << localPORT << "\n"
+    << std::endl;
 
     // Save to config.json
-    std::cout << "write_config_json: Serializing json" << "\n";
+    std::cout << "write_config_json: Serializing json" << std::endl;
     std::string contents = cJSON_Print(root);
-    std::cout << "SPIFFS: Saving file" << "\n";
+    std::cout << "SPIFFS: Saving file" << std::endl;
     fprintf(f, "%s", contents.c_str());
-    std::cout << "SPIFFS: closing" << "\n";
+    std::cout << "SPIFFS: closing" << std::endl;
     fclose(f);
 
-    std::cout << "write_config_json: Delete json entity" << "\n";
+    std::cout << "write_config_json: Delete json entity" << std::endl;
     cJSON_Delete(root);
 
-    std::cout << "SPIFFS: umounting FS" << "\n";
+    std::cout << "SPIFFS: umounting FS" << std::endl;
     Puara::unmount_spiffs();
 }
 
 void Puara::write_settings_json() {
     
-    std::cout << "SPIFFS: Mounting FS" << "\n";
+    std::cout << "SPIFFS: Mounting FS" << std::endl;
     Puara::mount_spiffs();
 
-    std::cout << "SPIFFS: Opening settings.json file" << "\n";
+    std::cout << "SPIFFS: Opening settings.json file" << std::endl;
     FILE* f = fopen("/spiffs/settings.json", "w");
     if (f == NULL) {
-        std::cout << "SPIFFS: Failed to open settings.json file" << "\n";
+        std::cout << "SPIFFS: Failed to open settings.json file" << std::endl;
         return;
     }
 
@@ -657,17 +656,17 @@ void Puara::write_settings_json() {
     }
 
     // Save to settings.json
-    std::cout << "write_settings_json: Serializing json" << "\n";
+    std::cout << "write_settings_json: Serializing json" << std::endl;
     std::string contents = cJSON_Print(root);
-    std::cout << "SPIFFS: Saving file" << "\n";
+    std::cout << "SPIFFS: Saving file" << std::endl;
     fprintf(f, "%s", contents.c_str());
-    std::cout << "SPIFFS: closing" << "\n";
+    std::cout << "SPIFFS: closing" << std::endl;
     fclose(f);
 
-    std::cout << "write_settings_json: Delete json entity" << "\n";
+    std::cout << "write_settings_json: Delete json entity" << std::endl;
     cJSON_Delete(root);
 
-    std::cout << "SPIFFS: umounting FS" << "\n";
+    std::cout << "SPIFFS: umounting FS" << std::endl;
     Puara::unmount_spiffs();
 }
 
@@ -677,7 +676,7 @@ std::string Puara::get_dmi_name() {
 
 std::string Puara::prepare_index() {
     Puara::mount_spiffs();
-    std::cout << "http (spiffs): Reading index file" << "\n";
+    std::cout << "http (spiffs): Reading index file" << std::endl;
     std::ifstream in("/spiffs/index.html");
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
@@ -729,12 +728,12 @@ esp_err_t Puara::index_get_handler(httpd_req_t *req) {
 esp_err_t Puara::settings_get_handler(httpd_req_t *req) {
 
     Puara::mount_spiffs();
-    std::cout << "http (spiffs): Reading settings file" << "\n";
+    std::cout << "http (spiffs): Reading settings file" << std::endl;
     std::ifstream in("/spiffs/settings.html");
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
 
-    std::cout << "settings_get_handler: Adding variables to HTML" << "\n";
+    std::cout << "settings_get_handler: Adding variables to HTML" << std::endl;
     std::string settings;
     for (auto it : variables) {
         if (it.type == "text") {
@@ -778,7 +777,7 @@ esp_err_t Puara::settings_post_handler(httpd_req_t *req) {
         // adding delimiter to process last variable in the loop
         str_buf.append(delimiter);
 
-        std::cout << "Settings stored:" << "\n";
+        std::cout << "Settings stored:" << std::endl;
         while ((pos = str_buf.find(delimiter)) != std::string::npos) {
             str_token = str_buf.substr(0, pos);
             field_pos = str_buf.find(field_delimiter);
@@ -790,16 +789,16 @@ esp_err_t Puara::settings_post_handler(httpd_req_t *req) {
             } else if (variables.at(variables_fields.at(field)).type == "number") {
                 variables.at(variables_fields.at(field)).numberValue = std::stod(str_token);
             }
-            std::cout << str_token << "\n";
+            std::cout << str_token << std::endl;
             str_buf.erase(0, pos + delimiter.length());
         }
-        std::cout << "\n";
+        std::cout << std::endl;
         remaining -= api_return;
     }
 
     write_settings_json();
     mount_spiffs();
-    std::cout << "http (spiffs): Reading saved.html file" << "\n";
+    std::cout << "http (spiffs): Reading saved.html file" << std::endl;
     std::ifstream in("/spiffs/saved.html");
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
@@ -813,7 +812,7 @@ esp_err_t Puara::get_handler(httpd_req_t *req) {
 
     const char* resp_str = (const char*) req->user_ctx;
     Puara::mount_spiffs();
-    std::cout << "http (spiffs): Reading requested file" << "\n";
+    std::cout << "http (spiffs): Reading requested file" << std::endl;
     std::ifstream in(resp_str);
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
@@ -828,7 +827,7 @@ esp_err_t Puara::style_get_handler(httpd_req_t *req) {
 
     const char* resp_str = (const char*) req->user_ctx;
     Puara::mount_spiffs();
-    std::cout << "http (spiffs): Reading style.css file" << "\n";
+    std::cout << "http (spiffs): Reading style.css file" << std::endl;
     std::ifstream in(resp_str);
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
@@ -844,7 +843,7 @@ esp_err_t Puara::scan_get_handler(httpd_req_t *req) {
 
     const char* resp_str = (const char*) req->user_ctx;
     Puara::mount_spiffs();
-    std::cout << "http (spiffs): Reading scan.html file" << "\n";
+    std::cout << "http (spiffs): Reading scan.html file" << std::endl;
     std::ifstream in(resp_str);
     std::string contents((std::istreambuf_iterator<char>(in)), 
     std::istreambuf_iterator<char>());
@@ -861,7 +860,7 @@ esp_err_t Puara::scan_get_handler(httpd_req_t *req) {
 
 //     const char* resp_str = (const char*) req->user_ctx;
 //     Puara::mount_spiffs();
-//     std::cout << "http (spiffs): Reading update.html file" << "\n";
+//     std::cout << "http (spiffs): Reading update.html file" << std::endl;
 //     std::ifstream in(resp_str);
 //     std::string contents((std::istreambuf_iterator<char>(in)), 
 //     std::istreambuf_iterator<char>());
@@ -909,69 +908,69 @@ esp_err_t Puara::index_post_handler(httpd_req_t *req) {
             if (config_fields.find(field) != config_fields.end()) {
                 switch (config_fields.at(field)) {
                     case 1:
-                        std::cout << "SSID: " << str_token << "\n";
+                        std::cout << "SSID: " << str_token << std::endl;
                         if ( !str_token.empty() ) { 
                             wifiSSID = urlDecode(str_token);
                         } else {
-                            std::cout << "SSID empty! Keeping the stored value" << "\n";
+                            std::cout << "SSID empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 2:
-                        std::cout << "APpasswd: " << str_token << "\n";
+                        std::cout << "APpasswd: " << str_token << std::endl;
                         if ( !str_token.empty() ) { 
                             APpasswdVal1 = urlDecode(str_token); 
                         } else {
-                            std::cout << "APpasswd empty! Keeping the stored value" << "\n";
+                            std::cout << "APpasswd empty! Keeping the stored value" << std::endl;
                             APpasswdVal1.clear();
                         };
                         break;
                     case 3:
-                        std::cout << "APpasswdValidate: " << str_token << "\n";
+                        std::cout << "APpasswdValidate: " << str_token << std::endl;
                         if ( !str_token.empty() ) { 
                             APpasswdVal2 = urlDecode(str_token);
                         } else {
-                            std::cout << "APpasswdValidate empty! Keeping the stored value" << "\n";
+                            std::cout << "APpasswdValidate empty! Keeping the stored value" << std::endl;
                             APpasswdVal2.clear();
                         };
                         break;
                     case 4:
-                        std::cout << "oscIP1: " << str_token << "\n";
+                        std::cout << "oscIP1: " << str_token << std::endl;
                         if ( !str_token.empty() ) {
                             oscIP1 = str_token;
                         } else {
-                            std::cout << "oscIP1 empty! Keeping the stored value" << "\n";
+                            std::cout << "oscIP1 empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 5:
-                        std::cout << "oscPORT1: " << str_token << "\n";
+                        std::cout << "oscPORT1: " << str_token << std::endl;
                         if ( !str_token.empty() ) {
                             oscPORT1 = stoi(str_token);
                         } else {
-                            std::cout << "oscPORT1 empty! Keeping the stored value" << "\n";
+                            std::cout << "oscPORT1 empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 6:
-                        std::cout << "oscIP2: " << str_token << "\n";
+                        std::cout << "oscIP2: " << str_token << std::endl;
                         if ( !str_token.empty() ) {
                             oscIP2 = str_token;
                         } else {
-                            std::cout << "oscIP2 empty! Keeping the stored value" << "\n";
+                            std::cout << "oscIP2 empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 7:
-                        std::cout << "oscPORT2: " << str_token << "\n";
+                        std::cout << "oscPORT2: " << str_token << std::endl;
                         if ( !str_token.empty() ) {
                             oscPORT2 = stoi(str_token);
                         } else {
-                            std::cout << "oscPORT2 empty! Keeping the stored value" << "\n";
+                            std::cout << "oscPORT2 empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 8:
-                        std::cout << "password: " << str_token << "\n";
+                        std::cout << "password: " << str_token << std::endl;
                         if ( !str_token.empty() ) { 
                             wifiPSK = urlDecode(str_token);
                         } else {
-                            std::cout << "password empty! Keeping the stored value" << "\n";
+                            std::cout << "password empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     case 9:
@@ -979,15 +978,15 @@ esp_err_t Puara::index_post_handler(httpd_req_t *req) {
                         ret_flag = true;
                         break;
                     case 10:
-                        std::cout << "persistentAP: " << str_token << "\n";
+                        std::cout << "persistentAP: " << str_token << std::endl;
                         checkbox_persistentAP = true;
                         break;
                     case 11:
-                        std::cout << "localPORT: " << str_token << "\n";
+                        std::cout << "localPORT: " << str_token << std::endl;
                         if ( !str_token.empty() ) {
                             localPORT = stoi(str_token);
                         } else {
-                            std::cout << "localPORT empty! Keeping the stored value" << "\n";
+                            std::cout << "localPORT empty! Keeping the stored value" << std::endl;
                         }
                         break;
                     default:
@@ -995,7 +994,7 @@ esp_err_t Puara::index_post_handler(httpd_req_t *req) {
                         break; 
                 }
             } else {
-                std::cout << "Error, no match for config field to store received data: " << field << "\n";
+                std::cout << "Error, no match for config field to store received data: " << field << std::endl;
             }
             str_buf.erase(0, pos + delimiter.length());
         }
@@ -1015,18 +1014,18 @@ esp_err_t Puara::index_post_handler(httpd_req_t *req) {
 
     if (ret_flag) {
         mount_spiffs();
-        std::cout << "http (spiffs): Reading reboot.html file" << "\n";
+        std::cout << "http (spiffs): Reading reboot.html file" << std::endl;
         std::ifstream in("/spiffs/reboot.html");
         std::string contents((std::istreambuf_iterator<char>(in)), 
         std::istreambuf_iterator<char>());
         httpd_resp_sendstr(req, contents.c_str());
         unmount_spiffs();
-        std::cout <<  "\nRebooting...\n";
+        std::cout <<  "\nRebooting...\n" << std::endl;
         xTaskCreate(&Puara::reboot_with_delay, "reboot_with_delay", 1024, NULL, 10, NULL);
     } else {
         write_config_json();
         mount_spiffs();
-        std::cout << "http (spiffs): Reading saved.html file" << "\n";
+        std::cout << "http (spiffs): Reading saved.html file" << std::endl;
         std::ifstream in("/spiffs/saved.html");
         std::string contents((std::istreambuf_iterator<char>(in)), 
         std::istreambuf_iterator<char>());
@@ -1044,7 +1043,7 @@ void Puara::find_and_replace(std::string old_text, std::string new_text, std::st
         str.replace(old_text_position,old_text.length(),new_text);
         old_text_position = str.find(old_text);
     }
-    std::cout << "http (find_and_replace): Success" << "\n";
+    std::cout << "http (find_and_replace): Success" << std::endl;
 }
 
 void Puara::find_and_replace(std::string old_text, double new_number, std::string & str) {
@@ -1055,7 +1054,7 @@ void Puara::find_and_replace(std::string old_text, double new_number, std::strin
         str.replace(old_text_position,old_text.length(),conversion);
         old_text_position = str.find(old_text);
     }
-    std::cout << "http (find_and_replace): Success" << "\n";
+    std::cout << "http (find_and_replace): Success" << std::endl;
 }
 
 void Puara::find_and_replace(std::string old_text, unsigned int new_number, std::string & str) {
@@ -1066,7 +1065,7 @@ void Puara::find_and_replace(std::string old_text, unsigned int new_number, std:
         str.replace(old_text_position,old_text.length(),conversion);
         old_text_position = str.find(old_text);
     }
-    std::cout << "http (find_and_replace): Success" << "\n";
+    std::cout << "http (find_and_replace): Success" << std::endl;
 }
 
 void Puara::checkmark(std::string old_text, bool value, std::string & str) {
@@ -1080,16 +1079,16 @@ void Puara::checkmark(std::string old_text, bool value, std::string & str) {
             conversion = "";
         }
         str.replace(old_text_position,old_text.length(),conversion);
-        std::cout << "http (checkmark): Success" << "\n";
+        std::cout << "http (checkmark): Success" << std::endl;
     } else {
-        std::cout << "http (checkmark): Could not find the requested string" << "\n";
+        std::cout << "http (checkmark): Could not find the requested string" << std::endl;
     }
 }
 
 httpd_handle_t Puara::start_webserver(void) {
     
     if (!ApStarted) {
-        std::cout << "start_webserver: Cannot start webserver: AP and STA not initializated" << "\n";
+        std::cout << "start_webserver: Cannot start webserver: AP and STA not initializated" << std::endl;
         return NULL;
     }
     Puara::webserver = NULL;
@@ -1129,10 +1128,10 @@ httpd_handle_t Puara::start_webserver(void) {
     Puara::style.handler   = style_get_handler,
     Puara::style.user_ctx  = (char*)"/spiffs/style.css";
 
-    Puara::factory.uri = "/factory.html";
-    Puara::factory.method    = HTTP_GET,
-    Puara::factory.handler   = get_handler,
-    Puara::factory.user_ctx  = (char*)"/spiffs/factory.html";
+    // Puara::factory.uri = "/factory.html";
+    // Puara::factory.method    = HTTP_GET,
+    // Puara::factory.handler   = get_handler,
+    // Puara::factory.user_ctx  = (char*)"/spiffs/factory.html";
 
     Puara::reboot.uri = "/reboot.html";
     Puara::reboot.method    = HTTP_GET,
@@ -1160,15 +1159,15 @@ httpd_handle_t Puara::start_webserver(void) {
     Puara::settingspost.user_ctx  = (char*)"/spiffs/settings.html";
 
     // Start the httpd server
-    std::cout << "webserver: Starting server on port: " << webserver_config.server_port << "\n";
+    std::cout << "webserver: Starting server on port: " << webserver_config.server_port << std::endl;
     if (httpd_start(&webserver, &webserver_config) == ESP_OK) {
         // Set URI handlers
-        std::cout << "webserver: Registering URI handlers" << "\n";
+        std::cout << "webserver: Registering URI handlers" << std::endl;
         httpd_register_uri_handler(webserver, &index);
         httpd_register_uri_handler(webserver, &indexpost);
         httpd_register_uri_handler(webserver, &style);
         httpd_register_uri_handler(webserver, &scan);
-        httpd_register_uri_handler(webserver, &factory);
+        //httpd_register_uri_handler(webserver, &factory);
         httpd_register_uri_handler(webserver, &reboot);
         // httpd_register_uri_handler(webserver, &update);
         httpd_register_uri_handler(webserver, &settings);
@@ -1176,7 +1175,7 @@ httpd_handle_t Puara::start_webserver(void) {
         return webserver;
     }
 
-    std::cout << "webserver: Error starting server!" << "\n";
+    std::cout << "webserver: Error starting server!" << std::endl;
     return NULL;
 }
 
@@ -1193,14 +1192,12 @@ std::string Puara::convertToString(char* a) {
 void Puara::interpret_serial(void *pvParameter) {
     while (1) {
         if ( !serial_data_str.empty() ) {
-            if ( serial_data_str.find("reset") != std::string::npos ) { //data_str == "reset") {
-                std::cout <<  "\nRebooting...\n";
-                xTaskCreate(&Puara::reboot_with_delay, "reboot_with_delay", 1024, NULL, 10, NULL);
-            } else if ( serial_data_str.find("reboot") != std::string::npos ) {
-                std::cout <<  "\nRebooting...\n";
+            if ( serial_data_str.find("reset") != std::string::npos || 
+                 serial_data_str.find("reboot") != std::string::npos ) {
+                std::cout <<  "\nRebooting...\n" << std::endl;
                 xTaskCreate(&Puara::reboot_with_delay, "reboot_with_delay", 1024, NULL, 10, NULL);
             } else {
-                std::cout << "\nI don´t recognize the command: \n" << serial_data_str << std::endl;
+                std::cout << "\nI don´t recognize the command \"" << serial_data_str << "\""<< std::endl;
             }
             serial_data_str.clear();
         }
@@ -1208,44 +1205,44 @@ void Puara::interpret_serial(void *pvParameter) {
     }
 }
 
-void Puara::serial_monitor(void *pvParameters) {
-    const int uart_num0 = 0; //UART port 0
-    uart_config_t uart_config0 = {
-        .baud_rate = 115200,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    //UART_HW_FLOWCTRL_CTS_RTS,
-        .rx_flow_ctrl_thresh = 122,
-        .source_clk = UART_SCLK_APB,
-    };
+    void Puara::serial_monitor(void *pvParameters) {
+        const int uart_num0 = 0; //UART port 0
+        uart_config_t uart_config0 = {
+            .baud_rate = 115200,
+            .data_bits = UART_DATA_8_BITS,
+            .parity = UART_PARITY_DISABLE,
+            .stop_bits = UART_STOP_BITS_1,
+            .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    //UART_HW_FLOWCTRL_CTS_RTS,
+            .rx_flow_ctrl_thresh = 122,
+            .source_clk = UART_SCLK_APB,
+        };
 
-    //Configure UART1 parameters
-    uart_param_config(uart_num0, &uart_config0);
+        //Configure UART1 parameters
+        uart_param_config(uart_num0, &uart_config0);
 
-    uart_set_pin(uart_num0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-    
-    //Install UART driver (we don't need an event queue here)
-    //In this example we don't even use a buffer for sending data.
-    uart_driver_install(uart_num0, UART_FIFO_LEN + 1, 0, 0, NULL, 0);
+        uart_set_pin(uart_num0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+        
+        //Install UART driver (we don't need an event queue here)
+        //In this example we don't even use a buffer for sending data.
+        uart_driver_install(uart_num0, UART_FIFO_LEN + 1, 0, 0, NULL, 0);
 
-    while(1) {
-        //Read data from UART
-        serial_data_length = uart_read_bytes(uart_num0, serial_data, UART_FIFO_LEN, 500 / portTICK_RATE_MS);
-        if (serial_data_length > 0) {
-            serial_data_str = convertToString(serial_data);
-            memset(serial_data, 0, sizeof serial_data);
-            uart_flush(uart_num0);
+        while(1) {
+            //Read data from UART
+            serial_data_length = uart_read_bytes(uart_num0, serial_data, UART_FIFO_LEN, 500 / portTICK_RATE_MS);
+            if (serial_data_length > 0) {
+                serial_data_str = convertToString(serial_data);
+                memset(serial_data, 0, sizeof serial_data);
+                uart_flush(uart_num0);
+            }
         }
     }
-}
 
-bool Puara::start_serial_listening() {
-    std::cout << "starting serial monitor \n";
-    xTaskCreate(serial_monitor, "serial_monitor", 1024, NULL, 10, NULL);
-    xTaskCreate(interpret_serial, "interpret_serial", 2048, NULL, 10, NULL);
-    return 1;
-}
+    bool Puara::start_serial_listening() {
+        //std::cout << "starting serial monitor \n";
+        xTaskCreate(serial_monitor, "serial_monitor", 1024, NULL, 10, NULL);
+        xTaskCreate(interpret_serial, "interpret_serial", 2048, NULL, 10, NULL);
+        return 1;
+    }
 
 void Puara::reboot_with_delay(void *pvParameter) {
     vTaskDelay(reboot_delay / portTICK_RATE_MS);
@@ -1256,28 +1253,28 @@ void Puara::start_mdns_service(const char * device_name, const char * instance_n
     //initialize mDNS service
     esp_err_t err = mdns_init();
     if (err) {
-        std::cout << "MDNS Init failed: " << err << "\n";
+        std::cout << "MDNS Init failed: " << err << std::endl;
         return;
     }
     //set hostname
     ESP_ERROR_CHECK(mdns_hostname_set(device_name));
     //set default instance
     ESP_ERROR_CHECK(mdns_instance_name_set(instance_name));
-    std::cout << "MDNS Init completed. Device name: " << device_name << "\n\n";
+    std::cout << "MDNS Init completed. Device name: " << device_name << "\n" << std::endl;
 }
 
 void Puara::start_mdns_service(std::string device_name, std::string instance_name) {
     //initialize mDNS service
     esp_err_t err = mdns_init();
     if (err) {
-        std::cout << "MDNS Init failed: " << err << "\n";
+        std::cout << "MDNS Init failed: " << err << std::endl;
         return;
     }
     //set hostname
     ESP_ERROR_CHECK(mdns_hostname_set(device_name.c_str()));
     //set default instance
     ESP_ERROR_CHECK(mdns_instance_name_set(instance_name.c_str()));
-    std::cout << "MDNS Init completed. Device name: " << device_name << "\n\n";
+    std::cout << "MDNS Init completed. Device name: " << device_name << "\n" << std::endl;
 }
 
 void Puara::wifi_scan(void) {
@@ -1290,7 +1287,7 @@ void Puara::wifi_scan(void) {
     esp_wifi_scan_start(NULL, true);
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
-    std::cout << "wifi_scan: Total APs scanned = " << ap_count << "\n";
+    std::cout << "wifi_scan: Total APs scanned = " << ap_count << std::endl;
     wifiAvailableSsid.clear();
     for (int i = 0; (i < wifiScanSize) && (i < ap_count); i++) {
         wifiAvailableSsid.append("<strong>SSID: </strong>");
@@ -1334,37 +1331,38 @@ std::string Puara::getVarText(std::string varName) {
     return variables.at(variables_fields.at(varName)).textValue;
 }
 
-void Puara::start_communication(void) {
-    // this needs to run after dmiName is defined with read_config_json()
-    std::cout << "Start communication (libmapper/OSC)"  << "\n";
-    lmDev = new mapper::Device(dmiName);
-    // std::cout << "Start task to update messages"  << "\n";
-    // xTaskCreate(&Puara::update_Messages, "update_Messages", 2048, NULL, 5, NULL);
+std::string Puara::getIP1() {
+    return oscIP1;
 }
 
-void Puara::createMessage(std::string name, int length, std::string unit, float min, float max, std::string mode) {
-    if (lm_fields.find(name) == lm_fields.end()) {
-        lm_fields.insert({name, lmSignals.size()});
+std::string Puara::getIP2() {
+    return oscIP2;
+}
+
+int unsigned Puara::getPORT1() {
+    return oscPORT1;
+}
+
+int unsigned Puara::getPORT2() {
+    return oscPORT2;
+}
+
+int unsigned Puara::getLocalPORT() {
+    return localPORT;
+}
+
+bool Puara::IP1_ready() {
+    if (oscIP1 != "0.0.0.0" || oscIP1 != "") {
+        return true;
+    } else {
+        return false;
     }
-    lmMin.push_back(min);
-    lmMax.push_back(max);
-    lmSignals.push_back(lmDev->add_signal(mapper::Direction::OUTGOING, name, length,
-                                            mapper::Type::FLOAT, unit, &lmMin.at(lm_fields.at(name)), &lmMax.at(lm_fields.at(name))));
-    
-    //lmSignals.at(lm_fields.at(name)).set_property("mode", mode);
 }
 
-void Puara::setMessage(std::string name, float value) {
-    if (StaIsConnected || ApStarted) {
-        if (lm_fields.find(name) != lm_fields.end()) {
-            lmSignals.at(lm_fields.at(name)).set_value(value);
-            std::string osc_namespace = "/" + dmiName + "/" + name;
-            if (oscIP1 != "0.0.0.0" || oscIP1 != "") {
-                lo_send(lo_oscIP1, osc_namespace.c_str(), "f", value);
-            }
-            if (oscIP2 != "0.0.0.0" || oscIP2 != "") {
-                lo_send(lo_oscIP2, osc_namespace.c_str(), "f", value);
-            }
-        }
+bool Puara::IP2_ready() {
+    if (oscIP2 != "0.0.0.0" || oscIP2 != "") {
+        return true;
+    } else {
+        return false;
     }
 }

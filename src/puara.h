@@ -8,6 +8,9 @@
 #ifndef PUARA_H
 #define PUARA_H
 
+// Include Puara's auxiliary OSC and libmapper functions
+#include "osc.h"
+
 #include <stdio.h>
 #include <string>
 #include <cstring>
@@ -35,21 +38,18 @@
 
 // The following libraries need to be included if using the espidf framework:
 
-// #include <esp_log.h>
-// #include <sys/unistd.h>
-// #include <sys/stat.h>
-// #include <lwip/err.h>
-// #include <lwip/sys.h>
-// #include <esp_event.h>
-// #include <soc/uart_struct.h>
-
-// The following library requires arduino framework to compile
-#include <mapper_cpp.h>   // libmapper
+#include <esp_log.h>
+#include <sys/unistd.h>
+#include <sys/stat.h>
+#include <lwip/err.h>
+#include <lwip/sys.h>
+#include <esp_event.h>
+#include <soc/uart_struct.h>
 
 class Puara {
     
     private:
-        static const unsigned int VERSION = 220711;
+        static const unsigned int VERSION = 220714;
         static std::string dmiName;
 
         struct settingsVariables {
@@ -61,9 +61,6 @@ class Puara {
         
         static std::vector<settingsVariables> variables;
         static std::unordered_map<std::string,int> variables_fields;
-
-        static lo_address lo_oscIP1;
-        static lo_address lo_oscIP2;
 
         static std::unordered_map<std::string,int> config_fields;
         static std::string device;
@@ -112,7 +109,7 @@ class Puara {
         static httpd_config_t webserver_config;
         static httpd_uri_t index;
         static httpd_uri_t style;
-        static httpd_uri_t factory;
+        //static httpd_uri_t factory;
         static httpd_uri_t reboot;
         static httpd_uri_t scan;
         // static httpd_uri_t update;
@@ -154,6 +151,11 @@ class Puara {
         static void start_wifi();
         std::string get_dmi_name();
         static int get_version();
+        static std::string getIP1();
+        static std::string getIP2();
+        static int unsigned getPORT1();
+        static int unsigned getPORT2();
+        static int unsigned getLocalPORT();
         static void mount_spiffs();
         static void unmount_spiffs();
         static void read_config_json();
@@ -166,15 +168,8 @@ class Puara {
         static void wifi_scan(void);
         static double getVarNumber (std::string varName);
         static std::string getVarText(std::string varName);
-        static void start_communication();
-        void createMessage(std::string name, int length, std::string unit, float mina, float maxa, std::string mode);
-        void setMessage(std::string name, float value);
-
-        static mapper::Device* lmDev;
-        static std::vector<mapper::Signal> lmSignals;
-        static std::vector<float> lmMin;
-        static std::vector<float> lmMax;
-        static std::unordered_map<std::string,int> lm_fields;
+        static bool IP1_ready();
+        static bool IP2_ready();
 };
 
 #endif
