@@ -5,7 +5,7 @@
 // Edu Meneses (2022) - https://www.edumeneses.com                            //
 //****************************************************************************//
 
-#include "osc.h"
+#include "puara_osc.h"
 
 // initializing UDP class
 WiFiUDP oscEndpoint; 

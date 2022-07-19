@@ -8,6 +8,13 @@
 // Include Puara's module manager
 #include "puara.h"
 
+// Include Puara's high-level descriptor library if planning to use the high-level
+// descriptors' functions
+#include "puara_gestures.h"
+
+// Include Puara OSC functions
+#include "puara_osc.h"
+
 // declaring the libmapper device
 mapper::Device* lm_dev;
 

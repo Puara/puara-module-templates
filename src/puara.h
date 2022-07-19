@@ -8,9 +8,6 @@
 #ifndef PUARA_H
 #define PUARA_H
 
-// Include Puara's auxiliary OSC and libmapper functions
-#include "osc.h"
-
 #include <stdio.h>
 #include <string>
 #include <cstring>
@@ -49,7 +46,7 @@
 class Puara {
     
     private:
-        static const unsigned int VERSION = 220714;
+        static const unsigned int VERSION = 220719;
         static std::string dmiName;
 
         struct settingsVariables {

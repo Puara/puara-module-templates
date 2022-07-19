@@ -10,8 +10,10 @@
             "includePath": [
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/OSC",
                 "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
+                "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/puara-gestures",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -215,7 +217,6 @@
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
-                "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                 "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
@@ -226,8 +227,10 @@
                 "path": [
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/include",
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/src",
+                    "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/OSC",
                     "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/libmapper/src",
+                    "/media/edu/emeneses/Projetos/Puara/puara-module-template/.pio/libdeps/tinypico/puara-gestures",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -431,7 +434,6 @@
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
-                    "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                     "/home/edu/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
@@ -439,7 +441,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=60101",
+                "PLATFORMIO=60103",
                 "ARDUINO_TINYPICO",
                 "BOARD_HAS_PSRAM",
                 "BOARD_HAS_PSRAM",
