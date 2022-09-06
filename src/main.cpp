@@ -26,6 +26,9 @@ mpr_dev lm_dev = 0;
 // Initialize Puara's module manager
 Puara puara;
 
+// Optional: set a custom versioin (firmware) number
+puara.set_version(220906);
+
 // dummy sensor data
 float sensor;
 std::string sigName = "dummy_sensor";
