@@ -5,6 +5,8 @@
 // Edu Meneses (2022) - https://www.edumeneses.com                            //
 //****************************************************************************//
 
+unsigned int firmware_version = 20220906;
+
 #include "Arduino.h"
 
 // Include Puara's module manager
@@ -25,9 +27,6 @@ mpr_dev lm_dev = 0;
 
 // Initialize Puara's module manager
 Puara puara;
-
-// Optional: set a custom versioin (firmware) number
-puara.set_version(220906);
 
 // dummy sensor data
 float sensor;
@@ -87,6 +86,9 @@ void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
     #endif
+
+    // Optional: set a custom version (firmware) number
+    puara.set_version(firmware_version);
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
