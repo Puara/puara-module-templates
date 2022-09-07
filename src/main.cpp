@@ -115,6 +115,13 @@ void setup() {
     dummy_income = mpr_sig_new(lm_dev, MPR_DIR_IN, inSigName.c_str(), 1, MPR_FLT, "un",
                                 &lm_min, &lm_max, 0, lm_callback,
                                 MPR_SIG_UPDATE);
+
+    // Printing custom settings stored:
+    std::cout << "\n" 
+    << "Settings stored in settings.json:\n" 
+    << "Hitchhiker: " << puara.getVarText ("Hitchhiker") << "\n"
+    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") 
+    << "\n" << std::endl;
 }
 
 void loop() {
