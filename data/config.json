@@ -1,10 +1,10 @@
 {
     "device": "Puara",
-    "id": 2,
+    "id": 1,
     "author": "Edu Meneses",
-    "institution": "SAT/IDMIL (2022)",
+    "institution": "SAT/IDMIL (2022-2024)",
     "APpasswd": "mappings",
-    "wifiSSID": "tstick_network",
+    "wifiSSID": "networkSSID",
     "wifiPSK": "mappings",
     "persistentAP": 1,
     "oscIP1": "192.168.4.2",

@@ -143,12 +143,10 @@ void loop() {
     if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
         std::string oscNamespace = "/" + puara.get_dmi_name() + "/" + sigName;
         lo_send(osc1, oscNamespace.c_str(), "f", sensor);
-        //sendOSC(puara.getIP1(),puara.getPORT1(), puara.get_dmi_name(), sigName, sensor);
     }
     if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
         std::string oscNamespace = "/" + puara.get_dmi_name() + "/" + sigName;
         lo_send(osc2, oscNamespace.c_str(), "f", sensor);
-        //sendOSC(puara.getIP2(),puara.getPORT2(), puara.get_dmi_name(), sigName, sensor);
     }
 
     // run at 100 Hz
