@@ -54,7 +54,7 @@ void setup() {
 
 }
 
-std::array<uint8_t, 2> manufacturer_id = {0xFF, 0xFF};
+constexpr std::array<uint8_t, 2> manufacturer_id = {0xFF, 0xFF};
 
 float target_frequency = 50.0;
 
@@ -63,6 +63,9 @@ float target_frequency = 50.0;
 uint16_t ble_interval_value = static_cast<uint16_t>((1/target_frequency)/0.000625);
 
 uint16_t period_ms = static_cast<uint16_t>((1/target_frequency) * 1000);
+
+// allocate a 32 byte vector for the BLE advertisement bytes.
+std::vector<uint8_t> advert_data(32);
 
 void loop() {
     // Update dummy sensor with random number and send (OSC and libmapper)
@@ -73,8 +76,10 @@ void loop() {
     data["sensor1"] = sensor1;
     data["sensor2"] = sensor2;
 
-    // Get the cbor representation of the data
-    std::vector<uint8_t> advert_data = nlohmann::json::to_cbor(data);
+    //clear the advert_data vector
+    advert_data.clear();
+    // Populate the vector with the cbor representation of the data.
+    nlohmann::json::to_cbor(data, advert_data);
 
     // We can only have 27 bytes of real payload. A legacy BLE advertising packet is 31 bytes.
     // 2 of those are used to indicate that we are sending a manufacturer data packet.
