@@ -12,9 +12,17 @@ This pseudo-library currently has the following dependencies:
 
 - Install [PlatformIO](https://platformio.org/) ([VSC](https://code.visualstudio.com/) recommended as the code editor)
 - [Clone this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) locally
-- Open the cloned folder as a PlatformIO project using the **Add Existing** button at the Project manager tab.
+- Open the template folder that interests you as a PlatformIO project using the **Add Existing** button at the Project manager tab.
 - You are ready to edit the template.
 - Once finished, remember to change the board before uploading your firmware to the ESP32 board. This template is configured to the [TinyPico](https://www.tinypico.com/), but the firmware is compatible with any ESP32-based board.
+
+## Available Templates
+
+### libmapper-osc-template
+Use this as a base if you want to use libmapper or raw OSC messages.
+
+### ble-advertising-template
+Use this as a base if you want to expose sensor data as BLE advertisements.
 
 ## More Info on the related [GuitarAMI](https://github.com/Puara/GuitarAMI) and [Puara](https://github.com/Puara) research
 
