@@ -1,0 +1,41 @@
+name: Build
+on:
+  push:
+
+jobs:
+  build-project:
+    strategy:
+      matrix:
+        config:
+          - {
+              os: ubuntu-latest,
+              cmake_options: "",
+              dependencies: "sudo apt update -yqq && sudo apt -yqq install libboost-dev"
+            }
+          - {
+              os: macos-latest,
+              cmake_options: "CMAKE_PREFIX_PATH=/opt/homebrew",
+              dependencies: "brew install boost eigen && brew link boost eigen"
+            }
+          - {
+              os: windows-latest,
+              cmake_options: "BOOST_ROOT=c:/local/boost_1_86_0",
+              dependencies: "choco install eigen -y --no-progress && choco install boost-msvc-14.3 -y --no-progress"
+            }
+
+    runs-on: ${{ matrix.config.os }}
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Dependencies
+        run:  ${{ matrix.config.dependencies }}
+
+      - name: Build Project
+        uses: threeal/cmake-action@v2.0.0
+        with:
+          options: |
+            ${{ matrix.config.cmake_options }}
+
