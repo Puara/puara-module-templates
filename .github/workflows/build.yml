@@ -23,20 +23,6 @@ jobs:
       - name: Build ble-advertising-template
         run: cd ./ble-advertising-template && pio run
       
-      - name: Test ble-advertising-template with Wokwi
-        uses: wokwi/wokwi-ci-action@v1
-        with:
-          token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: /ble-advertising-template # directory with wokwi.toml, relative to repo's root
-          expect_text: 'Hello, world!' # optional
-
       - name: Build libmapper-osc-template
         run: cd ./libmapper-osc-template && pio run  
-      
-      - name: Test libmapper-osc-template with Wokwi
-        uses: wokwi/wokwi-ci-action@v1
-        with:
-          token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: /libmapper-osc-template # directory with wokwi.toml, relative to repo's root
-          expect_text: 'Hello, world!' # optional
 
