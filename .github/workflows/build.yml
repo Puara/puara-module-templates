@@ -20,9 +20,9 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Build Project1
+      - name: Build ble-advertising-template
         run: cd ./ble-advertising-template && pio run
 
-      - name: Build Project2
-        run: cd puara-module-template/libmapper-osc-template && pio run  
+      - name: Build libmapper-osc-template
+        run: cd ./libmapper-osc-template && pio run  
 
