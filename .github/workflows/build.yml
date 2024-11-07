@@ -26,7 +26,7 @@ jobs:
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./ble-advertising-template/wokwi.toml  # directory with wokwi.toml, relative to repo's root
+          path: ./ble-advertising-template/  # directory with wokwi.toml, relative to repo's root
           timeout: 5000
           expect_text: 'Puara Start Done!'
       
