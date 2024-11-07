@@ -23,6 +23,13 @@ jobs:
       - name: Build ble-advertising-template
         run: cd ./ble-advertising-template && pio run
       
+      - name: Simulate and test with Wokwi
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          path: ./ble-advertising-template/wokwi.toml  # directory with wokwi.toml, relative to repo's root
+          timeout: 5000
+          expect_text: 'Puara Start Done!'
+      
       - name: Build libmapper-osc-template
         run: cd ./libmapper-osc-template && pio run  
-
