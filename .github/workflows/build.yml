@@ -1,0 +1,28 @@
+name: Build
+on:
+  push:
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Build ble-advertising-template
+        run: cd ./ble-advertising-template && pio run
+      
+      - name: Build libmapper-osc-template
+        run: cd ./libmapper-osc-template && pio run  
+
