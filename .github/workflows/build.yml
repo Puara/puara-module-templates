@@ -22,7 +22,7 @@ jobs:
       - name: Build ble-advertising-template
         run: cd ./ble-advertising-template && pio run
       
-      - name: Simulate and test with Wokwi
+      - name: Simulate and test with ble-advertising-template with Wokwi
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
@@ -31,4 +31,12 @@ jobs:
           expect_text: 'Puara Start Done!'
       
       - name: Build libmapper-osc-template
-        run: cd ./libmapper-osc-template && pio run  
+        run: cd ./libmapper-osc-template && pio run
+        
+      - name: Simulate and test with libmapper-osc-template with Wokwi
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          path: ./libmapper-osc-template/  # directory with wokwi.toml, relative to repo's root
+          timeout: 5000
+          expect_text: 'Puara Start Done!'
