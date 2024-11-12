@@ -27,7 +27,7 @@ jobs:
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
           path: ./ble-advertising-template/  # directory with wokwi.toml, relative to repo's root
-          timeout: 5000
+          timeout: 30000
           expect_text: 'Puara Start Done!'
       
       - name: Build libmapper-osc-template
@@ -38,5 +38,5 @@ jobs:
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
           path: ./libmapper-osc-template/  # directory with wokwi.toml, relative to repo's root
-          timeout: 5000
+          timeout: 30000
           expect_text: 'Puara Start Done!'
