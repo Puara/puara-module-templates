@@ -2,5 +2,5 @@
 # Reference: https://docs.wokwi.com/vscode/project-config
 [wokwi]
 version = 1
-firmware = '.pio/build/ESP32-c3-devkit/firmware.bin'
-elf = '.pio/build/ESP32-c3-devkit/firmware.elf'
+firmware = '.pio/build/ESP32-S3/firmware.bin'
+elf = '.pio/build/ESP32-S3/firmware.elf'
