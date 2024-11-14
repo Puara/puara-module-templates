@@ -20,7 +20,7 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Build ble-advertising-template
-        run: cd ./ble-advertising-template && pio run
+        run: cd ./ble-advertising-template && pio run --environment ESP32-S3
       
       - name: Simulate and test ble-advertising-template with Wokwi
         uses: wokwi/wokwi-ci-action@v1
@@ -31,7 +31,7 @@ jobs:
           expect_text: 'Puara Start Done!'
       
       - name: Build libmapper-osc-template
-        run: cd ./libmapper-osc-template && pio run
+        run: cd ./libmapper-osc-template && pio run --environment ESP32-S3
         
       - name: Simulate and test libmapper-osc-template with Wokwi
         uses: wokwi/wokwi-ci-action@v1
