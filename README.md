@@ -1,12 +1,6 @@
 # Puara Module template (module manager)
 
-This repository can be used as a base to create musical controllers compatible with the Puara Framework.
-
-It includes a Wi-Fi manager (set SSID/password for wireless networks), a [OSC](https://en.wikipedia.org/wiki/Open_Sound_Control) manager (set addresses to send OSC messages), setup tools, and [libmapper](http://libmapper.github.io/) compatibility*.
-
-This pseudo-library currently has the following dependencies:
-
-- [libmapper-arduino](https://github.com/puara/libmapper-arduino.git) (cloned from the [original library](https://github.com/mathiasbredholt/libmapper-arduino)).
+This repository contains several templates to be used as a base to create devices that can be controlled over the network the Puara Framework.
 
 ## How to use
 
@@ -18,17 +12,29 @@ This pseudo-library currently has the following dependencies:
 
 ## Available Templates
 
-### libmapper-osc-template
-Use this as a base if you want to use libmapper or raw OSC messages.
+### basic
 
-### ble-advertising-template
+Use this as a bare-minimum template to just make puara-module available in you microcontroller.
+
+### basic-osc
+
+Use this as a base if you want to send and receive osc messages.
+
+### ble-advertising
+
 Use this as a base if you want to expose sensor data as BLE advertisements.
 
-## More Info on the related [GuitarAMI](https://github.com/Puara/GuitarAMI) and [Puara](https://github.com/Puara) research
+### libmapper-osc
+
+Use this as a base if you want to use libmapper or raw OSC messages.
+
+## More Info on the research related with [Puara](https://github.com/Puara)
+
+[http://www.sat.qc.ca](http://www.sat.qc.ca/)
+
+[http://www.idmil.org](http://www.idmil.org/)
 
 [https://www.edumeneses.com](https://www.edumeneses.com)
-
-[http://www-new.idmil.org/project/guitarami/](http://www-new.idmil.org/project/guitarami/)
 
 ## Licensing
 
