@@ -19,24 +19,24 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Build ble-advertising-template
-        run: cd ./ble-advertising-template && pio run --environment ESP32-S3
+      - name: Build ble-advertising
+        run: cd ./ble-advertising && pio run --environment ESP32-S3
       
-      - name: Simulate and test ble-advertising-template with Wokwi
+      - name: Simulate and test ble-advertising with Wokwi
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./ble-advertising-template/  # directory with wokwi.toml, relative to repo's root
+          path: ./ble-advertising/  # directory with wokwi.toml, relative to repo's root
           timeout: 30000
           expect_text: 'Puara Start Done!'
       
-      - name: Build libmapper-osc-template
-        run: cd ./libmapper-osc-template && pio run --environment ESP32-S3
+      - name: Build libmapper-osc
+        run: cd ./libmapper-osc && pio run --environment ESP32-S3
         
-      - name: Simulate and test libmapper-osc-template with Wokwi
+      - name: Simulate and test libmapper-osc with Wokwi
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./libmapper-osc-template/  # directory with wokwi.toml, relative to repo's root
+          path: ./libmapper-osc/  # directory with wokwi.toml, relative to repo's root
           timeout: 30000
           expect_text: 'Puara Start Done!'
