@@ -19,6 +19,8 @@ unsigned int firmware_version = 20220906;
 // descriptors' functions
 #include "puara_gestures.h"
 
+#include <iostream>
+
 // Initialize Puara's module manager
 Puara puara;
 
