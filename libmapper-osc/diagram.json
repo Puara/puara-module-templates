@@ -4,18 +4,18 @@
   "editor": "wokwi",
   "parts": [
     {
-      "type": "board-esp32-s3-box",
+      "type": "board-esp32-devkit-c-v4",
       "id": "esp"
     }
   ],
   "connections": [
     [
-      "esp:G43",
+      "esp:TX",
       "$serialMonitor:RX",
       ""
     ],
     [
-      "esp:G44",
+      "esp:RX",
       "$serialMonitor:TX",
       ""
     ]
