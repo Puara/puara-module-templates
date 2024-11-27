@@ -3,4 +3,4 @@
 [wokwi]
 version = 1
 firmware = '.pio/build/ESP32-S3/firmware.bin'
-elf = '.pio/build/ESP32-C3/firmware.elf'
+elf = '.pio/build/ESP32-S3/firmware.elf'
