@@ -29,7 +29,10 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Build
-        run: cd ./${{ matrix.template }} && pio run --environment ${{ matrix.environment }}
+        run: |
+          cd ./${{ matrix.template }}
+          pio settings set force_verbose 1
+          pio run --environment ${{ matrix.environment }}
 
 #       - name: Simulate and test ble-advertising with Wokwi
 #         uses: wokwi/wokwi-ci-action@v1
