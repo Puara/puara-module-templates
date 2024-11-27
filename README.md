@@ -1,3 +1,5 @@
+[![Build](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml/badge.svg)](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml)
+
 # Puara Module template (module manager)
 
 This repository contains several templates to be used as a base to create devices that can be controlled over the network the Puara Framework.
