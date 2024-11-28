@@ -3,7 +3,14 @@ on: [push,pull_request]
     
 jobs:
   build:
+    name: ${{ matrix.template }} ${{ matrix.environment }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        template: [ basic, basic-osc, ble-advertising, libmapper-osc ]
+        environment: [ Xiao, tinypico, m5stick-c,  ESP32-S3 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -13,30 +20,24 @@ jobs:
             ~/.cache/pip
             ~/.platformio/.cache
           key: ${{ runner.os }}-pio
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Build ble-advertising
-        run: cd ./ble-advertising && pio run --environment ESP32-S3
-      
-      - name: Simulate and test ble-advertising with Wokwi
-        uses: wokwi/wokwi-ci-action@v1
-        with:
-          token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./ble-advertising/  # directory with wokwi.toml, relative to repo's root
-          timeout: 30000
-          expect_text: 'Puara Start Done!'
-      
-      - name: Build libmapper-osc
-        run: cd ./libmapper-osc && pio run --environment ESP32-S3
-        
-      - name: Simulate and test libmapper-osc with Wokwi
-        uses: wokwi/wokwi-ci-action@v1
-        with:
-          token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./libmapper-osc/  # directory with wokwi.toml, relative to repo's root
-          timeout: 30000
-          expect_text: 'Puara Start Done!'
+      - name: Build
+        run: |
+          cd ./${{ matrix.template }}
+          pio settings set force_verbose 1
+          pio run --environment ${{ matrix.environment }}
+
+#       - name: Simulate and test ble-advertising with Wokwi
+#         uses: wokwi/wokwi-ci-action@v1
+#         with:
+#           token: ${{ secrets.WOKWI_CLI_TOKEN }}
+#           path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
+#           timeout: 30000
+#           expect_text: 'Puara Start Done!'

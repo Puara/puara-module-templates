@@ -10,6 +10,8 @@
 // If using Arduino.h, include it before including puara.h
 #include "puara.h"
 
+#include <iostream>
+
 // Initialize Puara's module manager
 Puara puara;
 
