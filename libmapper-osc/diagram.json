@@ -4,7 +4,7 @@
   "editor": "wokwi",
   "parts": [
     {
-      "type": "board-esp32-s3-devkitc-02",
+      "type": "board-esp32-s3-devkitc-2",
       "id": "esp"
     }
   ],
