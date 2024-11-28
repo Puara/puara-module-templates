@@ -34,10 +34,10 @@ jobs:
           pio settings set force_verbose 1
           pio run --environment ${{ matrix.environment }}
 
-#       - name: Simulate and test ble-advertising with Wokwi
-#         uses: wokwi/wokwi-ci-action@v1
-#         with:
-#           token: ${{ secrets.WOKWI_CLI_TOKEN }}
-#           path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
-#           timeout: 30000
-#           expect_text: 'Puara Start Done!'
+      - name: Simulate and test with Wokwi
+        uses: wokwi/wokwi-ci-action@v1
+        with:
+          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+          path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
+          timeout: 30000
+          expect_text: 'Puara Start Done!'
