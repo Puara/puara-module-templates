@@ -35,7 +35,7 @@ jobs:
           pio run --environment ${{ matrix.environment }}
 
       - name: Simulate and test with Wokwi
-        if: ${{ matrix.environment }} == 'ESP32-S3'
+        if: ${{ matrix.environment == 'ESP32-S3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
