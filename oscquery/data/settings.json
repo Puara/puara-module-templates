@@ -1,0 +1,18 @@
+{
+    "settings": [
+        {
+            "name": "Hitchhiker",
+            "value": "Ford"
+        },
+        {
+            "name": "answer_to_everything",
+            "value": 42
+        },
+        {
+            "name": "variable3",
+            "value": 12.345
+        }
+    ],
+    "oscquery_namespace":{"some":{"thing":"here"}},
+    "oscquery_host_info":{"some":{"thing":"there"}}
+}
