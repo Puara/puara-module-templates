@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "author": "Uri Shaked",
+  "author": "Edu Meneses",
   "editor": "wokwi",
   "parts": [
     {
-      "type": "board-esp32-c3-devkitm-1",
+      "type": "wokwi-tinypico",
       "id": "esp"
     }
   ],
   "connections": [
     [
-      "esp:TX",
+      "esp:TX0",
       "$serialMonitor:RX",
       ""
     ],
     [
-      "esp:RX",
+      "esp:RX0",
       "$serialMonitor:TX",
       ""
     ]
