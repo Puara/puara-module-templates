@@ -36,9 +36,9 @@ void setup() {
      */
     std::cout << "\n" 
     << "Settings stored in data/settings.json:\n" 
-    << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
-    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
+    // << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
+    // << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
+    // << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
     << std::endl;
 }
 
