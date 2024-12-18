@@ -9,6 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # we have 4 templates, which we want to build for 4 different boards
         template: [basic, basic-osc, ble-advertising, libmapper-osc]
         environment:
           - name: Xiao
@@ -41,6 +42,9 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+        # The boards and templates each have different requirements, so the platformio.ini file is different for each.
+        # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
+        # a temporary platformio.ini file for each template/board combination to ensure the pipeline tests them all.
       - name: Create Temporary platformio.ini
         run: |
           echo "[platformio]" > ./${{ matrix.template }}/platformioTemp.ini
@@ -73,16 +77,14 @@ jobs:
             echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
           fi
 
-          # Print the contents of the platformioTemp.ini file
-          cat ./${{ matrix.template }}/platformioTemp.ini
-
+        # Build using the temporary platformio.ini file
       - name: Build
         run: |
           cd ./${{ matrix.template }}
           pio settings set force_verbose 1
           pio run --environment ${{ matrix.environment.name }} --project-conf platformioTemp.ini
 
-      - name: Simulate and test with Wokwi
+      - name: Simulate and test each template on a ESP32-C3 board with Wokwi
         if: ${{ matrix.environment.name == 'ESP32-C3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
