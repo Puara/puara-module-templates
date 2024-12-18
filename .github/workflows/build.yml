@@ -41,22 +41,25 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+      - name: Create Temporary platformio.ini
+        run: |
+          echo "[platformio]" > ./basic/platformio.ini
+          echo "platform = espressif32" >> ./basic/platformio.ini
+          echo "board = ${{ matrix.environment.board }}" >> ./basic/platformio.ini
+          echo "framework = arduino" >> ./basic/platformio.ini
+          echo "board_build.partitions = min_spiffs_no_OTA.csv" >> ./basic/platformio.ini
+          echo "lib_deps = https://github.com/Puara/puara-module.git" >> ./basic/platformio.ini
+          echo "monitor_speed = 115200" >> ./basic/platformio.ini
+          echo "monitor_echo = yes" >> ./basic/platformio.ini
+          echo "monitor_filters = default,esp32_exception_decoder" >> ./basic/platformio.ini
+          echo "build_flags = -std=gnu++2a ${{ matrix.environment.extra_flags }}" >> ./basic/platformio.ini
+          echo "build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17" >> ./basic/platformio.ini
+
       - name: Build
         run: |
           cd ./${{ matrix.template }}
           pio settings set force_verbose 1
-          pio run \
-            --environment template \
-            --project-option "platform=espressif32" \
-            --project-option "board=${{ matrix.environment.board }}" \
-            --project-option "framework=arduino" \
-            --project-option "board_build.partitions=min_spiffs_no_OTA.csv" \
-            --project-option "lib_deps=https://github.com/Puara/puara-module.git" \
-            --project-option "monitor_speed=115200" \
-            --project-option "monitor_echo=yes" \
-            --project-option "monitor_filters=default,esp32_exception_decoder" \
-            --project-option "build_flags=-std=gnu++2a ${{ matrix.environment.extra_flags }}" \
-            --project-option "build_unflags=-std=gnu++11 -std=gnu++14 -std=gnu++17"
+          pio run
 
       - name: Simulate and test with Wokwi
         if: ${{ matrix.environment.name == 'ESP32-S3' }}
