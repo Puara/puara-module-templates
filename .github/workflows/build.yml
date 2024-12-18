@@ -51,12 +51,12 @@ jobs:
             --project-option "board=${{ matrix.environment.board }}" \
             --project-option "framework=arduino" \
             --project-option "board_build.partitions=min_spiffs_no_OTA.csv" \
-            --project-option "lib_deps=${{ common.lib_deps }}" \
+            --project-option "lib_deps=https://github.com/Puara/puara-module.git" \
             --project-option "monitor_speed=115200" \
             --project-option "monitor_echo=yes" \
             --project-option "monitor_filters=default,esp32_exception_decoder" \
-            --project-option "build_flags=${{ common.build_flags }} ${{ matrix.environment.extra_flags }}" \
-            --project-option "build_unflags=${{ common.build_unflags }}"
+            --project-option "build_flags=-std=gnu++2a ${{ matrix.environment.extra_flags }}" \
+            --project-option "build_unflags=-std=gnu++11 -std=gnu++14 -std=gnu++17"
 
       - name: Simulate and test with Wokwi
         if: ${{ matrix.environment.name == 'ESP32-S3' }}
