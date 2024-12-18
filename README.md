@@ -6,17 +6,23 @@ This repository contains several templates to be used as a base to create device
 
 ## How to Use
 
-1. **Install PlatformIO**: [PlatformIO](https://platformio.org/) (Visual Studio Code ([VSC](https://code.visualstudio.com/)) is recommended as the code editor).
+1. **Install VSCode and PlatformIO**: We recommend using [Visual Studio Code](https://code.visualstudio.com/) as code editor with the [PlatformIO](https://platformio.org/install/ide?install=vscode) IDE extension.
 
-2. **Clone this repository**: (https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) locally.
+2. **Clone the `puara-module-templates` repository locally**: `git clone https://github.com/Puara/puara-module-templates.git`
 
-3. **Open the project**: Open the template folder that interests you as a PlatformIO project using the **Add Existing** button in the Project Manager tab.
+3. **Open a puara template in VS Code**: Open VS Code, and select the platformIO extension on the left side. This will open the `PLATFORMIO` panel. From there select "Pick a folder", and navigate to one of the `puara-module-templates` subfolders, e.g., `puara-module-templates/basic/` (see below for a list of available templates). Click the "Select Folder" button. Wait for a bit while PlatformIO configures your project.
+<p align="center">
+  <img width="450" src="https://github.com/user-attachments/assets/1d87273a-c3e3-4d5b-890f-6fca498f09b5">
+</p>
 
-4. **Configure the board**: Ensure the `board` variable in the `platformio.ini` file matches your board's name.
+4. **Configure the board**: Ensure the `board` variable in the `platformio.ini` file matches your board's name. If needed you can find valid board IDs in [Boards](https://docs.platformio.org/en/latest/boards/index.html#boards) catalog, [Boards Explorer](https://registry.platformio.org/search?t=platform) or by using the [pio boards](https://docs.platformio.org/en/latest/core/userguide/cmd_boards.html#cmd-boards) terminal command.
 
 5. **Edit the template**: You are now ready to edit the template according to your board/needs.
 
-6. **Upload the firmware**: Once finished, remember to change the board configuration if necessary before uploading your firmware to the ESP32 board. This template is configured for the [m5stick-c](https://shop.m5stack.com/products/stick-c), but the firmware is compatible with any ESP32-based board.
+6. **Build and upload the file system and firmware**: Once ready, you can use PlatformIO to build and upload the file system and firmware to your board. You can access the `PLATFORMIO` Project Tasks by clicking on the extension button on the left. Make sure you upload both the filesystem (`Build`/`Upload Filesystem Image` under the `Platform` icon) and the firmware (`Build`/`Upload` under the `General` icon).
+<p align="center">
+  <img width="150" src="https://github.com/user-attachments/assets/d0254aa6-c1f2-400f-97c6-873a5597637b">
+</p>
 
 ## Available Templates
 
