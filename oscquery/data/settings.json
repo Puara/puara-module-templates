@@ -1,4 +1,4 @@
-{
+ {
     "settings": [
         {
             "name": "Hitchhiker",
@@ -13,6 +13,127 @@
             "value": 12.345
         }
     ],
-    "oscquery_namespace":{"some":{"thing":"here"}},
-    "oscquery_host_info":{"some":{"thing":"there"}}
+    "oscquery_namespace":{
+  "FULL_PATH": "/",
+  "CONTENTS": {
+    "servo.1": {
+      "FULL_PATH": "/servo.1",
+      "CONTENTS": {
+        "angle": {
+          "FULL_PATH": "/servo.1/angle",
+          "TYPE": "f",
+          "RANGE": [{"MIN": 0.0, "MAX": 1.0 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "valve.2": {
+      "FULL_PATH": "/valve.2",
+      "CONTENTS": {
+        "state": {
+          "FULL_PATH": "/valve.2/state",
+          "TYPE": "T",
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "valve.3": {
+      "FULL_PATH": "/valve.3",
+      "CONTENTS": {
+        "state": {
+          "FULL_PATH": "/valve.3/state",
+          "TYPE": "T",
+          "RANGE": [{"MIN": 0, "MAX": 1 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "servo.2": {
+      "FULL_PATH": "/servo.2",
+      "CONTENTS": {
+        "angle": {
+          "FULL_PATH": "/servo.2/angle",
+          "TYPE": "f",
+          "RANGE": [{"MIN": 0, "MAX": 1 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "leds.1": {
+      "FULL_PATH": "/leds.1",
+      "CONTENTS": {
+        "duty": {
+          "FULL_PATH": "/leds.1/values",
+          "TYPE": "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "dac.1": {
+      "FULL_PATH": "/dac.1",
+      "CONTENTS": {
+        "value": {
+          "FULL_PATH": "/dac.1/value",
+          "TYPE": "f",
+          "RANGE": [{"MIN": 0, "MAX": 1 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "valve.7": {
+      "FULL_PATH": "/valve.7",
+      "CONTENTS": {
+        "duty": {
+          "FULL_PATH": "/valve.7/duty",
+          "TYPE": "i",
+          "RANGE": [{"MIN": 0, "MAX": 1024 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    },
+    "valve.8": {
+      "FULL_PATH": "/valve.8",
+      "CONTENTS": {
+        "duty": {
+          "FULL_PATH": "/valve.8/duty",
+          "TYPE": "i",
+          "RANGE": [{"MIN": 0, "MAX": 1024 }],
+          "ACCESS": 3,
+          "VALUE": 0
+        }
+      }
+    }
+  }
+},
+    "oscquery_host_info":{
+  "NAME": "puara_001",
+  "OSC_PORT": 2333,
+  "OSC_TRANSPORT": "UDP",
+  "EXTENSIONS": {
+    "TYPE": true,
+    "ACCESS": true,
+    "VALUE": true,
+    "RANGE": true,
+    "TAGS": false,
+    "CLIPMODE": true,
+    "UNIT": false,
+    "CRITICAL": false,
+    "DESCRIPTION": true,
+    "HTML": false,
+    "OSC_STREAMING": false,
+    "LISTEN": false,
+    "ECHO": false,
+    "PATH_CHANGED": false,
+    "PATH_RENAMED": false,
+    "PATH_ADDED": false,
+    "PATH_REMOVED": false
+  }
+}
 }
