@@ -49,7 +49,9 @@ jobs:
           echo "board = ${{ matrix.environment.board }}" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "framework = arduino" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "board_build.partitions = min_spiffs_no_OTA.csv" >> ./${{ matrix.template }}/platformioTemp.ini
-          echo "lib_deps = https://github.com/Puara/puara-module.git \n https://github.com/cnmat/OSC#3.5.8" >> ./${{ matrix.template }}/platformioTemp.ini
+          echo "lib_deps =" >> ./${{ matrix.template }}/platformioTemp.ini
+          echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
+          echo "    https://github.com/cnmat/OSC#3.5.8" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_speed = 115200" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_echo = yes" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_filters = default,esp32_exception_decoder" >> ./${{ matrix.template }}/platformioTemp.ini
