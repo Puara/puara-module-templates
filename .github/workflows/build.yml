@@ -1,20 +1,32 @@
 name: Build
-on: [push,pull_request]
-    
+on: [push, pull_request]
+
 jobs:
   build:
-    name: ${{ matrix.template }} ${{ matrix.environment }}
+    name: ${{ matrix.template }} ${{ matrix.environment.name }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        template: [ basic, basic-osc, ble-advertising, libmapper-osc ]
-        # environment: [ Xiao, tinypico, m5stick-c,  ESP32-S3 ]
-        environment: [ template ]
+        template: [basic, basic-osc, ble-advertising, libmapper-osc]
+        environment:
+          - name: Xiao
+            board: seeed_xiao_esp32c3
+            extra_flags: ""
+          - name: tinypico
+            board: tinypico
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
+          - name: m5stick-c
+            board: m5stick-c
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
+          - name: ESP32-S3
+            board: esp32-c3-devkitc-02
+            extra_flags: "-DBOARD_HAS_PSRAM"
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/cache@v4
         with:
           path: |
@@ -33,10 +45,21 @@ jobs:
         run: |
           cd ./${{ matrix.template }}
           pio settings set force_verbose 1
-          pio run --environment ${{ matrix.environment }}
+          pio run \
+            --environment template \
+            --project-option "platform=espressif32" \
+            --project-option "board=${{ matrix.environment.board }}" \
+            --project-option "framework=arduino" \
+            --project-option "board_build.partitions=min_spiffs_no_OTA.csv" \
+            --project-option "lib_deps=${{ common.lib_deps }}" \
+            --project-option "monitor_speed=115200" \
+            --project-option "monitor_echo=yes" \
+            --project-option "monitor_filters=default,esp32_exception_decoder" \
+            --project-option "build_flags=${{ common.build_flags }} ${{ matrix.environment.extra_flags }}" \
+            --project-option "build_unflags=${{ common.build_unflags }}"
 
       - name: Simulate and test with Wokwi
-        if: ${{ matrix.environment == 'ESP32-S3' }}
+        if: ${{ matrix.environment.name == 'ESP32-S3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
