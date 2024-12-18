@@ -50,7 +50,8 @@ jobs:
           echo "board = ${{ matrix.environment.board }}" >> ./basic/platformioTemp.ini
           echo "framework = arduino" >> ./basic/platformioTemp.ini
           echo "board_build.partitions = min_spiffs_no_OTA.csv" >> ./basic/platformioTemp.ini
-          echo "lib_deps = https://github.com/Puara/puara-module.git https://github.com/cnmat/OSC#3.5.8" >> ./basic/platformioTemp.ini
+          echo "lib_deps = https://github.com/Puara/puara-module.git" >> ./basic/platformioTemp.ini
+          echo "https://github.com/cnmat/OSC#3.5.8" >> ./basic/platformioTemp.ini
           echo "monitor_speed = 115200" >> ./basic/platformioTemp.ini
           echo "monitor_echo = yes" >> ./basic/platformioTemp.ini
           echo "monitor_filters = default,esp32_exception_decoder" >> ./basic/platformioTemp.ini
