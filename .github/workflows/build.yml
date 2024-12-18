@@ -57,6 +57,11 @@ jobs:
           echo "build_flags = -std=gnu++2a ${{ matrix.environment.extra_flags }}" >> ./basic/platformioTemp.ini
           echo "build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17" >> ./basic/platformioTemp.ini
 
+      - name: Verify File Creation
+        run: |
+          ls -al
+          ls -al ./basic  # List files to ensure platformioTemp.ini exists
+
       - name: Build
         run: |
           cd ./${{ matrix.template }}
