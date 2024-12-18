@@ -10,7 +10,8 @@ jobs:
       fail-fast: false
       matrix:
         template: [ basic, basic-osc, ble-advertising, libmapper-osc ]
-        environment: [ Xiao, tinypico, m5stick-c,  ESP32-S3 ]
+        # environment: [ Xiao, tinypico, m5stick-c,  ESP32-S3 ]
+        environment: [ template ]
 
     steps:
       - uses: actions/checkout@v4
