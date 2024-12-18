@@ -20,7 +20,7 @@ jobs:
           - name: m5stick-c
             board: m5stick-c
             extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
-          - name: ESP32-S3
+          - name: ESP32-C3
             board: esp32-c3-devkitc-02
             extra_flags: "-DBOARD_HAS_PSRAM"
 
@@ -83,7 +83,7 @@ jobs:
           pio run --environment ${{ matrix.environment.name }} --project-conf platformioTemp.ini
 
       - name: Simulate and test with Wokwi
-        if: ${{ matrix.environment.name == 'ESP32-S3' }}
+        if: ${{ matrix.environment.name == 'ESP32-C3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
