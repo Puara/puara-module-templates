@@ -1,16 +1,22 @@
-[![Build](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml/badge.svg)](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml)
+# Puara Module Template (Module Manager)
 
-# Puara Module template (module manager)
+[![Build](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml/badge.svg)](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml)
 
 This repository contains several templates to be used as a base to create devices that can be controlled over the network the Puara Framework.
 
-## How to use
+## How to Use
 
-- Install [PlatformIO](https://platformio.org/) ([VSC](https://code.visualstudio.com/) recommended as the code editor)
-- [Clone this repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) locally
-- Open the template folder that interests you as a PlatformIO project using the **Add Existing** button at the Project manager tab.
-- You are ready to edit the template.
-- Once finished, remember to change the board before uploading your firmware to the ESP32 board. This template is configured to the [TinyPico](https://www.tinypico.com/), but the firmware is compatible with any ESP32-based board.
+1. **Install PlatformIO**: [PlatformIO](https://platformio.org/) (Visual Studio Code ([VSC](https://code.visualstudio.com/)) is recommended as the code editor).
+
+2. **Clone this repository**: (https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) locally.
+
+3. **Open the project**: Open the template folder that interests you as a PlatformIO project using the **Add Existing** button in the Project Manager tab.
+
+4. **Configure the board**: Ensure the `board` variable in the `platformio.ini` file matches your board's name.
+
+5. **Edit the template**: You are now ready to edit the template according to your board/needs.
+
+6. **Upload the firmware**: Once finished, remember to change the board configuration if necessary before uploading your firmware to the ESP32 board. This template is configured for the [m5stick-c](https://shop.m5stack.com/products/stick-c), but the firmware is compatible with any ESP32-based board.
 
 ## Available Templates
 
@@ -32,11 +38,9 @@ Use this as a base if you want to use libmapper or raw OSC messages.
 
 ## More Info on the research related with [Puara](https://github.com/Puara)
 
-[http://www.sat.qc.ca](http://www.sat.qc.ca/)
-
-[http://www.idmil.org](http://www.idmil.org/)
-
-[https://www.edumeneses.com](https://www.edumeneses.com)
+- [SAT](http://www.sat.qc.ca)
+- [IDMIL](http://www.idmil.org)
+- [Edu Meneses](https://www.edumeneses.com)
 
 ## Licensing
 
