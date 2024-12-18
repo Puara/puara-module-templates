@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "[platformio]" > ./basic/platformioTemp.ini
 
-          echo "[env:${{ matrix.environment.name }}]" >> ./basic/platformio.ini
+          echo "[env:${{ matrix.environment.name }}]" >> ./basic/platformioTemp.ini
           echo "platform = espressif32" >> ./basic/platformioTemp.ini
           echo "board = ${{ matrix.environment.board }}" >> ./basic/platformioTemp.ini
           echo "framework = arduino" >> ./basic/platformioTemp.ini
@@ -61,7 +61,7 @@ jobs:
         run: |
           cd ./${{ matrix.template }}
           pio settings set force_verbose 1
-          pio run --environment ${{ matrix.environment.name }} --project-conf ./platformioTemp.ini
+          pio run --environment ${{ matrix.environment.name }} --project-conf ./basic/platformioTemp.ini
 
       - name: Simulate and test with Wokwi
         if: ${{ matrix.environment.name == 'ESP32-S3' }}
