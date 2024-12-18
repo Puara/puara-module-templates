@@ -49,19 +49,32 @@ jobs:
           echo "board = ${{ matrix.environment.board }}" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "framework = arduino" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "board_build.partitions = min_spiffs_no_OTA.csv" >> ./${{ matrix.template }}/platformioTemp.ini
-          echo "lib_deps =" >> ./${{ matrix.template }}/platformioTemp.ini
-          echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
-          echo "    https://github.com/cnmat/OSC#3.5.8" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_speed = 115200" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_echo = yes" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "monitor_filters = default,esp32_exception_decoder" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "build_flags = -std=gnu++2a ${{ matrix.environment.extra_flags }}" >> ./${{ matrix.template }}/platformioTemp.ini
           echo "build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17" >> ./${{ matrix.template }}/platformioTemp.ini
 
-      - name: Verify File Creation
-        run: |
-          ls -al
-          ls -al ./basic  # List files to ensure platformioTemp.ini exists
+          # Define dependencies for each template
+          echo "lib_deps =" >> ./${{ matrix.template }}/platformioTemp.ini
+          if [[ "${{ matrix.template }}" == "basic" ]]; then
+            echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
+          elif [[ "${{ matrix.template }}" == "basic-osc" ]]; then
+            echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    https://github.com/cnmat/OSC#3.5.8" >> ./${{ matrix.template }}/platformioTemp.ini
+          elif [[ "${{ matrix.template }}" == "ble-advertising" ]]; then
+            echo "    https://github.com/Puara/puara-gestures.git" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    arduino-libraries/ArduinoBLE" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    johboh/nlohmann-json@^3.11.3" >> ./${{ matrix.template }}/platformioTemp.ini
+          elif [[ "${{ matrix.template }}" == "libmapper-osc" ]]; then
+            echo "    https://github.com/Puara/puara-gestures.git" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> ./${{ matrix.template }}/platformioTemp.ini
+            echo "    https://github.com/Puara/puara-module.git" >> ./${{ matrix.template }}/platformioTemp.ini
+          fi
+
+          # Print the contents of the platformioTemp.ini file
+          cat ./${{ matrix.template }}/platformioTemp.ini
 
       - name: Build
         run: |
