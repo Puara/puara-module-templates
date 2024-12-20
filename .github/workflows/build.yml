@@ -53,7 +53,7 @@ jobs:
             ${{ matrix.environment.board }} \
             "${{ matrix.environment.extra_flags }}"
             pwd
-            find -name platformioTemp.ini
+            ls -la scripts/
 
         # Build using the temporary platformio.ini file
       - name: Build
