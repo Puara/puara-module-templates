@@ -52,9 +52,10 @@ jobs:
             ${{ matrix.environment.name }} \
             ${{ matrix.environment.board }} \
             "${{ matrix.environment.extra_flags }}"
+            echo "pwd:"
             pwd
-            ls -la
-            ls -la scripts/
+            echo "ls -la ${{ matrix.template }}:"
+            ls -la ${{ matrix.template }}
 
         # Build using the temporary platformio.ini file
       - name: Build

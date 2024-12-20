@@ -13,7 +13,7 @@ echo "Board: $BOARD"
 echo "Extra Flags: $EXTRA_FLAGS"
 
 # Ensure output path is correct
-OUTPUT_FILE="$(pwd)/platformioTemp.ini"
+OUTPUT_FILE="$(pwd)/${TEMPLATE}/platformioTemp.ini"
 echo "Generating platformioTemp.ini at: ${OUTPUT_FILE}"
 
 # Generate platformioTemp.ini at the project root
