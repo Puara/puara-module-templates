@@ -12,7 +12,7 @@ OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
 [platformio]
-[env:template]
+[env:${ENVIRONMENT_NAME}]
 platform = espressif32
 board = ${BOARD}
 framework = arduino
