@@ -47,7 +47,7 @@ jobs:
         # a temporary platformio.ini file for each template/board combination to ensure the pipeline tests them all.
       - name: Generate Temporary platformio.ini
         run: |
-          bash ./.github/scripts/generate-platformio.sh \
+          bash scripts/generate-platformio.ini.sh \
             ${{ matrix.template }} \
             ${{ matrix.environment.name }} \
             ${{ matrix.environment.board }} \
