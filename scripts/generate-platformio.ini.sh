@@ -22,7 +22,7 @@ monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
 build_flags = -std=gnu++2a ${EXTRA_FLAGS}
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
-build_dir = '.pio/build/template/'
+build_dir = '.pio/build/${TEMPLATE}/'
 lib_deps =
 EOL
 
