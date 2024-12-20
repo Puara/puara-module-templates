@@ -6,8 +6,18 @@ ENVIRONMENT_NAME=$2
 BOARD=$3
 EXTRA_FLAGS=$4
 
+# Debug output
+echo "Template: $TEMPLATE"
+echo "Environment: $ENVIRONMENT_NAME"
+echo "Board: $BOARD"
+echo "Extra Flags: $EXTRA_FLAGS"
+
+# Ensure output path is correct
+OUTPUT_FILE="$(pwd)/platformioTemp.ini"
+echo "Generating platformioTemp.ini at: ${OUTPUT_FILE}"
+
 # Generate platformioTemp.ini at the project root
-cat <<EOL > ../platformioTemp.ini
+cat <<EOL > "${OUTPUT_FILE}"
 [platformio]
 [env:${ENVIRONMENT_NAME}]
 platform = espressif32
@@ -25,22 +35,22 @@ EOL
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic)
-    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
     ;;
   basic-osc)
-    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     ;;
   ble-advertising)
-    echo "    https://github.com/Puara/puara-gestures.git" >> ../platformioTemp.ini
-    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
-    echo "    arduino-libraries/ArduinoBLE" >> ../platformioTemp.ini
-    echo "    johboh/nlohmann-json@^3.11.3" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
+    echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
+    echo "    johboh/nlohmann-json@^3.11.3" >> "${OUTPUT_FILE}"
     ;;
   libmapper-osc)
-    echo "    https://github.com/Puara/puara-gestures.git" >> ../platformioTemp.ini
-    echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> ../platformioTemp.ini
-    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
     ;;
   *)
     echo "Unknown template: ${TEMPLATE}"
