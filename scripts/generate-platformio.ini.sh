@@ -6,17 +6,10 @@ ENVIRONMENT_NAME=$2
 BOARD=$3
 EXTRA_FLAGS=$4
 
-# Debug output
-echo "Template: $TEMPLATE"
-echo "Environment: $ENVIRONMENT_NAME"
-echo "Board: $BOARD"
-echo "Extra Flags: $EXTRA_FLAGS"
-
-# Ensure output path is correct
+# We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="$(pwd)/${TEMPLATE}/platformioTemp.ini"
-echo "Generating platformioTemp.ini at: ${OUTPUT_FILE}"
 
-# Generate platformioTemp.ini at the project root
+# Write the file
 cat <<EOL > "${OUTPUT_FILE}"
 [platformio]
 [env:${ENVIRONMENT_NAME}]
