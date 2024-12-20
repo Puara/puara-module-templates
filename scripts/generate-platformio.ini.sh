@@ -7,7 +7,7 @@ BOARD=$3
 EXTRA_FLAGS=$4
 
 # We'll put the temporary platformio.ini file in the current template folder
-OUTPUT_FILE="$(pwd)/${TEMPLATE}/platformioTemp.ini"
+OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
