@@ -7,7 +7,7 @@ BOARD=$3
 EXTRA_FLAGS=$4
 
 # Generate platformioTemp.ini at the project root
-cat <<EOL > ./platformioTemp.ini
+cat <<EOL > ../platformioTemp.ini
 [platformio]
 [env:${ENVIRONMENT_NAME}]
 platform = espressif32
@@ -25,22 +25,22 @@ EOL
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic)
-    echo "    https://github.com/Puara/puara-module.git" >> ./platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
     ;;
   basic-osc)
-    echo "    https://github.com/Puara/puara-module.git" >> ./platformioTemp.ini
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> ./platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> ../platformioTemp.ini
     ;;
   ble-advertising)
-    echo "    https://github.com/Puara/puara-gestures.git" >> ./platformioTemp.ini
-    echo "    https://github.com/Puara/puara-module.git" >> ./platformioTemp.ini
-    echo "    arduino-libraries/ArduinoBLE" >> ./platformioTemp.ini
-    echo "    johboh/nlohmann-json@^3.11.3" >> ./platformioTemp.ini
+    echo "    https://github.com/Puara/puara-gestures.git" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
+    echo "    arduino-libraries/ArduinoBLE" >> ../platformioTemp.ini
+    echo "    johboh/nlohmann-json@^3.11.3" >> ../platformioTemp.ini
     ;;
   libmapper-osc)
-    echo "    https://github.com/Puara/puara-gestures.git" >> ./platformioTemp.ini
-    echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> ./platformioTemp.ini
-    echo "    https://github.com/Puara/puara-module.git" >> ./platformioTemp.ini
+    echo "    https://github.com/Puara/puara-gestures.git" >> ../platformioTemp.ini
+    echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> ../platformioTemp.ini
+    echo "    https://github.com/Puara/puara-module.git" >> ../platformioTemp.ini
     ;;
   *)
     echo "Unknown template: ${TEMPLATE}"
