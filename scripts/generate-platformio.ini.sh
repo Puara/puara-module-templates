@@ -2,9 +2,8 @@
 
 # Variables
 TEMPLATE=$1
-ENVIRONMENT_NAME=$2
-BOARD=$3
-EXTRA_FLAGS=$4
+BOARD=$2
+EXTRA_FLAGS=$3
 
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
