@@ -1,19 +1,33 @@
 name: Build
-on: [push,pull_request]
-    
+on: [push, pull_request]
+
 jobs:
   build:
-    name: ${{ matrix.template }} ${{ matrix.environment }}
+    name: ${{ matrix.template }} ${{ matrix.environment.name }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        template: [ basic, basic-osc, ble-advertising, libmapper-osc ]
-        environment: [ Xiao, tinypico, m5stick-c,  ESP32-S3 ]
+        # we have 4 templates, which we want to build for 4 different boards
+        template: [basic, basic-osc, ble-advertising, libmapper-osc]
+        environment:
+          - name: Xiao
+            board: seeed_xiao_esp32c3
+            extra_flags: ""
+          - name: tinypico
+            board: tinypico
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
+          - name: m5stick-c
+            board: m5stick-c
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
+          - name: ESP32-C3
+            board: esp32-c3-devkitc-02
+            extra_flags: "-DBOARD_HAS_PSRAM"
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/cache@v4
         with:
           path: |
@@ -28,14 +42,23 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+        # The boards and templates each have different requirements, so the platformio.ini file is different for each.
+        # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
+        # a temporary platformio.ini file for each template/board combination to ensure the pipeline tests them all.
+      - name: Generate Temporary platformio.ini
+        run: |
+          bash scripts/generate-platformio.ini.sh ${{ matrix.template }} \
+            ${{ matrix.environment.board }} "${{ matrix.environment.extra_flags }}"
+
+        # Build using the temporary platformio.ini file
       - name: Build
         run: |
           cd ./${{ matrix.template }}
           pio settings set force_verbose 1
-          pio run --environment ${{ matrix.environment }}
+          pio run --environment template --project-conf platformioTemp.ini
 
-      - name: Simulate and test with Wokwi
-        if: ${{ matrix.environment == 'ESP32-S3' }}
+      - name: Simulate and test each template on a ESP32-C3 board with Wokwi
+        if: ${{ matrix.environment.name == 'ESP32-C3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
