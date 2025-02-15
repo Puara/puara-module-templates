@@ -53,7 +53,7 @@ void setup() {
     << std::endl;
 
     // Start the UDP instances 
-    Udp.begin(puara.getLocalPORT());
+    Udp.begin(puara.LocalPORT());
 }
 
 void loop() {
@@ -74,22 +74,22 @@ void loop() {
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.get_dmi_name()).c_str()); 
+        OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
         msg1.add(sensor);
-        Udp.beginPacket(puara.getIP1().c_str(), puara.getPORT1());
+        Udp.beginPacket(puara.IP1().c_str(), puara.PORT1());
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.getIP1() << std::endl;
+        std::cout << "Message send to " << puara.IP1() << std::endl;
     }
     if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        OSCMessage msg2(("/" + puara.get_dmi_name()).c_str()); 
+        OSCMessage msg2(("/" + puara.dmi_name()).c_str()); 
         msg2.add(sensor);
-        Udp.beginPacket(puara.getIP2().c_str(), puara.getPORT2());
+        Udp.beginPacket(puara.IP2().c_str(), puara.PORT2());
         msg2.send(Udp);
         Udp.endPacket();
         msg2.empty();
-        std::cout << "Message send to " << puara.getIP2() << std::endl;
+        std::cout << "Message send to " << puara.IP2() << std::endl;
     }
 
     // run at 1 Hz (1 message per second)
