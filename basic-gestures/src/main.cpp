@@ -42,13 +42,14 @@ void setup() {
     /* 
      * Printing custom settings stored. The data/config.json values will print during 
      * Initialization (puara.start)
+     * Comment this part if you want to run on Wokwi. Wokwi currently does not supprot SPIFFS
      */
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Hitchhiker: "           << puara.getVarText  ("Hitchhiker")           << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
-    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
-    << std::endl;
+    // std::cout << "\n" 
+    // << "Settings stored in data/settings.json:\n" 
+    // << "Hitchhiker: "           << puara.getVarText  ("Hitchhiker")           << "\n"
+    // << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
+    // << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
+    // << std::endl;
 }
 
 void loop() {
@@ -58,7 +59,7 @@ void loop() {
 
     // print the simulated IMU data
     std::cout << "\n" 
-    << "Smilated IMU data:\n [" 
+    << "Smilated IMU data: [" 
     << imu.getAccelX() << ","
     << imu.getAccelY() << ","
     << imu.getAccelZ() << ","
