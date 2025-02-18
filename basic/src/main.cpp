@@ -8,15 +8,15 @@
 
 // Include Puara's module manager
 // If using Arduino.h, include it before including puara.h
-#include "puara.h"
+// #include "puara.h"
 
 #include <iostream>
 
 // Initialize Puara's module manager
-Puara puara;
+// Puara puara;
 
 // Dummy sensor data
-float sensor;
+float sensor {3.f};
 
 void setup() {
     #ifdef Arduino_h
@@ -28,7 +28,7 @@ void setup() {
      * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial 
      * listening, MDNS service, and scans for WiFi networks.
      */
-    puara.start();
+    // puara.start();
 
     /* 
      * Printing custom settings stored. The data/config.json values will print during 
@@ -36,25 +36,25 @@ void setup() {
      */
     std::cout << "\n" 
     << "Settings stored in data/settings.json:\n" 
-    << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
-    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
+    // << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
+    // << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
+    // << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
     << std::endl;
 }
 
 void loop() {
 
     // Update the dummy sensor variable with random number
-    sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
+    // sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Dummy sensor value: " << sensor << "\n"
-    << std::endl;
+    // std::cout << "\n" 
+    // << "Settings stored in data/settings.json:\n" 
+    // << "Dummy sensor value: " << sensor << "\n"
+    // << std::endl;
 
     // run at 1 Hz (1 message per second)
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    // vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 /* 
