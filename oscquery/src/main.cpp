@@ -40,7 +40,8 @@ void setup() {
      */
     puara.start();
     vTaskDelay(500  / portTICK_RATE_MS);
-    setup_oscquery_server();
+    // setup the oscquery webserver, mdns service and UDP instance.
+    setup_oscquery_server(puara.getLocalPORT());
     /*
      * Printing custom settings stored. The data/config.json values will print during
      * Initialization (puara.start)
@@ -51,23 +52,31 @@ void setup() {
     << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
     << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
     << std::endl;
+}
 
-    // Start the UDP instances
-    Udp.begin(puara.getLocalPORT());
+void process_value() {
+  digitalWrite(BUILTIN_LED, ledState);
+  Serial.print("/some_value: ");
+  Serial.println(msg.getInt(0));
 }
 
 void loop() {
+  OSCMessage msg;
+  int size = Udp.parsePacket();
 
-//     // Update the dummy sensor variable with random number
-//     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
+  if (size > 0) {
+    while (size--) {
+      msg.fill(Udp.read());
+    }
+    if (!msg.hasError()) {
+      // You can add more dispatches here to react to other messages
+      msg.dispatch("/some_value", process_value);
+    } else {
+      error = msg.getError();
+      Serial.println(error);
+    }
+  }
 
-//     // print the dummy sensor data
-//     std::cout << "\n"
-//     << "Settings stored in data/settings.json:\n"
-//     << "Dummy sensor value: " << sensor << "\n"
-//     << std::endl;
-//     // run at 1 Hz (1 message per second)
-//     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 /*

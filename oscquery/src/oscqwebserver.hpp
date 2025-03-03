@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iostream>
 
+// Hi there ! You shouldn't need to change anything in this file, just call setup_oscquery_server
+
 inline PuaraAPI::SPIFFS spiffs;
 
 inline httpd_handle_t oscqserver = nullptr;
@@ -57,9 +59,9 @@ httpd_uri_t uri_get = {
 
 void setup_oscquery_server()
 {
-  ESP_ERROR_CHECK( mdns_service_add(nullptr, "_oscjson", "_tcp", 1337, nullptr, 0) );
+  ESP_ERROR_CHECK(mdns_service_add(nullptr, "_oscjson", "_tcp", puara.getLocalPORT(), nullptr, 0));
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-  config.server_port = 1337;
+  config.server_port = puara.getLocalPORT();
   // puara module uses port 32768 so we use the next one.
   config.ctrl_port = 32769;
   // populate the oscquery metadata from the settings.json file.
@@ -68,4 +70,5 @@ void setup_oscquery_server()
   {
     httpd_register_uri_handler(oscqserver, &uri_get);
   }
+  Udp.begin(puara.getLocalPORT());
 }
