@@ -21,6 +21,7 @@ float sensor;
 void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
+        delay(1000);
     #endif
 
     /*
