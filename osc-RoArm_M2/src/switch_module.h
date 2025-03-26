@@ -9,15 +9,15 @@ void switchPinInit(){
   pinMode(BIN2, OUTPUT);
   pinMode(PWMB, OUTPUT);
 
-  // ledcSetup(channel_A, freq, ANALOG_WRITE_BITS);
-  // ledcAttachPin(PWMA, channel_A);
+  ledcSetup(channel_A, freq, ANALOG_WRITE_BITS);
+  ledcAttachPin(PWMA, channel_A);
 
-  ledcAttach(PWMA, freq, ANALOG_WRITE_BITS);
+  // ledcAttach(PWMA, freq, ANALOG_WRITE_BITS);
 
-  // ledcSetup(channel_B, freq, ANALOG_WRITE_BITS);
-  // ledcAttachPin(PWMB, channel_B);
+  ledcSetup(channel_B, freq, ANALOG_WRITE_BITS);
+  ledcAttachPin(PWMB, channel_B);
 
-  ledcAttach(PWMB, freq, ANALOG_WRITE_BITS);
+  // ledcAttach(PWMB, freq, ANALOG_WRITE_BITS);
 
   digitalWrite(AIN1, LOW);
   digitalWrite(AIN2, LOW);
