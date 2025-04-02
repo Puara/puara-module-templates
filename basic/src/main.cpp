@@ -22,6 +22,8 @@ void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
     #endif
+    delay(1000); // wait for 10 seconds
+    std::cout << "DUCOUP\n";
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
@@ -43,14 +45,11 @@ void setup() {
 }
 
 void loop() {
-
-    // Update the dummy sensor variable with random number
-    sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
-
-    // print the dummy sensor data
     std::cout << "\n" 
     << "Settings stored in data/settings.json:\n" 
-    << "Dummy sensor value: " << sensor << "\n"
+    << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
+    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
+    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
     << std::endl;
 
     // run at 1 Hz (1 message per second)
