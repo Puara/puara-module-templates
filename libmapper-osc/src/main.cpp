@@ -99,8 +99,8 @@ void setup() {
     puara.start();
 
     // Populating liblo addresses and server port
-    osc1 = lo_address_new(puara.IP1().c_str(), puara.PORT1Str().c_str());
-    osc2 = lo_address_new(puara.IP2().c_str(), puara.PORT2Str().c_str());
+    osc1 = lo_address_new(puara.getIP1().c_str(), puara.PORT1Str().c_str());
+    osc2 = lo_address_new(puara.getIP2().c_str(), puara.PORT2Str().c_str());
     osc_server = lo_server_thread_new(puara.LocalPORTStr().c_str(), error);
     
     // Add method that will match any path and args and start server
@@ -108,7 +108,7 @@ void setup() {
     lo_server_thread_start(osc_server);
 
     // creating the libmapper device
-    lm_dev = mpr_dev_new(puara.dmi_name().c_str(), 0);
+    lm_dev = mpr_dev_new(puara.get_dmi_name().c_str(), 0);
 
     // Creating dummy signals
     dummy_signal = mpr_sig_new(lm_dev, MPR_DIR_OUT, sigName.c_str(), 1, MPR_FLT, "un",
@@ -142,11 +142,11 @@ void loop() {
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
-        std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
+        std::string oscNamespace = "/" + puara.get_dmi_name() + "/" + sigName;
         lo_send(osc1, oscNamespace.c_str(), "f", sensor);
     }
     if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
+        std::string oscNamespace = "/" + puara.get_dmi_name() + "/" + sigName;
         lo_send(osc2, oscNamespace.c_str(), "f", sensor);
     }
 

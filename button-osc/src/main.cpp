@@ -89,7 +89,7 @@ void setup() {
     puara.start();
 
     // Start the UDP instances 
-    Udp.begin(puara.LocalPORT());
+    Udp.begin(puara.getLocalPORT());
 }
 
 void loop() {
@@ -116,13 +116,13 @@ void loop() {
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
+        OSCMessage msg1(("/" + puara.get_dmi_name()).c_str()); 
         msg1.add(puara_button.count);
-        Udp.beginPacket(puara.IP1().c_str(), puara.PORT1());
+        Udp.beginPacket(puara.getIP1().c_str(), puara.getPORT1());
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.IP1() << std::endl;
+        std::cout << "Message send to " << puara.getIP1() << std::endl;
     }
 
     // run at 100 Hz (100 messages per second)
