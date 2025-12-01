@@ -104,7 +104,7 @@ void loop() {
     // Set scan response to the device name. Yes, we need to do that every single loop. This is probably
     // a quirk of the arduino ble lib.
     BLEAdvertisingData scan_data;
-    scan_data.setLocalName(puara.dmi_name().c_str());
+    scan_data.setLocalName(puara.get_dmi_name().c_str());
     BLE.setScanResponseData(scan_data);
 
     // Set the advertising payload.
