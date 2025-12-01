@@ -48,10 +48,7 @@ void loop() {
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Dummy sensor value: " << sensor << "\n"
-    << std::endl;
+    std::cout << "Dummy sensor value: " << sensor << std::endl;
 
     // run at 1 Hz (1 message per second)
     vTaskDelay(1000 / portTICK_PERIOD_MS);
