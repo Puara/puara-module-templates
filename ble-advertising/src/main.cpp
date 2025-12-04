@@ -5,8 +5,6 @@
 // Edu Meneses (2022) - https://www.edumeneses.com                            //
 //****************************************************************************//
 
-unsigned int firmware_version = 20220906;
-
 #include "Arduino.h"
 #include "ArduinoBLE.h"
 #include <nlohmann/json.hpp>
@@ -17,7 +15,7 @@ unsigned int firmware_version = 20220906;
 
 // Include Puara's high-level descriptor library if planning to use the high-level
 // descriptors' functions
-#include "puara_gestures.h"
+#include "puara/gestures.h"
 
 #include <iostream>
 
@@ -37,8 +35,6 @@ void setup() {
     if (!BLE.begin()) {
         Serial.println("starting Bluetooth® Low Energy module failed!");
     }
-    // Optional: set a custom version (firmware) number
-    puara.set_version(firmware_version);
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
@@ -53,6 +49,12 @@ void setup() {
     << "Hitchhiker: " << puara.getVarText ("Hitchhiker") << "\n"
     << "answer_to_everything: " << puara.getVarNumber("answer_to_everything")
     << "\n" << std::endl;
+
+    std::cout<< "This template must be used with the BLE-CBOR-to-OSC_script.\n"
+    << "It advertises dummy sensor data as CBOR over BLE Manufacturer Data\n"
+    << "packets. The script scans for the advertisement, decodes the CBOR data,\n"
+    << "and sends it as OSC messages to be used in your favorite environment.\n" 
+    << std::endl;
 
 }
 
