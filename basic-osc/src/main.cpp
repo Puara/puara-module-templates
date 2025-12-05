@@ -41,19 +41,8 @@ void setup() {
      */
     puara.start();
 
-    /* 
-     * Printing custom settings stored. The data/config.json values will print during 
-     * Initialization (puara.start)
-     */
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
-    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
-    << std::endl;
-
     // Start the UDP instances 
-    Udp.begin(puara.LocalPORT());
+    Udp.begin(puara.getVarNumber("localPORT"));
 }
 
 void loop() {
@@ -73,23 +62,14 @@ void loop() {
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
      * network (WiFiUdp will print an warning message in those cases).
      */
-    if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
+    if (puara.getVarText("oscIP").c_str() != NULL && puara.getVarText("oscIP").c_str() != "0.0.0.0") {
         OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
         msg1.add(sensor);
-        Udp.beginPacket(puara.IP1().c_str(), puara.PORT1());
+        Udp.beginPacket(puara.getVarText("oscIP").c_str(), puara.getVarNumber("oscPORT"));
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.IP1() << std::endl;
-    }
-    if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        OSCMessage msg2(("/" + puara.dmi_name()).c_str()); 
-        msg2.add(sensor);
-        Udp.beginPacket(puara.IP2().c_str(), puara.PORT2());
-        msg2.send(Udp);
-        Udp.endPacket();
-        msg2.empty();
-        std::cout << "Message send to " << puara.IP2() << std::endl;
+        std::cout << "Message send to " << puara.getVarText("oscIP") << std::endl;
     }
 
     // run at 1 Hz (1 message per second)
