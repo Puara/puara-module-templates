@@ -29,6 +29,9 @@ WiFiUDP Udp;
 // Dummy sensor data
 float sensor;
 
+std::string ip1;
+int port1;
+
 void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
@@ -43,6 +46,10 @@ void setup() {
 
     // Start the UDP instances 
     Udp.begin(puara.getVarNumber("localPORT"));
+
+    ip1 = puara.getVarText("oscIP");
+    port1 = puara.getVarNumber("oscPORT");
+
 }
 
 void loop() {
@@ -62,14 +69,14 @@ void loop() {
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
      * network (WiFiUdp will print an warning message in those cases).
      */
-    if (puara.getVarText("oscIP").c_str() != NULL && puara.getVarText("oscIP").c_str() != "0.0.0.0") {
+    if (ip1.c_str() != NULL && ip1.c_str() != "0.0.0.0") {
         OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
         msg1.add(sensor);
-        Udp.beginPacket(puara.getVarText("oscIP").c_str(), puara.getVarNumber("oscPORT"));
+        Udp.beginPacket(ip1.c_str(), port1);
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.getVarText("oscIP") << std::endl;
+        std::cout << "Message send to " << ip1 << std::endl;
     }
 
     // run at 1 Hz (1 message per second)
