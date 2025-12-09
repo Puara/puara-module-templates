@@ -19,9 +19,12 @@ board_build.partitions = min_spiffs_no_OTA.csv
 monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
-build_flags = -std=gnu++2a ${EXTRA_FLAGS}
-build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
+build_flags = -std=c++20 ${EXTRA_FLAGS}
+build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17 -std=c++11 -std=c++14 -std=c++17
 lib_deps =
+platform_packages = 
+	espressif/toolchain-xtensa-esp32@12.2.0+20230208
+	espressif/toolchain-xtensa-esp32s3@12.2.0+20230208
 EOL
 
 # Add dependencies based on the template
