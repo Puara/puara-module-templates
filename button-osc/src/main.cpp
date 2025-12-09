@@ -73,7 +73,7 @@ void setup() {
 
     // Seed the random number generator. Using analogRead() on an unconnected
     // pin provides a good random seed.
-    randomSeed(analogRead(A0));
+    randomSeed(analogRead(0));
 
     // --- Initialize with a starting random state ---
     // This ensures the simulation starts immediately without waiting.
