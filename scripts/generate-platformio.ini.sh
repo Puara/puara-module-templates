@@ -44,6 +44,7 @@ case "${TEMPLATE}" in
     echo "platform_packages =" >> "${OUTPUT_FILE}"
     echo "    espressif/toolchain-xtensa-esp32@12.2.0+20230208" >> "${OUTPUT_FILE}"
     echo "    espressif/toolchain-xtensa-esp32s3@12.2.0+20230208" >> "${OUTPUT_FILE}"
+    echo "    espressif/toolchain-riscv32-esp@12.2.0+20230208 " >> "${OUTPUT_FILE}"
         
     ;;
   libmapper-osc)
