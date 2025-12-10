@@ -19,7 +19,7 @@ board_build.partitions = min_spiffs_no_OTA.csv
 monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
-echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
+build_flags = -std=gnu++2a ${EXTRA_FLAGS}
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
