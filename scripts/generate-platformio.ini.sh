@@ -24,6 +24,7 @@ build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
 
+
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic)
