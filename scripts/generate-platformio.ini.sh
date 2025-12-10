@@ -19,6 +19,7 @@ board_build.partitions = min_spiffs_no_OTA.csv
 monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
+echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17 -std=c++11 -std=c++14 -std=c++17
 lib_deps =
 EOL
@@ -27,31 +28,22 @@ EOL
 case "${TEMPLATE}" in
   basic)
     echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
-    echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
     ;;
   basic-osc)
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
-    echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
     ;;
 # add basic-gestures
   ble-advertising)
     echo "    https://github.com/Puara/puara-gestures.git#development" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-module.git#835ecd59b7e58318b174a5346d9d535be2cb6a8f" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
-    echo "    johboh/nlohmann-json@^3.11.3" >> "${OUTPUT_FILE}"
-    echo "build_flags = -std=c++20 ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
-    echo "platform_packages =" >> "${OUTPUT_FILE}"
-    echo "    espressif/toolchain-xtensa-esp32@12.2.0+20230208" >> "${OUTPUT_FILE}"
-    echo "    espressif/toolchain-xtensa-esp32s3@12.2.0+20230208" >> "${OUTPUT_FILE}"
-    echo "    espressif/toolchain-riscv32-esp@12.2.0+20230208 " >> "${OUTPUT_FILE}"
-        
+    echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     ;;
   libmapper-osc)
     echo "    https://github.com/Puara/puara-gestures.git#development" >> "${OUTPUT_FILE}"
     echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
-    echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
     ;;
   *)
     echo "Unknown template: ${TEMPLATE}"
