@@ -20,7 +20,7 @@ monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
 echo "build_flags = -std=gnu++2a ${EXTRA_FLAGS}" >>  "${OUTPUT_FILE}"
-build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17 -std=c++11 -std=c++14 -std=c++17
+build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
 
