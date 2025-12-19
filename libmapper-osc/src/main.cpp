@@ -16,7 +16,7 @@ unsigned int firmware_version = 20220906;
 
 // Include Puara's high-level descriptor library if planning to use the high-level
 // descriptors' functions
-#include "puara_gestures.h"
+#include "puara/gestures.h"
 
 /* Include Libmapper (and liblo) to send and receive OSC messages
  * 
