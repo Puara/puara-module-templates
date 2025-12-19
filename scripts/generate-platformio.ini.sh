@@ -36,13 +36,13 @@ case "${TEMPLATE}" in
     ;;
 # add basic-gestures
   ble-advertising)
-    echo "    https://github.com/Puara/puara-gestures.git#development" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-module.git#835ecd59b7e58318b174a5346d9d535be2cb6a8f" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     ;;
   libmapper-osc)
-    echo "    https://github.com/Puara/puara-gestures.git#development" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
     echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
     ;;
