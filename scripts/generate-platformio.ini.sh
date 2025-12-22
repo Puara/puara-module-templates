@@ -28,7 +28,7 @@ EOL
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic)
-    echo "    https://github.com/Puara/puara-module.git#232ef6533a5024f32f5da6429362b6905f0c2775" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#2a9deacac35391b1b1e96575a3252bee66b1015c" >> "${OUTPUT_FILE}"
     ;;
   basic-osc)
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
@@ -37,7 +37,7 @@ case "${TEMPLATE}" in
 # add basic-gestures
   ble-advertising)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/Puara/puara-module.git#232ef6533a5024f32f5da6429362b6905f0c2775" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#2a9deacac35391b1b1e96575a3252bee66b1015c" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     ;;
