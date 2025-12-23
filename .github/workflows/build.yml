@@ -11,13 +11,12 @@ jobs:
       matrix:
         # we have 6 pio templates, which we want to build for 4 different boards
         # we have two filesystems we want to tst on boards that support them
-        template: [
-                  basic-littlefs, basic-spiffs, 
-                  basic-gestures-littlefs, basic-gestures-spiffs
-                  basic-osc,
+        template: [basic-littlefs, basic-spiffs, 
+                  basic-gestures-littlefs, basic-gestures-spiffs,
+                  basic-osc-nofs,
                   ble-advertising-littlefs, ble-advertising-spiffs, 
-                  button-osc,
-                  libmapper-osc
+                  button-osc-nofs,
+                  libmapper-osc-nofs
                   ]
         environment:
           - name: xiao_esp32s3
@@ -50,6 +49,10 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+      - name: Create Template Folders
+        run:
+            mkdir -p ./${{ matrix.template }}
+
         # The boards and templates each have different requirements, so the platformio.ini file is different for each.
         # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
         # a temporary platformio.ini file for each template/board combination to ensure the pipeline tests them all.
@@ -73,3 +76,7 @@ jobs:
           path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
           timeout: 30000
           expect_text: 'Puara Start Done!'
+
+      - name: Delete Template Folders
+        run:
+            rm -rf ./${{ matrix.template }}
