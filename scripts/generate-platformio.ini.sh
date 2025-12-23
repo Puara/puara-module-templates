@@ -55,7 +55,7 @@ case "${TEMPLATE}" in
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"        
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc)
+  basic-osc-nofs)
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     ;;
@@ -73,12 +73,12 @@ case "${TEMPLATE}" in
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
-  button-osc)
+  button-osc-nofs)
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"    
     ;;
-  libmapper-osc)
+  libmapper-osc-nofs)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
     echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
@@ -88,3 +88,4 @@ case "${TEMPLATE}" in
     exit 1
     ;;
 esac
+
