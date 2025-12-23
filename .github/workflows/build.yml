@@ -50,39 +50,38 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Create Template Folders
-        run:
+        run: |
             mkdir -p ./${{ matrix.template }}
-            bash -c '
-              case "${{ matrix.template }}" in
-                "basic-littlefs")
-                  cp -r basic/* ./${{ matrix.template }}/
-                  ;;
-                "basic-spiffs")
-                  cp -r basic/* ./${{ matrix.template }}/
-                  ;;
-                "basic-gestures-littlefs")
-                  cp -r basic-gestures/* ./${{ matrix.template }}/
-                  ;;
-                "basic-gestures-spiffs")
-                  cp -r basic-gestures/* ./${{ matrix.template }}/
-                  ;;
-                "basic-osc-nofs")
-                  cp -r basic-osc/* ./${{ matrix.template }}/
-                  ;;
-                "ble-advertising-littlefs")
-                  cp -r ble-advertising/* ./${{ matrix.template }}/
-                  ;;
-                "ble-advertising-spiffs")
-                  cp -r ble-advertising/* ./${{ matrix.template }}/
-                  ;;
-                "button-osc-nofs")
-                  cp -r button-osc/* ./${{ matrix.template }}/
-                  ;;
-                "libmapper-osc-nofs")
-                  cp -r libmapper-osc/* ./${{ matrix.template }}/
-                  ;;
-              esac
-            '
+            case "${{ matrix.template }}" in
+              "basic-littlefs")
+                cp -r basic/* ./${{ matrix.template }}/
+                ;;
+              "basic-spiffs")
+                cp -r basic/* ./${{ matrix.template }}/
+                ;;
+              "basic-gestures-littlefs")
+                cp -r basic-gestures/* ./${{ matrix.template }}/
+                ;;
+              "basic-gestures-spiffs")
+                cp -r basic-gestures/* ./${{ matrix.template }}/
+                ;;
+              "basic-osc-nofs")
+                cp -r basic-osc/* ./${{ matrix.template }}/
+                ;;
+              "ble-advertising-littlefs")
+                cp -r ble-advertising/* ./${{ matrix.template }}/
+                ;;
+              "ble-advertising-spiffs")
+                cp -r ble-advertising/* ./${{ matrix.template }}/
+                ;;
+              "button-osc-nofs")
+                cp -r button-osc/* ./${{ matrix.template }}/
+                ;;
+              "libmapper-osc-nofs")
+                cp -r libmapper-osc/* ./${{ matrix.template }}/
+                ;;
+            esac
+            
 
         # The boards and templates each have different requirements, so the platformio.ini file is different for each.
         # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
