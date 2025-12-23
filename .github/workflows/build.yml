@@ -9,12 +9,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # we have 4 templates, which we want to build for 4 different boards
-        template: [basic, basic-osc, ble-advertising, libmapper-osc]
+        # we have 6 pio templates, which we want to build for 4 different boards
+        # we have two filesystems we want to tst on boards that support them
+        template: [
+                  basic-littlefs, basic-spiffs, 
+                  basic-gestures-littlefs, basic-gestures-spiffs
+                  basic-osc,
+                  ble-advertising-littlefs, ble-advertising-spiffs, 
+                  button-osc,
+                  libmapper-osc
+                  ]
         environment:
-          - name: Xiao
-            board: seeed_xiao_esp32c3
-            extra_flags: ""
+          - name: xiao_esp32s3
+            board: seeed_xiao_esp32s3
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
           - name: tinypico
             board: tinypico
             extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
