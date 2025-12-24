@@ -49,7 +49,7 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: Create Template Folders
+      - name: Create Template Folders and add board ID for each template 
         run: |
             mkdir -p ./${{ matrix.template }}
             case "${{ matrix.template }}" in
@@ -82,6 +82,9 @@ jobs:
                 ;;
             esac
             
+            # Add board ID to wokwi.toml file
+            echo "[board]" >> ./${{ matrix.template }}/wokwi.toml
+            echo "id = \"${{ matrix.environment.board }}\"" >> ./${{ matrix.template }}/wokwi.toml
 
         # The boards and templates each have different requirements, so the platformio.ini file is different for each.
         # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
