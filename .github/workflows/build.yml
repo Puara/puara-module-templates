@@ -98,14 +98,15 @@ jobs:
           pio settings set force_verbose 1
           pio run --environment template --project-conf platformioTemp.ini
 
-      - name: Simulate and test each template on a ESP32-C3 board with Wokwi
-        if: ${{ matrix.environment.name == 'ESP32-C3' }}
+      - name: Simulate and test each template board with Wokwi
+        #if: ${{ matrix.environment.name == 'ESP32-C3' }}
         uses: wokwi/wokwi-ci-action@v1
         with:
           token: ${{ secrets.WOKWI_CLI_TOKEN }}
           path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
           timeout: 30000
           expect_text: 'Puara Start Done!'
+
 
       - name: Delete Template Folders
         run:
