@@ -5,6 +5,8 @@ TEMPLATE=$1
 BOARD=$2
 EXTRA_FLAGS=$3
 
+PUARA_MODULE_COMMIT_HASH=3afffa302af568669373e4bf059cac83dc554612
+
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 
@@ -39,20 +41,20 @@ EOL
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic-littlefs)
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   basic-spiffs)
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   basic-gestures-littlefs)
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"    
     echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   basic-gestures-spiffs)
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"        
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
@@ -62,14 +64,14 @@ case "${TEMPLATE}" in
     ;;
   ble-advertising-littlefs)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   ble-advertising-spiffs)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/Puara/puara-module.git#4a3119ec12d8de299f4be718446aba67a9193e71" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
