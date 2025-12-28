@@ -5,7 +5,7 @@ TEMPLATE=$1
 BOARD=$2
 EXTRA_FLAGS=$3
 
-PUARA_MODULE_COMMIT_HASH=56a3cc598f55a7238c5abb8359b3ddbc28fd0f80
+PUARA_MODULE_COMMIT_HASH=0d814942f10edba2eec26de2f2a8eeef9b7b5e3b
 
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
@@ -18,7 +18,11 @@ case "${TEMPLATE}" in
     ;;
 esac
 
-
+# Determine if board is "C3" series for special flags
+ESP32C3_FLAG=""
+if [[ "${BOARD}" == *"c3"* ]]; then
+  ESP32C3_FLAG ="-DESP32C3_VARIANT"
+fi
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
@@ -32,7 +36,7 @@ monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
 builg_type = release
-build_flags = -std=gnu++2a ${EXTRA_FLAGS} ${SPIFFS_FLAG}
+build_flags = -std=gnu++2a ${EXTRA_FLAGS} ${SPIFFS_FLAG} ${ESP32C3_FLAG}
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
