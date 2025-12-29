@@ -42,7 +42,7 @@ jobs:
             extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
           - name: ESP32-C3
             board: esp32-c3-devkitc-02
-            extra_flags: "-DBOARD_HAS_PSRAM -DESP32C3_VARIANT"
+            extra_flags: "-DBOARD_HAS_PSRAM
 
     steps:
       - uses: actions/checkout@v4
