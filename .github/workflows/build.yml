@@ -20,7 +20,7 @@ jobs:
             fs: littlefs
           - name: basic-gestures 
             fs: spiffs
-          - name: osc
+          - name: basic-osc
             fs: nofs
           - name: button-osc
             fs: nofs 
