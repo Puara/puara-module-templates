@@ -18,11 +18,6 @@ case "${TEMPLATE}" in
     ;;
 esac
 
-# Determine if board is "C3" series for special flags
-ESP32C3_FLAG=""
-if [[ "${BOARD}" == *"c3"* ]]; then
-  ESP32C3_FLAG ="-DESP32C3_VARIANT"
-fi
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
@@ -36,7 +31,7 @@ monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
 builg_type = release
-build_flags = -std=gnu++2a ${EXTRA_FLAGS} ${SPIFFS_FLAG} ${ESP32C3_FLAG}
+build_flags = -std=gnu++2a ${EXTRA_FLAGS} ${SPIFFS_FLAG}
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
