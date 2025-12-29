@@ -11,13 +11,17 @@ jobs:
       matrix:
         # we have 6 pio templates, which we want to build for 4 different boards
         # we have two filesystems we want to tst on boards that support them
-        template: [basic-littlefs, basic-spiffs, 
-                  basic-gestures-littlefs, basic-gestures-spiffs,
-                  basic-osc-nofs,
-                  ble-advertising-littlefs, ble-advertising-spiffs, 
-                  button-osc-nofs,
-                  libmapper-osc-nofs
-                  ]
+        template:[
+          { name: basic, fs: littlefs }, 
+          { name: basic, fs: spiffs }, 
+          { name: basic-gestures, fs: littlefs }, 
+          { name: basic-gestures, fs: spiffs }, 
+          { name: osc, fs: nofs }, 
+          { name: button-osc, fs: nofs }, 
+          { name: libmapper-osc, fs: nofs }, 
+          { name: ble-advertising, fs: littlefs }, 
+          { name: ble-advertising, fs: spiffs }
+          ]
         environment:
           - name: xiao_esp32s3
             board: seeed_xiao_esp32s3
@@ -51,36 +55,7 @@ jobs:
 
       - name: Create Template Folders and add board ID for each template 
         run: |
-            mkdir -p ./${{ matrix.template }}
-            case "${{ matrix.template }}" in
-              "basic-littlefs")
-                cp -r basic/* ./${{ matrix.template }}/
-                ;;
-              "basic-spiffs")
-                cp -r basic/* ./${{ matrix.template }}/
-                ;;
-              "basic-gestures-littlefs")
-                cp -r basic-gestures/* ./${{ matrix.template }}/
-                ;;
-              "basic-gestures-spiffs")
-                cp -r basic-gestures/* ./${{ matrix.template }}/
-                ;;
-              "basic-osc-nofs")
-                cp -r basic-osc/* ./${{ matrix.template }}/
-                ;;
-              "ble-advertising-littlefs")
-                cp -r ble-advertising/* ./${{ matrix.template }}/
-                ;;
-              "ble-advertising-spiffs")
-                cp -r ble-advertising/* ./${{ matrix.template }}/
-                ;;
-              "button-osc-nofs")
-                cp -r button-osc/* ./${{ matrix.template }}/
-                ;;
-              "libmapper-osc-nofs")
-                cp -r libmapper-osc/* ./${{ matrix.template }}/
-                ;;
-            esac
+            cp -r ${{ matrix.template.name }} ./${{ matrix.template.name }}-${{ matrix.template.fs }}
             
             # Add board ID to wokwi.toml file
             echo "[board]" >> ./${{ matrix.template }}/wokwi.toml
