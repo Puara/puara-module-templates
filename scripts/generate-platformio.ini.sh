@@ -5,7 +5,7 @@ TEMPLATE=$1
 BOARD=$2
 EXTRA_FLAGS=$3
 
-PUARA_MODULE_COMMIT_HASH=645160ad55deefc7b47a2c726c8d6c24fe773f11
+PUARA_MODULE_COMMIT_HASH=23555923f17e004b783281a0fcd2b2681f469301
 
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"

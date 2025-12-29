@@ -28,6 +28,8 @@ WiFiUDP Udp;
 
 // Dummy sensor data
 float sensor;
+std::string oscIP_1;
+int oscPort_1;
 
 void setup() {
     #ifdef Arduino_h
@@ -40,20 +42,9 @@ void setup() {
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
-
-    /* 
-     * Printing custom settings stored. The data/config.json values will print during 
-     * Initialization (puara.start)
-     */
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
-    << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
-    << std::endl;
-
-    // Start the UDP instances 
-    Udp.begin(puara.LocalPORT());
+    Udp.begin(puara.getVarNumber("localPort"));
+    osc_ip_1 = puara.getVarText("oscIP");
+    oscPort_1 = puara.getVarNumber("oscPort");
 }
 
 void loop() {
@@ -62,10 +53,7 @@ void loop() {
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
-    << "Dummy sensor value: " << sensor << "\n"
-    << std::endl;
+    std::cout << "Dummy sensor value: " << sensor << std::endl;
 
     /* 
      * Sending OSC messages.
@@ -73,23 +61,14 @@ void loop() {
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
      * network (WiFiUdp will print an warning message in those cases).
      */
-    if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
+    if (oscIP_1.c_str() != NULL && oscIP_1.c_str() != "0.0.0.0") { // set namespace and send OSC message for address 1
         OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
         msg1.add(sensor);
-        Udp.beginPacket(puara.IP1().c_str(), puara.PORT1());
+        Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.IP1() << std::endl;
-    }
-    if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        OSCMessage msg2(("/" + puara.dmi_name()).c_str()); 
-        msg2.add(sensor);
-        Udp.beginPacket(puara.IP2().c_str(), puara.PORT2());
-        msg2.send(Udp);
-        Udp.endPacket();
-        msg2.empty();
-        std::cout << "Message send to " << puara.IP2() << std::endl;
+        std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
 
     // run at 1 Hz (1 message per second)
