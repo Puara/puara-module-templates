@@ -105,8 +105,8 @@ void setup() {
     localPort = puara.getVarNumber("localPORT");
 
     // Populating liblo addresses and server port
-    osc1 = lo_address_new(oscIP_1.c_str(), oscPort_1.c_str());
-    osc_server = lo_server_thread_new(localPort.c_str(), error);
+    osc1 = lo_address_new(oscIP_1.c_str(), std::to_string(oscPort_1).c_str());
+    osc_server = lo_server_thread_new(std::to_string(localPort).c_str(), error);
     
     // Add method that will match any path and args and start server
     lo_server_thread_add_method(osc_server, NULL, NULL, generic_handler, NULL);
