@@ -100,7 +100,6 @@ void setup() {
      */
     puara.start();
 
-    Udp.begin(puara.getVarNumber("localPort"));
     oscIP_1 = puara.getVarText("oscIP");
     oscPort_1 = puara.getVarNumber("oscPort");
     localPort = puara.getVarNumber("localPORT");
