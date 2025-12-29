@@ -5,11 +5,11 @@
             "value": "192.168.4.2"
         },
         {
-            "name": "oscPort",
+            "name": "oscPORT",
             "value": 8000
         },
         {
-            "name": "localPort",
+            "name": "localPORT",
             "value": 8000
         }
     ]
