@@ -11,17 +11,25 @@ jobs:
       matrix:
         # we have 6 pio templates, which we want to build for 4 different boards
         # we have two filesystems we want to tst on boards that support them
-        template:[
-          { name: basic, fs: littlefs }, 
-          { name: basic, fs: spiffs }, 
-          { name: basic-gestures, fs: littlefs }, 
-          { name: basic-gestures, fs: spiffs }, 
-          { name: osc, fs: nofs }, 
-          { name: button-osc, fs: nofs }, 
-          { name: libmapper-osc, fs: nofs }, 
-          { name: ble-advertising, fs: littlefs }, 
-          { name: ble-advertising, fs: spiffs }
-          ]
+        template:
+          - name: basic
+            fs: littlefs
+          - name: basic
+            fs: spiffs
+          - name: basic-gestures
+            fs: littlefs
+          - name: basic-gestures 
+            fs: spiffs
+          - name: osc
+            fs: nofs
+          - name: button-osc
+            fs: nofs 
+          - name: libmapper-osc
+            fs: nofs
+          - name: ble-advertising
+            fs: littlefs
+          - name: ble-advertising
+            fs: spiffs
         environment:
           - name: xiao_esp32s3
             board: seeed_xiao_esp32s3
