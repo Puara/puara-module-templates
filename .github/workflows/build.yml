@@ -21,11 +21,17 @@ jobs:
           - name: basic-gestures 
             fs: spiffs
           - name: basic-osc
-            fs: nofs
+            fs: littlefs
+          - name: basic-osc
+            fs: spiffs            
           - name: button-osc
-            fs: nofs 
+            fs: littlefs 
+          - name: button-osc
+            fs: spiffs             
           - name: libmapper-osc
-            fs: nofs
+            fs: littlefs
+          - name: libmapper-osc
+            fs: spiffs            
           - name: ble-advertising
             fs: littlefs
           - name: ble-advertising
