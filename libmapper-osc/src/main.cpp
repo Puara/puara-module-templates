@@ -52,7 +52,9 @@ mpr_sig dummy_income = 0;
  * by the puara module manager.
  */
 lo_address osc1;
-lo_address osc2;
+std::string oscIP_1;
+int oscPort_1;
+int localPort;
 
 // Declare a new liblo server and set an error callback
 void error(int num, const char *msg, const char *path) {
@@ -98,10 +100,14 @@ void setup() {
      */
     puara.start();
 
+    Udp.begin(puara.getVarNumber("localPort"));
+    oscIP_1 = puara.getVarText("oscIP");
+    oscPort_1 = puara.getVarNumber("oscPort");
+    localPort = puara.getVarNumber("localPORT");
+
     // Populating liblo addresses and server port
-    osc1 = lo_address_new(puara.IP1().c_str(), puara.PORT1Str().c_str());
-    osc2 = lo_address_new(puara.IP2().c_str(), puara.PORT2Str().c_str());
-    osc_server = lo_server_thread_new(puara.LocalPORTStr().c_str(), error);
+    osc1 = lo_address_new(oscIP_1.c_str(), oscPort_1.c_str());
+    osc_server = lo_server_thread_new(localPort.c_str(), error);
     
     // Add method that will match any path and args and start server
     lo_server_thread_add_method(osc_server, NULL, NULL, generic_handler, NULL);
@@ -117,12 +123,6 @@ void setup() {
                                 &lm_min, &lm_max, 0, lm_callback,
                                 MPR_SIG_UPDATE);
 
-    // Printing custom settings stored:
-    std::cout << "\n" 
-    << "Settings stored in settings.json:\n" 
-    << "Hitchhiker: " << puara.getVarText ("Hitchhiker") << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") 
-    << "\n" << std::endl;
 }
 
 void loop() {
