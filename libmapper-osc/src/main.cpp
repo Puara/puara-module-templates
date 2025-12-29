@@ -137,17 +137,12 @@ void loop() {
 
     /* 
      * Sending OSC messages.
-     * If you're not planning to send messages to both addresses (OSC1 and OSC2),
-     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
-     * network (WiFiUdp will print an warning message in those cases).
+     * If you're not planning to send messages it is recommended to set the address to 0.0.0.0
+     * to avoid cluttering the network (WiFiUdp will print an warning message in those cases).
      */
     if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
         std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
         lo_send(osc1, oscNamespace.c_str(), "f", sensor);
-    }
-    if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
-        lo_send(osc2, oscNamespace.c_str(), "f", sensor);
     }
 
     // run at 100 Hz
