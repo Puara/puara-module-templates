@@ -6,8 +6,9 @@ BOARD=$2
 EXTRA_FLAGS=$3
 
 if [[ -z "$PUARA_MODULE_PATH" ]]; then
-  PUARA_MODULE_COMMIT_HASH=645160ad55deefc7b47a2c726c8d6c24fe773f11
-  PUARA_MODULE_PATH="https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH"
+# If no hash given, points to main head
+  PUARA_MODULE_COMMIT_HASH=""
+  PUARA_MODULE_PATH="https://github.com/Puara/puara-module.git$PUARA_MODULE_COMMIT_HASH"
 fi
 
 if [[ -z "$PUARA_GESTURES_PATH" ]]; then
