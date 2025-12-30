@@ -34,6 +34,8 @@ WiFiUDP Udp;
 int button = 0; // Button state (0 or 1)
 unsigned long previousMillis = 0;
 long randomHoldTime = 0;
+std::string oscIP_1;
+int oscPort_1;
 
 // This function updates the dummy button state based on non-blocking timing.
 void updateButtonState() {
@@ -62,7 +64,7 @@ void updateButtonState() {
   }
 }
 
-// Instatiate the button gesture class
+// Instantiate the button gesture class
 // In this example, we tied the data holder to facilitate using the library
 puara_gestures::Button puara_button(&button);
 
@@ -89,7 +91,9 @@ void setup() {
     puara.start();
 
     // Start the UDP instances 
-    Udp.begin(puara.LocalPORT());
+    Udp.begin(puara.getVarNumber("localPort"));
+    oscIP_1 = puara.getVarText("oscIP");
+    oscPort_1 = puara.getVarNumber("oscPort");
 }
 
 void loop() {
@@ -115,15 +119,16 @@ void loop() {
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
      * network (WiFiUdp will print an warning message in those cases).
      */
-    if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
+    if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
         OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
         msg1.add(puara_button.count);
-        Udp.beginPacket(puara.IP1().c_str(), puara.PORT1());
+        Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
-        std::cout << "Message send to " << puara.IP1() << std::endl;
+        std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
+
 
     // run at 100 Hz (100 messages per second)
     vTaskDelay(10 / portTICK_PERIOD_MS);

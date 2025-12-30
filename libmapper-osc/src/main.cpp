@@ -52,7 +52,9 @@ mpr_sig dummy_income = 0;
  * by the puara module manager.
  */
 lo_address osc1;
-lo_address osc2;
+std::string oscIP_1;
+int oscPort_1;
+int localPort;
 
 // Declare a new liblo server and set an error callback
 void error(int num, const char *msg, const char *path) {
@@ -98,10 +100,13 @@ void setup() {
      */
     puara.start();
 
+    oscIP_1 = puara.getVarText("oscIP");
+    oscPort_1 = puara.getVarNumber("oscPort");
+    localPort = puara.getVarNumber("localPORT");
+
     // Populating liblo addresses and server port
-    osc1 = lo_address_new(puara.IP1().c_str(), puara.PORT1Str().c_str());
-    osc2 = lo_address_new(puara.IP2().c_str(), puara.PORT2Str().c_str());
-    osc_server = lo_server_thread_new(puara.LocalPORTStr().c_str(), error);
+    osc1 = lo_address_new(oscIP_1.c_str(), std::to_string(oscPort_1).c_str());
+    osc_server = lo_server_thread_new(std::to_string(localPort).c_str(), error);
     
     // Add method that will match any path and args and start server
     lo_server_thread_add_method(osc_server, NULL, NULL, generic_handler, NULL);
@@ -117,12 +122,6 @@ void setup() {
                                 &lm_min, &lm_max, 0, lm_callback,
                                 MPR_SIG_UPDATE);
 
-    // Printing custom settings stored:
-    std::cout << "\n" 
-    << "Settings stored in settings.json:\n" 
-    << "Hitchhiker: " << puara.getVarText ("Hitchhiker") << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") 
-    << "\n" << std::endl;
 }
 
 void loop() {
@@ -137,17 +136,12 @@ void loop() {
 
     /* 
      * Sending OSC messages.
-     * If you're not planning to send messages to both addresses (OSC1 and OSC2),
-     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
-     * network (WiFiUdp will print an warning message in those cases).
+     * If you're not planning to send messages it is recommended to set the address to 0.0.0.0
+     * to avoid cluttering the network (WiFiUdp will print an warning message in those cases).
      */
-    if (puara.IP1_ready()) { // set namespace and send OSC message for address 1
+    if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
         std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
         lo_send(osc1, oscNamespace.c_str(), "f", sensor);
-    }
-    if (puara.IP2_ready()) { // set namespace and send OSC message for address 2
-        std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;
-        lo_send(osc2, oscNamespace.c_str(), "f", sensor);
     }
 
     // run at 100 Hz

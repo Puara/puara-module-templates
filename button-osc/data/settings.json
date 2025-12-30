@@ -1,16 +1,16 @@
 {
     "settings": [
         {
-            "name": "Hitchhiker",
-            "value": "Ford"
+            "name": "oscIP",
+            "value": "192.168.4.2"
         },
         {
-            "name": "answer_to_everything",
-            "value": 42
+            "name": "oscPORT",
+            "value": 8000
         },
         {
-            "name": "variable3",
-            "value": 12.345
+            "name": "localPORT",
+            "value": 8000
         }
     ]
 }
