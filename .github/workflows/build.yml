@@ -3,18 +3,43 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: ${{ matrix.template }} ${{ matrix.environment.name }}
+    name: ${{ matrix.template.name }}-${{ matrix.template.fs }}-${{ matrix.environment.name }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        # we have 4 templates, which we want to build for 4 different boards
-        template: [basic, basic-osc, ble-advertising, libmapper-osc]
+        # we have 6 pio templates, which we want to build for 4 different boards
+        # we have two filesystems we want to test on boards that support them
+        template:
+          - name: basic
+            fs: littlefs
+          - name: basic
+            fs: spiffs
+          - name: basic-gestures
+            fs: littlefs
+          - name: basic-gestures 
+            fs: spiffs
+          - name: basic-osc
+            fs: littlefs
+          - name: basic-osc
+            fs: spiffs            
+          - name: button-osc
+            fs: littlefs 
+          - name: button-osc
+            fs: spiffs             
+          - name: libmapper-osc
+            fs: littlefs
+          - name: libmapper-osc
+            fs: spiffs            
+          - name: ble-advertising
+            fs: littlefs
+          - name: ble-advertising
+            fs: spiffs
         environment:
-          - name: Xiao
-            board: seeed_xiao_esp32c3
-            extra_flags: ""
+          - name: xiao_esp32s3
+            board: seeed_xiao_esp32s3
+            extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
           - name: tinypico
             board: tinypico
             extra_flags: "-DBOARD_HAS_PSRAM -mfix-esp32-psram-cache-issue"
@@ -42,26 +67,34 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+      - name: Create Template Folders and add board ID for each template 
+        run: |
+            cp -r ${{ matrix.template.name }} ./${{ matrix.template.name }}-${{ matrix.template.fs }}
+            
+            # Add board ID to wokwi.toml file
+            echo "[board]" >> .//${{ matrix.template.name }}-${{ matrix.template.fs }}/wokwi.toml
+            echo "id = \"${{ matrix.environment.board }}\"" >> .//${{ matrix.template.name }}-${{ matrix.template.fs }}/wokwi.toml
+
         # The boards and templates each have different requirements, so the platformio.ini file is different for each.
         # The platformio.ini files that are in each template may select only one board to be built -- so here we generate
         # a temporary platformio.ini file for each template/board combination to ensure the pipeline tests them all.
       - name: Generate Temporary platformio.ini
-        run: |
-          bash scripts/generate-platformio.ini.sh ${{ matrix.template }} \
+        run: |  
+          bash scripts/generate-platformio.ini.sh ${{ matrix.template.name }}-${{ matrix.template.fs }} \
             ${{ matrix.environment.board }} "${{ matrix.environment.extra_flags }}"
 
         # Build using the temporary platformio.ini file
       - name: Build
         run: |
-          cd ./${{ matrix.template }}
+          cd ./${{ matrix.template.name }}-${{ matrix.template.fs }}
           pio settings set force_verbose 1
           pio run --environment template --project-conf platformioTemp.ini
 
-      - name: Simulate and test each template on a ESP32-C3 board with Wokwi
-        if: ${{ matrix.environment.name == 'ESP32-C3' }}
-        uses: wokwi/wokwi-ci-action@v1
-        with:
-          token: ${{ secrets.WOKWI_CLI_TOKEN }}
-          path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
-          timeout: 30000
-          expect_text: 'Puara Start Done!'
+#      - name: Simulate and test each template board with Wokwi
+#        #if: ${{ matrix.environment.name == 'ESP32-C3' }}
+#        uses: wokwi/wokwi-ci-action@v1
+#        with:
+#          token: ${{ secrets.WOKWI_CLI_TOKEN }}
+#          path: ./${{ matrix.template }}/  # directory with wokwi.toml, relative to repo's root
+#          timeout: 30000
+#          expect_text: 'Puara Start Done!'

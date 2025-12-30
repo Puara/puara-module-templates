@@ -5,8 +5,19 @@ TEMPLATE=$1
 BOARD=$2
 EXTRA_FLAGS=$3
 
+PUARA_MODULE_COMMIT_HASH=23555923f17e004b783281a0fcd2b2681f469301
+
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
+
+# Determine if -DPUARA_SPIFFS should be added based on the template
+SPIFFS_FLAG=""
+case "${TEMPLATE}" in
+  basic-spiffs|basic-gestures-spiffs|ble-advertising-spiffs|button-osc-spiffs|libmapper-osc-spiffs|basic-osc-spiffs)
+    SPIFFS_FLAG="-DPUARA_SPIFFS"
+    ;;
+esac
+
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
@@ -19,7 +30,8 @@ board_build.partitions = min_spiffs_no_OTA.csv
 monitor_speed = 115200
 monitor_echo = yes
 monitor_filters = default,esp32_exception_decoder
-build_flags = -std=gnu++2a ${EXTRA_FLAGS}
+builg_type = release
+build_flags = -std=gnu++2a ${EXTRA_FLAGS} ${SPIFFS_FLAG}
 build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
@@ -27,27 +39,69 @@ EOL
 
 # Add dependencies based on the template
 case "${TEMPLATE}" in
-  basic)
-    echo "    https://github.com/Puara/puara-module.git" >> "${OUTPUT_FILE}"
+  basic-littlefs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc)
-    echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
+  basic-spiffs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
+    ;;
+  basic-gestures-littlefs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"    
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
+    ;;
+  basic-gestures-spiffs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"        
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
+    ;;
+  basic-osc-littlefs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     ;;
-# add basic-gestures
-  ble-advertising)
+  basic-osc-spiffs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    ;;
+  ble-advertising-littlefs)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/Puara/puara-module.git#835ecd59b7e58318b174a5346d9d535be2cb6a8f" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
     echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
-  libmapper-osc)
+  ble-advertising-spiffs)
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
+    echo "    johboh/nlohmann-json@3.11.3" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
+    ;;
+  button-osc-littlefs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"    
+    ;;
+  button-osc-spiffs)
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"    
+    ;;
+  libmapper-osc-littlefs)
     echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
     echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/Puara/puara-module.git#6297c8e5b00302843ca7539bc246226ff03e6ae0" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
+    ;;
+  libmapper-osc-spiffs)
+    echo "    https://github.com/Puara/puara-gestures.git" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/mathiasbredholt/libmapper-arduino.git#v0.3" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/Puara/puara-module.git#$PUARA_MODULE_COMMIT_HASH" >> "${OUTPUT_FILE}"
     ;;
   *)
     echo "Unknown template: ${TEMPLATE}"
     exit 1
     ;;
 esac
+
