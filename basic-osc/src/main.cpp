@@ -81,17 +81,19 @@ void loop() {
     }
 
     /*
-     * Receiving OSC messages. This only prints the address but a real use-case would pattern match on the address
-     * and look at the values too
+     * Receiving OSC messages. This expects a float value on osc address /hi/there.
      */
     OSCMessage inmsg;
     int size = Udp.parsePacket();
-    while (size--)
-    {
-      inmsg.fill(Udp.read());
+    while (size--) {
+        inmsg.fill(Udp.read());
     }
     if (!inmsg.hasError()) {
-      Serial.println(inmsg.getAddress());
+        if (inmsg.fullMatch("/hi/there") && inmsg.isFloat(0)) {
+            Serial.print("got a float on address /hi/there : ");
+            // you could receive more than one value in a message by checking inmsg.isFloat(1) or more.
+            Serial.println(inmsg.getFloat(0));
+        }
     }
 
     // run at 1 Hz (1 message per second)
