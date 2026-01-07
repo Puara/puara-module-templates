@@ -28,8 +28,12 @@ WiFiUDP Udp;
 
 // Dummy sensor data
 float sensor;
-std::string oscIP_1;
-int oscPort_1;
+std::string oscIP_1{};
+int oscPort_1{};
+
+void onSettingsChanged() {
+    Udp.begin(puara.getVarNumber("localPORT"));
+}
 
 void setup() {
     #ifdef Arduino_h
@@ -38,31 +42,36 @@ void setup() {
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial 
+     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
-    Udp.begin(puara.getVarNumber("localPort"));
-    oscIP_1 = puara.getVarText("oscIP");
-    oscPort_1 = puara.getVarNumber("oscPort");
+    Udp.begin(puara.getVarNumber("localPORT"));
+
+    // This allows us to reconfigure the Udp reception port
+    puara.set_settings_changed_handler(onSettingsChanged);
 }
 
 void loop() {
+
+    oscIP_1 = puara.getVarText("oscIP");
+    oscPort_1 = puara.getVarNumber("oscPORT");
 
     // Update the dummy sensor variable with random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
-    std::cout << "Dummy sensor value: " << sensor << std::endl;
+    Serial.print("Dummy sensor value: ");
+    Serial.println(sensor);
 
-    /* 
+    /*
      * Sending OSC messages.
      * If you're not planning to send messages to both addresses (OSC1 and OSC2),
-     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
+     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
+        OSCMessage msg1(("/" + puara.dmi_name()).c_str());
         msg1.add(sensor);
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
@@ -71,11 +80,27 @@ void loop() {
         std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
 
+    /*
+     * Receiving OSC messages. This expects a float value on osc address /hi/there.
+     */
+    OSCMessage inmsg;
+    int size = Udp.parsePacket();
+    while (size--) {
+        inmsg.fill(Udp.read());
+    }
+    if (!inmsg.hasError()) {
+        if (inmsg.fullMatch("/hi/there") && inmsg.isFloat(0)) {
+            Serial.print("got a float on address /hi/there : ");
+            // you could receive more than one value in a message by checking inmsg.isFloat(1) or more.
+            Serial.println(inmsg.getFloat(0));
+        }
+    }
+
     // run at 1 Hz (1 message per second)
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
-/* 
+/*
  * The Arduino header defines app_main and conflicts with having an app_main function
  * in code. This ifndef makes the code valid in case we remove the Arduino header in
  * the future.
