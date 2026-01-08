@@ -19,7 +19,7 @@ unsigned int firmware_version = 20220906;
 #include "puara/gestures.h"
 
 /* Include Libmapper (and liblo) to send and receive OSC messages
- * 
+ *
  */
 #include <mapper.h>  // libmapper
 
@@ -63,9 +63,9 @@ void error(int num, const char *msg, const char *path) {
 }
 lo_server_thread osc_server;
 
-/* 
- * Generic handler that catches any incoming messages and display them. 
- * Returning 1 means that the message has not been fully handled and the server 
+/*
+ * Generic handler that catches any incoming messages and display them.
+ * Returning 1 means that the message has not been fully handled and the server
  * should try other methods.
  * (based on https://github.com/radarsat1/liblo/blob/master/examples/example_server.c)
  */
@@ -95,19 +95,19 @@ void setup() {
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial 
+     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
 
     oscIP_1 = puara.getVarText("oscIP");
-    oscPort_1 = puara.getVarNumber("oscPort");
+    oscPort_1 = puara.getVarNumber("oscPORT");
     localPort = puara.getVarNumber("localPORT");
 
     // Populating liblo addresses and server port
     osc1 = lo_address_new(oscIP_1.c_str(), std::to_string(oscPort_1).c_str());
     osc_server = lo_server_thread_new(std::to_string(localPort).c_str(), error);
-    
+
     // Add method that will match any path and args and start server
     lo_server_thread_add_method(osc_server, NULL, NULL, generic_handler, NULL);
     lo_server_thread_start(osc_server);
@@ -134,7 +134,7 @@ void loop() {
     // updating libmapper dummy_signal
     mpr_sig_set_value(dummy_signal, 0, 1, MPR_FLT, &sensor);
 
-    /* 
+    /*
      * Sending OSC messages.
      * If you're not planning to send messages it is recommended to set the address to 0.0.0.0
      * to avoid cluttering the network (WiFiUdp will print an warning message in those cases).
@@ -148,7 +148,7 @@ void loop() {
     vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
-/* 
+/*
  * The Arduino header defines app_main and conflicts with having an app_main function
  * in code. This ifndef makes the code valid in case we remove the Arduino header in
  * the future.
