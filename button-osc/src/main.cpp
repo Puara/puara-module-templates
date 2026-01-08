@@ -85,15 +85,15 @@ void setup() {
 
     /*
      * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial 
+     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
 
-    // Start the UDP instances 
-    Udp.begin(puara.getVarNumber("localPort"));
+    // Start the UDP instances
+    Udp.begin(puara.getVarNumber("localPORT"));
     oscIP_1 = puara.getVarText("oscIP");
-    oscPort_1 = puara.getVarNumber("oscPort");
+    oscPort_1 = puara.getVarNumber("oscPORT");
 }
 
 void loop() {
@@ -102,7 +102,7 @@ void loop() {
     updateButtonState();
 
     // print the dummy button data and puara-gestures
-    std::cout << "\n" 
+    std::cout << "\n"
     << "Dummy button value: "   << button    << "\n"
     << "gestures - count: "     << puara_button.count     << "\n"
     << "gestures - press: "     << puara_button.press     << "\n"
@@ -113,14 +113,14 @@ void loop() {
     << "gestures - pressTime: " << puara_button.pressTime << "\n"
     << std::endl;
 
-    /* 
+    /*
      * Sending OSC messages.
      * If you're not planning to send messages to both addresses (OSC1 and OSC2),
-     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the 
+     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.dmi_name()).c_str()); 
+        OSCMessage msg1(("/" + puara.dmi_name()).c_str());
         msg1.add(puara_button.count);
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
@@ -134,7 +134,7 @@ void loop() {
     vTaskDelay(10 / portTICK_PERIOD_MS);
 }
 
-/* 
+/*
  * The Arduino header defines app_main and conflicts with having an app_main function
  * in code. This ifndef makes the code valid in case we remove the Arduino header in
  * the future.
