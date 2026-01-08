@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include "ArduinoBLE.h"
-#include <nlohmann/json.hpp>
+#include "MicroCbor.hpp"
 
 // Include Puara's module manager
 // If using Arduino.h, include it before including puara.h
@@ -25,8 +25,6 @@ Puara puara;
 // dummy sensor data
 int32_t sensor1;
 int32_t sensor2;
-
-nlohmann::json data;
 
 void setup() {
     #ifdef Arduino_h
@@ -76,20 +74,22 @@ void loop() {
     sensor1 = static_cast <int32_t>(rand());
     sensor2 = static_cast <int32_t>(rand());
 
-    // Set the new values in the data json object
-    data["sensor1"] = sensor1;
-    data["sensor2"] = sensor2;
+    // Set the new values in the data CBOR object    
+    advert_data.resize(32);
+    entazza::MicroCbor cbor(advert_data.data(), advert_data.size());
+    cbor.startMap();
+    cbor.add("sensor1", sensor1);
+    cbor.add("sensor2", sensor2);
+    cbor.endMap();
 
-    //clear the advert_data vector
-    advert_data.clear();
-    // Populate the vector with the cbor representation of the data.
-    nlohmann::json::to_cbor(data, advert_data);
+    advert_data.resize(cbor.bytesSerialized());
 
     // We can only have 27 bytes of real payload. A legacy BLE advertising packet is 31 bytes.
     // 2 of those are used to indicate that we are sending a manufacturer data packet.
     // 2 others need to be the bluetooth manufacturer id.
     if (advert_data.size() > 27) {
       Serial.println("too much data for BLE advertising");
+      return;
     }
 
     // Prefix the cbor data with the bluetooth manufacturer id.
