@@ -98,6 +98,7 @@ void setup() {
 
 void loop() {
 
+    puara_button.update(); // update the puara-gestures button class
     // Update the dummy sensor variable with random number
     updateButtonState();
 
