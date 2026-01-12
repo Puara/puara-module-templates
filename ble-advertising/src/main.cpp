@@ -6,16 +6,13 @@
 //****************************************************************************//
 
 #include "Arduino.h"
+// On arduino, make sure to install the ArduinoBLE library
 #include "ArduinoBLE.h"
 #include "MicroCbor.hpp"
 
 // Include Puara's module manager
 // If using Arduino.h, include it before including puara.h
 #include "puara.h"
-
-// Include Puara's high-level descriptor library if planning to use the high-level
-// descriptors' functions
-#include "puara/gestures.h"
 
 #include <iostream>
 
@@ -51,7 +48,7 @@ void setup() {
     std::cout<< "This template must be used with the BLE-CBOR-to-OSC_script.\n"
     << "It advertises dummy sensor data as CBOR over BLE Manufacturer Data\n"
     << "packets. The script scans for the advertisement, decodes the CBOR data,\n"
-    << "and sends it as OSC messages to be used in your favorite environment.\n" 
+    << "and sends it as OSC messages to be used in your favorite environment.\n"
     << std::endl;
 
 }
@@ -74,7 +71,7 @@ void loop() {
     sensor1 = static_cast <int32_t>(rand());
     sensor2 = static_cast <int32_t>(rand());
 
-    // Set the new values in the data CBOR object    
+    // Set the new values in the data CBOR object
     advert_data.resize(32);
     entazza::MicroCbor cbor(advert_data.data(), advert_data.size());
     cbor.startMap();
