@@ -121,12 +121,19 @@ void loop() {
      * network (WiFiUdp will print an warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.dmi_name()).c_str());
-        msg1.add(puara_button.count);
+        OSCMessage msg1(("/" + puara.dmi_name() + "/button").c_str());
+        msg1.add(puara_button.count)
+        .add(puara_button.press)
+        .add(puara_button.tap)
+        .add(puara_button.doubleTap)
+        .add(puara_button.tripleTap)
+        .add(puara_button.hold)
+        .add(puara_button.pressTime);
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
         Udp.endPacket();
         msg1.empty();
+        
         std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
 
