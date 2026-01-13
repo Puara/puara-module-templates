@@ -2,11 +2,11 @@
 // Puara Module Manager                                                       //
 // Metalab - Société des Arts Technologiques (SAT)                            //
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
-// Edu Meneses (2022) - https://www.edumeneses.com                            //
 //****************************************************************************//
 
 #include "Arduino.h"
-// On arduino, make sure to install the ArduinoBLE library
+
+// On Arduino, make sure to install the ArduinoBLE library
 #include "ArduinoBLE.h"
 #include "MicroCbor.hpp"
 
@@ -32,8 +32,8 @@ void setup() {
     }
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
@@ -63,7 +63,7 @@ uint16_t ble_interval_value = static_cast<uint16_t>((1/target_frequency)/0.00062
 
 uint16_t period_ms = static_cast<uint16_t>((1/target_frequency) * 1000);
 
-// allocate a 32 byte vector for the BLE advertisement bytes.
+// allocate a 32-byte vector for the BLE advertisement bytes.
 std::vector<uint8_t> advert_data(32);
 
 void loop() {
@@ -83,17 +83,17 @@ void loop() {
 
     // We can only have 27 bytes of real payload. A legacy BLE advertising packet is 31 bytes.
     // 2 of those are used to indicate that we are sending a manufacturer data packet.
-    // 2 others need to be the bluetooth manufacturer id.
+    // 2 others need to be the Bluetooth manufacturer ID.
     if (advert_data.size() > 27) {
       Serial.println("too much data for BLE advertising");
       return;
     }
 
-    // Prefix the cbor data with the bluetooth manufacturer id.
+    // Prefix the CBOR data with the Bluetooth manufacturer ID.
     advert_data.insert(advert_data.begin(), manufacturer_id[1]);
     advert_data.insert(advert_data.begin(), manufacturer_id[0]);
 
-    // This part sets up the bluetooth advertisement
+    // This part sets up the Bluetooth advertisement
     BLE.stopAdvertise();
     // the valid intervals are 20ms to 10.24 seconds and are calculated as 0.625ms * <your input> in steps of 0.625ms.
     // 32 is 20ms and 1638 is +-10.24s.
@@ -101,7 +101,7 @@ void loop() {
     BLE.setAdvertisingInterval(ble_interval_value);
 
     // Set scan response to the device name. Yes, we need to do that every single loop. This is probably
-    // a quirk of the arduino ble lib.
+    // a quirk of the Arduino BLE lib.
     BLEAdvertisingData scan_data;
     scan_data.setLocalName(puara.dmi_name().c_str());
     BLE.setScanResponseData(scan_data);
