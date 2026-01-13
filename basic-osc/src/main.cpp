@@ -41,14 +41,14 @@ void setup() {
     #endif
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
 
-    // This allows us to reconfigure the Udp reception port
+    // This allows us to reconfigure the UDP reception port
     puara.set_settings_changed_handler(onSettingsChanged);
 }
 
@@ -57,7 +57,7 @@ void loop() {
     oscIP_1 = puara.getVarText("oscIP");
     oscPort_1 = puara.getVarNumber("oscPORT");
 
-    // Update the dummy sensor variable with random number
+    // Update the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
@@ -68,7 +68,7 @@ void loop() {
      * Sending OSC messages.
      * If you're not planning to send messages to both addresses (OSC1 and OSC2),
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the
-     * network (WiFiUdp will print an warning message in those cases).
+     * network (WiFiUdp will print a warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
         OSCMessage msg1(("/" + puara.dmi_name()).c_str());
@@ -81,7 +81,7 @@ void loop() {
     }
 
     /*
-     * Receiving OSC messages. This expects a float value on osc address /hi/there.
+     * Receiving OSC messages. This expects a float value on the OSC address /hi/there.
      */
     OSCMessage inmsg;
     int size = Udp.parsePacket();
