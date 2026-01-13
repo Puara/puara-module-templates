@@ -98,9 +98,11 @@ void setup() {
 
 void loop() {
 
-    puara_button.update(); // update the puara-gestures button class
-    // Update the dummy sensor variable with random number
+    // Update the dummy sensor variable with a random number
     updateButtonState();
+    
+     // update the puara-gestures button class
+    puara_button.update();
 
     // print the dummy button data and puara-gestures
     std::cout << "\n"
