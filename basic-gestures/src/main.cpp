@@ -15,7 +15,7 @@
 // https://github.com/Puara/puara-gestures
 #include "puara/gestures.h"
 
-// Include puara structures to facilitare extracting gestures
+// Include puara structures to facilitate extracting gestures
 #include "puara/structs.h"
 
 // Include an IMU simulator to generate some data
@@ -47,8 +47,8 @@ void setup() {
     imu.begin(); 
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial 
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial 
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
@@ -56,7 +56,7 @@ void setup() {
     /* 
      * Printing custom settings stored. The data/config.json values will print during 
      * Initialization (puara.start)
-     * Comment this part if you want to run on Wokwi. Wokwi currently does not supprot SPIFFS
+     * Comment this part if you want to run on Wokwi. Wokwi currently does not support SPIFFS
      */
     // std::cout << "\n" 
     // << "Settings stored in data/settings.json:\n" 
@@ -96,7 +96,7 @@ void loop() {
     << std::endl;
 
     // Call update to calculate each gesture
-    // Since we tied our holder, the update function can be called without any argument
+    // Since we tied our holder, the update function can be called without any arguments
     jab.update();
 
     // Now we can access the current jab value with

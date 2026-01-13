@@ -64,8 +64,8 @@ void error(int num, const char *msg, const char *path) {
 lo_server_thread osc_server;
 
 /*
- * Generic handler that catches any incoming messages and display them.
- * Returning 1 means that the message has not been fully handled and the server
+ * Generic handler that catches any incoming messages and displays them.
+ * Returning 1 means that the message has not been fully handled, and the server
  * should try other methods.
  * (based on https://github.com/radarsat1/liblo/blob/master/examples/example_server.c)
  */
@@ -94,8 +94,8 @@ void setup() {
     puara.set_version(firmware_version);
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
@@ -136,8 +136,8 @@ void loop() {
 
     /*
      * Sending OSC messages.
-     * If you're not planning to send messages it is recommended to set the address to 0.0.0.0
-     * to avoid cluttering the network (WiFiUdp will print an warning message in those cases).
+     * If you're not planning to send messages, it is recommended to set the address to 0.0.0.0
+     * to avoid cluttering the network (WiFiUdp will print a warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
         std::string oscNamespace = "/" + puara.dmi_name() + "/" + sigName;

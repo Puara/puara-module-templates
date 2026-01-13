@@ -84,8 +84,8 @@ void setup() {
     randomHoldTime = random(200, 5001);
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
@@ -120,7 +120,7 @@ void loop() {
      * Sending OSC messages.
      * If you're not planning to send messages to both addresses (OSC1 and OSC2),
      * it is recommended to set the address to 0.0.0.0 to avoid cluttering the
-     * network (WiFiUdp will print an warning message in those cases).
+     * network (WiFiUdp will print a warning message in those cases).
      */
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") { // set namespace and send OSC message for address 1
         OSCMessage msg1(("/" + puara.dmi_name() + "/button").c_str());
