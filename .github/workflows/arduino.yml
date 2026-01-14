@@ -1,0 +1,42 @@
+name: puara arduino library generation and validation
+on: [pull_request, push]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# These jobs uses the actions defined in the puara/actions repository. These actions are shared with puara-module-templates.
+jobs:
+
+  generate-arduino-library:
+    runs-on: ubuntu-latest
+    steps:
+      - name: generate
+        uses: puara/actions/generate-arduino-library@main
+        with:
+          puara-arduino-repo-token: ${{ secrets.PUARA_ARDUINO_REPO_TOKEN }}
+
+  lint-arduino-library:
+    runs-on: ubuntu-latest
+    needs: generate-arduino-library
+    steps:
+      - name: generate
+        uses: puara/actions/lint-arduino-library@main
+
+  compile-arduino-library:
+    runs-on: ubuntu-latest
+    needs: generate-arduino-library
+    steps:
+      - name: generate
+        uses: puara/actions/compile-arduino-library@main
+
+  push-arduino-library:
+    runs-on: ubuntu-latest
+    # only runs this when we push on main
+    needs: compile-arduino-library
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: generate
+        uses: puara/actions/push-arduino-library@main
+        with:
+          puara-arduino-repo-token: ${{ secrets.PUARA_ARDUINO_REPO_TOKEN }}

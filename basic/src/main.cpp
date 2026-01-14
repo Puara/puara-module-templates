@@ -30,12 +30,12 @@ void setup() {
      */
     puara.start();
 
-    /* 
-     * Printing custom settings stored. The data/config.json values will print during 
+    /*
+     * Printing custom settings stored. The data/config.json values will print during
      * Initialization (puara.start)
      */
-    std::cout << "\n" 
-    << "Settings stored in data/settings.json:\n" 
+    std::cout << "\n"
+    << "Settings stored in data/settings.json:\n"
     << "Hitchhiker: "           << puara.getVarText ("Hitchhiker")            << "\n"
     << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
     << "variable3: "            << puara.getVarNumber("variable3")            << "\n"
@@ -54,7 +54,7 @@ void loop() {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
-/* 
+/*
  * The Arduino header defines app_main and conflicts with having an app_main function
  * in code. This ifndef makes the code valid in case we remove the Arduino header in
  * the future.
