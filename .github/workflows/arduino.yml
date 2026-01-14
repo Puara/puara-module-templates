@@ -1,11 +1,5 @@
 name: puara arduino library generation and validation
-on:
-  pull_request:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
+on: [pull_request, push]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
