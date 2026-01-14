@@ -17,7 +17,7 @@ Puara puara;
 
 // Dummy sensor data
 float sensor;
-goof
+
 void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
