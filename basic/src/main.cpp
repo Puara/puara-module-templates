@@ -24,8 +24,8 @@ void setup() {
     #endif
 
     /*
-     * the Puara start function initializes the spiffs, reads config and custom json
-     * settings, start the wi-fi AP/connects to SSID, starts the webserver, serial
+     * The Puara start function initializes the spiffs, reads the config and custom JSON
+     * settings, starts the wi-fi AP, connects to SSID, starts the webserver, serial 
      * listening, MDNS service, and scans for WiFi networks.
      */
     puara.start();
@@ -44,7 +44,7 @@ void setup() {
 
 void loop() {
 
-    // Update the dummy sensor variable with random number
+    // Update the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
     // print the dummy sensor data
