@@ -11,6 +11,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# These jobs uses the actions defined in the puara/actions repository. These actions are shared with puara-module-templates.
 jobs:
 
   generate-arduino-library:
