@@ -45,7 +45,7 @@ void setup() {
      * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
      */
-    puara.start();
+    puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
     Udp.begin(puara.getVarNumber("localPORT"));
 
     // This allows us to reconfigure the UDP reception port
