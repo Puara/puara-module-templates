@@ -42,9 +42,9 @@ WiFiUDP Udp;
 
 /*
  The onSettingsChanged() function is called when settings are saved in the web 
- interface (click on "Save" button). This allows user to execute changes in their
- firmware without needing to go through the build/flash process again. Here we 
- use it to change the UDP port for OSC reception and transmission.
+ interface (click on "Save" button). This allows user to execute changes in 
+ their firmware without needing to go through the build/flash process again. 
+ Here we use it to change the UDP port for OSC reception and transmission.
 */
 void onSettingsChanged() {
     Udp.begin(puara.getVarNumber("localPORT"));
@@ -57,55 +57,67 @@ void setup() {
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
     puara.set_settings_changed_handler(onSettingsChanged);
-
 /*
  If needed, define your pins here. Refer to your board's documentation for 
  appropriate pin numbers. The numbers given here are only placeholders.
 */
 
-/*  Example of setting pin 7 as an output.                                  */
-    // pinMode(7, INPUT);
+/*  Example of setting pins 7 and 8 as outputs.                                */
+    // pinMode(7, OUTPUT);
+    // pinMode(8, OUTPUT);
 
-/* Example of setting pin 2 as an output with internal pull-up resistor. */
-    /* Default value of pin is HIGH when not connected to ground.           */
-    // pinMode(2, INPUT_PULLUP);
 }
 
 void loop() {
 
-
-    // Update and print the dummy sensor variable with a random number
-    sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
-    // Print the dummy sensor data on serial monitor
-    Serial.print("Dummy sensor value: ");
-    Serial.println(sensor);
-
 /*
- If using actual sensors, read their values here instead of the dummy data.
+* Receiving OSC messages. 
+* Please refer to CNMAT's OSC library documentation on Github for more details. 
+* 
+* This template's example expects a float on the OSC address "/hi/there". 
+* Received message would have the following format : 
+* /hi/there f 0.34 
+*
+* "hi" and "there" are placeholders and can be changed for what user prefers.
+* At the time of this writing, these we're the supported data types : 
+* int, int64, float, double, char, string, blob, boolean, time, rgba, midi, event.
+*
+* Received OSC message arguments are accessed by their position. The first
+* argument is at position 0, the second at position 1, etc. 
+* User may use functions such as getInt(0), getFloat(1), getString(2), 
+* getRgba(3), getMidi(4) etc. to access the data in the message.
 */
-    // Example for reading an analog sensor connected to pin 7
-    // int sensor_analog = analogRead(7);
-
-    // Example for reading a digital signal (LOW/HIGH) connected to pin 2
-    // int button = digitalRead(2);
-
-
-
-    /*
-     * Receiving OSC messages. This expects a float value on the OSC address /hi/there.
-     */
     OSCMessage inmsg;
     int size = Udp.parsePacket();
     while (size--) {
         inmsg.fill(Udp.read());
     }
     if (!inmsg.hasError()) {
+/* Evaluates if the received OSC message address is "hi/there/" and message at position "0" is a float */        
+// User may receive more than one value in a message by checking position inmsg.isFloat(1) or more.
         if (inmsg.fullMatch("/hi/there") && inmsg.isFloat(0)) {
             Serial.print("got a float on address /hi/there : ");
-            // you could receive more than one value in a message by checking inmsg.isFloat(1) or more.
             Serial.println(inmsg.getFloat(0));
+
+// Example of using the received float value to set the brightness of an LED on pin 7
+            float value = inmsg.getFloat(0);
+            int brightness = (int)(value * 255.0); // Assuming value is between 0.0 and 1.0
+            analogWrite(7, brightness);
+
+
+
         }
     }
+
+/* From the CNMAT/OSC/OSCMessage.h documentation : 
+
+ 	TESTING DATA : testers take a position as an argument
+    User may test the data type of the argument at position 'int'. Accepted types are :
+    bool isInt(int);    bool isInt64(int);  bool isFloat(int);  bool isBlob(int);
+	bool isChar(int);   bool isString(int); bool isDouble(int); bool isBoolean(int);
+    bool isTime(int);   bool isRgba(int);   bool isMidi(int);   bool isEvent(int);
+    
+*/
 
 
 
