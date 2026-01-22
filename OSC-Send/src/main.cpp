@@ -24,7 +24,12 @@ int oscPort_1{};
 // Dummy sensor data used as example
 float sensor;
 
-// DEFINE FUNCTION SIMPLY FOR USERS HERE
+/*
+ The onSettingsChanged() function is called when settings are saved in the web 
+ interface (click on "Save" button). This allows user to change variables on their
+ board without needing to go through the code build/flash process again. Here we 
+ use it to change the UDP port for OSC reception and transmission.
+*/
 void onSettingsChanged() {
     Udp.begin(puara.getVarNumber("localPORT"));
 }
