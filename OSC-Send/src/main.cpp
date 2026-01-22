@@ -1,64 +1,80 @@
 //****************************************************************************//
+// OSC-Send template                                                          //
+// ADD SIMPLE DEFINITION HERE                                                 //
+//                                                                            //
 // Puara Module Manager                                                       //
 // Société des Arts Technologiques (SAT)                                      //
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
+//                                                                            //  
 //****************************************************************************//
 
 #include "Arduino.h"
-
-// Include Puara's module manager
-// If using Arduino.h, include it before including puara.h
 #include "puara.h"
+#include <WiFiUdp.h>
+#include <OSCMessage.h>
 
 #include <iostream>
 
 // Initialize Puara's module manager
 Puara puara;
 
-/*
- * Include CNMAT's OSC library (by Adrian Freed)
- * This library was chosen as it is widely used, but it can be replaced by any
- * other OSC library of choice
- */
-#include <WiFiUdp.h>
-#include <OSCMessage.h>
-
 // UDP instances to let us send and receive packets
 WiFiUDP Udp;
 
-// Dummy sensor data
-float sensor;
 std::string oscIP_1{};
 int oscPort_1{};
 
+// Dummy sensor data used as example
+float sensor;
+
+// DEFINE FUNCTION SIMPLY FOR USERS HERE
 void onSettingsChanged() {
     Udp.begin(puara.getVarNumber("localPORT"));
 }
 
 void setup() {
-    #ifdef Arduino_h
+    #ifdef Arduino_h  // try serial.begin without this ifdef
         Serial.begin(115200);
     #endif
 
-    /*
-     * The Puara start function initializes the spiffs, reads the config and custom JSON
-     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
-     * listening, MDNS service, and scans for WiFi networks.
-     */
+/* puara.start() initializes the filesystem with given configurations and settings.
+ * The process then tries to connect to the WiFi Network (SSID) defined in config.json. 
+ * User may change default SSID values. If process cannot find SSID, it will create it's
+ * own WiFi Access Point (AP) to which user may connect and recieve it's OSC messages.
+ * The process will also start a webserver where user may modify configurations and 
+ * settings using any browser. Finally, the process instantiates serial listening, 
+ * MDNS service, and scans for surrounding WiFi networks.
+ */
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
 
     // This allows us to reconfigure the UDP reception port
     puara.set_settings_changed_handler(onSettingsChanged);
+
+    // If needed, define your pins here. Refer to your board's documentation for appropriate 
+    // pin numbers. These numbers are given as placeholder examples.
+
+    // Setting a pin as input
+    // pinMode(7, INPUT); // Sets pin 7 as an input pin
+
+    // Setting a pin as an input with pull-up resistor
+    // pinMode(2, INPUT_PULLUP); // Sets pin 2 as an input pin with an internal pull-up resistor enabled
 }
 
 void loop() {
 
+    // Retrieve OSC settings from Puara. 
+    // These can be changed in the web interface and will automatically update here.
     oscIP_1 = puara.getVarText("oscIP");
     oscPort_1 = puara.getVarNumber("oscPORT");
 
     // Update the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
+
+    // If using actual sensors, read their values here instead of the dummy data.
+    // Example for reading an analog sensor connected to pin A0
+    // sensor = analogRead(A0); // Reads the value from the analog pin A0
+
 
     // print the dummy sensor data
     Serial.print("Dummy sensor value: ");
