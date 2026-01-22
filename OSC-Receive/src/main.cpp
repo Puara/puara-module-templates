@@ -1,10 +1,31 @@
 //****************************************************************************//
-// OSC-Receive template                                                       //
-// ADD SIMPLE DEFINITION HERE                                                 //
-//                                                                            //
-// Puara Module Manager                                                       //
 // Société des Arts Technologiques (SAT)                                      //
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
+// Puara Module : OSC-Receive template                                        //
+//                                                                            //  
+// This template demonstrates how to set up a basic OSC receiver.             //
+//                                                                            //
+// Puara Module Manager facilitates embedded sytem development by providing   //
+// a set of pre-defined modules that manage filesystem, webserver and network //
+// connections so the user can focus on easier prototyping of the system.     //
+//                                                                            //
+// This program will configure the filesystem with information found in       //
+// config.json and settings.json files. The process will then try to connect  //
+// to the WiFi Network (SSID) defined in config.json.                         //
+// If the user wants the board to connect to a specific WiFi network, they may//
+// modify the "wifiSSID" and "wifiPSK" values in config.json file with the    //
+// name of the desired WiFi network and it's password respectively.           //
+//                                                                            //  
+// If the process cannot connect to a valid SSID, it will create it's own     //
+// WiFi Access Point (AP) to which users may connect and send OSC messages    //
+// to the board.                                                              // 
+//                                                                            //  
+// The process will also start a webserver where users may modify             //
+// configurations and settings using any browser while being connected to AP. //
+// To access the webpage, connect to the board's WiFi network, open a browser,//
+// and type the network name followed by .local in the address bar.           //
+// For example, if the board's network name is the default "Puara_001", type  //
+// "puara_001.local" in the browser's address bar.                            //
 //                                                                            //  
 //****************************************************************************//
 
@@ -20,8 +41,8 @@ WiFiUDP Udp;
 
 /*
  The onSettingsChanged() function is called when settings are saved in the web 
- interface (click on "Save" button). This allows user to change variables on their
- board without needing to go through the code build/flash process again. Here we 
+ interface (click on "Save" button). This allows user to execute changes in their
+ firmware without needing to go through the build/flash process again. Here we 
  use it to change the UDP port for OSC reception and transmission.
 */
 void onSettingsChanged() {
@@ -33,17 +54,6 @@ void setup() {
         Serial.begin(115200);
     #endif
 
-/* 
- puara.start() initializes the filesystem with given configurations and settings.
- The process then tries to connect to the WiFi Network (SSID) defined in config.json. 
- User may change default SSID values. If process cannot find SSID, it will create 
- it's own WiFi Access Point (AP) to which user may connect and receive it's OSC 
- messages. 
- The process will also start a webserver where user may modify configurations and 
- settings using any browser while being connected to AP. 
- Finally, the process instantiates serial listening, MDNS service, and scans for 
- surrounding WiFi networks.
- */
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
 
@@ -54,25 +64,22 @@ void setup() {
  If needed, define your pins here. Refer to your board's documentation for 
  appropriate pin numbers. The numbers given here are only placeholders.
 */
-    /* Setting pin 7 as an input. */
+    /* Example of setting pin 7 as an input. */
     // pinMode(7, INPUT);
 
-    /* Setting pin 2 as an input with internal pull-up resistor.    */
-    /* Default value of pin is HIGH when not connected to ground.   */
+    /* Example os setting pin 2 as an input with internal pull-up resistor. */
+    /* Default value of pin is HIGH when not connected to ground.           */
     // pinMode(2, INPUT_PULLUP);
 }
 
 void loop() {
 
-/* 
- Retrieve OSC IP and PORT from stored data. User may modify IP/PORT 
- values in webpage and these changes will update automatically here.
-*/    
-    oscIP_1 = puara.getVarText("oscIP");
-    oscPort_1 = puara.getVarNumber("oscPORT");
 
     // Update and print the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
+    // Print the dummy sensor data on serial monitor
+    Serial.print("Dummy sensor value: ");
+    Serial.println(sensor);
 
 /*
  If using actual sensors, read their values here instead of the dummy data.
@@ -83,9 +90,6 @@ void loop() {
     // Example for reading a digital signal (LOW/HIGH) connected to pin 2
     // int button = digitalRead(2);
 
-    // Print the dummy sensor data on serial monitor
-    Serial.print("Dummy sensor value: ");
-    Serial.println(sensor);
 
 
     /*

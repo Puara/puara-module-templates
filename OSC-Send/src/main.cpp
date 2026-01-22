@@ -1,11 +1,33 @@
 //****************************************************************************//
-// OSC-Send template                                                          //
-// ADD SIMPLE DEFINITION HERE                                                 //
-//                                                                            //
-// Puara Module Manager                                                       //
 // Société des Arts Technologiques (SAT)                                      //
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
+// Puara Module : OSC-Send template                                           //
 //                                                                            //  
+// This template demonstrates how to set up a basic OSC transmitter.          //
+//                                                                            //
+// Puara Module Manager facilitates embedded sytem development by providing   //
+// a set of pre-defined modules that manage filesystem, webserver and network //
+// connections so the user can focus on easier prototyping of the system.     //
+//                                                                            //
+// This program will configure the filesystem with information found in       //
+// config.json and settings.json files. The process will then try to connect  //
+// to the WiFi Network (SSID) defined in config.json (STA mode).              //
+// If the user wants the board to connect to a specific WiFi network, they    //
+// may modify the "wifiSSID" and "wifiPSK" values in config.json file with    //
+// the name of the desired WiFi network and it's password respectively.       //
+//                                                                            //  
+// If the process cannot connect to a valid SSID, it will create it's own     //
+// WiFi Access Point (AP mode) to which users may connect and send OSC        //
+// messages to the board.                                                     // 
+//                                                                            //  
+// The process will then start a webserver that users may use to modify       //  
+// configurations and settings of their board/program without having to       //
+// rebuild/reflash their program.                                             //
+// In AP mode, access these webpages by connecting to the board's WiFi        //
+// network, open a browser and type the network name followed by ".local" in  //
+// the address bar. For example, if the board's network name is the default   //
+// "Puara_001", type "puara_001.local" in the browser's address bar.          //
+// If in STA mode, type the board's IP address in the browser's address bar.  //  
 //****************************************************************************//
 
 #include "Arduino.h"
@@ -39,37 +61,23 @@ void setup() {
         Serial.begin(115200);
     #endif
 
-/* 
- puara.start() initializes the filesystem with given configurations and settings.
- The process then tries to connect to the WiFi Network (SSID) defined in config.json. 
- User may change default SSID values. If process cannot find SSID, it will create 
- it's own WiFi Access Point (AP) to which user may connect and receive it's OSC 
- messages. 
- The process will also start a webserver where user may modify configurations and 
- settings using any browser while being connected to AP. 
- Finally, the process instantiates serial listening, MDNS service, and scans for 
- surrounding WiFi networks.
- */
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
-
-    // This allows us to reconfigure the UDP reception port
     puara.set_settings_changed_handler(onSettingsChanged);
-
 /*
  If needed, define your pins here. Refer to your board's documentation for 
  appropriate pin numbers. The numbers given here are only placeholders.
 */
-    /* Setting pin 7 as an input. */
+
+/*  Example of setting pin 7 as an input. */
     // pinMode(7, INPUT);
 
-    /* Setting pin 2 as an input with internal pull-up resistor.    */
-    /* Default value of pin is HIGH when not connected to ground.   */
+/*  Example of setting pin 2 as an input with internal pull-up resistor.    */
+/*  Default value of pin 2 is now HIGH (True) when not connected to ground. */
     // pinMode(2, INPUT_PULLUP);
 }
 
 void loop() {
-
 /* 
  Retrieve OSC IP and PORT from stored data. User may modify IP/PORT 
  values in webpage and these changes will update automatically here.
@@ -79,34 +87,37 @@ void loop() {
 
     // Update and print the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
-
+    Serial.print("Dummy sensor value: ");
+    Serial.println(sensor);
 /*
  If using actual sensors, read their values here instead of the dummy data.
 */
-    // Example for reading an analog sensor connected to pin 7
+
+/* Example for reading an analog sensor connected to pin 7                   */
     // int sensor_analog = analogRead(7);
 
-    // Example for reading a digital signal (LOW/HIGH) connected to pin 2
+/* Example for reading a digital signal (LOW/HIGH) connected to pin 2        */
     // int button = digitalRead(2);
 
-    // Print the dummy sensor data on serial monitor
-    Serial.print("Dummy sensor value: ");
-    Serial.println(sensor);
-
-    /*
-     * Sending OSC messages.  
-     * This sends the sensor value to the defined OSC IP and port.
-     */
+/*
+ * Sending OSC messages.  
+ * This sends the sensor value to the defined OSC IP : port.
+*/
     if (!oscIP_1.empty() && oscIP_1 != "0.0.0.0") {
-    // OSCmessage uses puara.dmi_name() which is the "device" and "id" fields from config.json file. 
-    // User may define these fields and rebuild filesystem to change the OSC address name. 
-    // Default OSC address name is "Puara_001".
+
+/* OSCmessage uses "device" and "id" fields from config.json file.          */
+/* User may define these fields and must rebuild filesystem to change the   */
+/* OSC address name. Default OSC address name is "Puara_001".               */
+
         OSCMessage msg1(("/" + puara.dmi_name()).c_str());
-    // Add messages by using the add() function. See following examples below. They will all send 
-    // in simultaneous OSC message. 
+
+/* Add messages by appending to msg1 as shown below using msg1.add(). All   */ 
+/* messages will be sent simultaneously in the same packet.                 */
+
         msg1.add(sensor);
     //  msg1.add(sensor_analog);
     //  msg1.add(button);
+
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
         Udp.endPacket();
@@ -114,8 +125,8 @@ void loop() {
         std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
 
-    // For faster/slower transmission, manage speed of process here. 
-    // This following tasks currently runs at 1 Hz (1 message per second).
+/* For faster/slower transmission, manage speed of process here.            */
+/* This following tasks currently runs at 1 Hz (1 message per second).      */
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
