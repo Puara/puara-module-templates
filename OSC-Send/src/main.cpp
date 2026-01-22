@@ -48,19 +48,18 @@ float sensor;
 
 /*
  The onSettingsChanged() function is called when settings are saved in the web 
- interface (click on "Save" button). This allows user to change variables on their
- board without needing to go through the code build/flash process again. Here we 
- use it to change the UDP port for OSC reception and transmission.
+ interface (click on "Save" button). This allows user to change variables on
+ their board without needing to go through the code build/flash process again.
+ Here we use it to change the UDP port for OSC reception and transmission.
 */
 void onSettingsChanged() {
     Udp.begin(puara.getVarNumber("localPORT"));
 }
 
 void setup() {
-    #ifdef Arduino_h  // try serial.begin without this ifdef
+    #ifdef Arduino_h
         Serial.begin(115200);
     #endif
-
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
     puara.set_settings_changed_handler(onSettingsChanged);
@@ -69,11 +68,11 @@ void setup() {
  appropriate pin numbers. The numbers given here are only placeholders.
 */
 
-/*  Example of setting pin 7 as an input. */
+/*  Example of setting pin 7 as an input.                                       */
     // pinMode(7, INPUT);
 
-/*  Example of setting pin 2 as an input with internal pull-up resistor.    */
-/*  Default value of pin 2 is now HIGH (True) when not connected to ground. */
+/*  Example of setting pin 2 as an input with internal pull-up resistor.        */
+/*  Default value of pin 2 is now HIGH (True) when not connected to ground.     */
     // pinMode(2, INPUT_PULLUP);
 }
 

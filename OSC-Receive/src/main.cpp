@@ -11,22 +11,23 @@
 //                                                                            //
 // This program will configure the filesystem with information found in       //
 // config.json and settings.json files. The process will then try to connect  //
-// to the WiFi Network (SSID) defined in config.json.                         //
-// If the user wants the board to connect to a specific WiFi network, they may//
-// modify the "wifiSSID" and "wifiPSK" values in config.json file with the    //
-// name of the desired WiFi network and it's password respectively.           //
+// to the WiFi Network (SSID) defined in config.json (STA mode).              //
+// If the user wants the board to connect to a specific WiFi network, they    //
+// may modify the "wifiSSID" and "wifiPSK" values in config.json file with    //
+// the name of the desired WiFi network and it's password respectively.       //
 //                                                                            //  
 // If the process cannot connect to a valid SSID, it will create it's own     //
-// WiFi Access Point (AP) to which users may connect and send OSC messages    //
-// to the board.                                                              // 
+// WiFi Access Point (AP mode) to which users may connect and send OSC        //
+// messages to the board.                                                     // 
 //                                                                            //  
-// The process will also start a webserver where users may modify             //
-// configurations and settings using any browser while being connected to AP. //
-// To access the webpage, connect to the board's WiFi network, open a browser,//
-// and type the network name followed by .local in the address bar.           //
-// For example, if the board's network name is the default "Puara_001", type  //
-// "puara_001.local" in the browser's address bar.                            //
-//                                                                            //  
+// The process will then start a webserver that users may use to modify       //  
+// configurations and settings of their board/program without having to       //
+// rebuild/reflash their program.                                             //
+// In AP mode, access these webpages by connecting to the board's WiFi        //
+// network, open a browser and type the network name followed by ".local" in  //
+// the address bar. For example, if the board's network name is the default   //
+// "Puara_001", type "puara_001.local" in the browser's address bar.          //
+// If in STA mode, type the board's IP address in the browser's address bar.  //  
 //****************************************************************************//
 
 #include "Arduino.h"
@@ -50,24 +51,22 @@ void onSettingsChanged() {
 }
 
 void setup() {
-    #ifdef Arduino_h  // try serial.begin without this ifdef
+    #ifdef Arduino_h
         Serial.begin(115200);
     #endif
-
     puara.start();
     Udp.begin(puara.getVarNumber("localPORT"));
-
-    // This allows us to reconfigure the UDP reception port
     puara.set_settings_changed_handler(onSettingsChanged);
 
 /*
  If needed, define your pins here. Refer to your board's documentation for 
  appropriate pin numbers. The numbers given here are only placeholders.
 */
-    /* Example of setting pin 7 as an input. */
+
+/*  Example of setting pin 7 as an output.                                  */
     // pinMode(7, INPUT);
 
-    /* Example os setting pin 2 as an input with internal pull-up resistor. */
+/* Example of setting pin 2 as an output with internal pull-up resistor. */
     /* Default value of pin is HIGH when not connected to ground.           */
     // pinMode(2, INPUT_PULLUP);
 }
