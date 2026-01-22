@@ -72,17 +72,19 @@ void loop() {
     oscIP_1 = puara.getVarText("oscIP");
     oscPort_1 = puara.getVarNumber("oscPORT");
 
-/* Update the dummy sensor variable with a random number between 0 and 10 */
+    // Update and print the dummy sensor variable with a random number
     sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
 
-/* If using actual sensors, read their values here instead of the dummy data.
+/*
+ If using actual sensors, read their values here instead of the dummy data.
+*/
     // Example for reading an analog sensor connected to pin 7
-    // sensor = analogRead(7);
+    // int sensor_analog = analogRead(7);
 
     // Example for reading a digital signal (LOW/HIGH) connected to pin 2
-    // sensor = digitalRead(2);
+    // int button = digitalRead(2);
 
-    // Print the dummy sensor data
+    // Print the dummy sensor data on serial monitor
     Serial.print("Dummy sensor value: ");
     Serial.println(sensor);
 
@@ -95,7 +97,11 @@ void loop() {
     // User may define these fields and rebuild filesystem to change the OSC address name. 
     // Default OSC address name is "Puara_001".
         OSCMessage msg1(("/" + puara.dmi_name()).c_str());
+    // Add messages by using the add() function. See following examples below. They will all send 
+    // in simultaneous OSC message. 
         msg1.add(sensor);
+    //  msg1.add(sensor_analog);
+    //  msg1.add(button);
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
         Udp.endPacket();
@@ -103,7 +109,8 @@ void loop() {
         std::cout << "Message send to " << oscIP_1 << ":" << oscPort_1 << std::endl;
     }
 
-    // run at 1 Hz (1 message per second)
+    // For faster/slower transmission, manage speed of process here. 
+    // This following tasks currently runs at 1 Hz (1 message per second).
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
