@@ -1,0 +1,10 @@
+{
+    "device": "Puara",
+    "id": 1,
+    "author": "Edu Meneses",
+    "institution": "SAT/IDMIL (2022-2024)",
+    "APpasswd": "mappings",
+    "wifiSSID": "networkSSID",
+    "wifiPSK": "mappings",
+    "persistentAP": 1
+}
