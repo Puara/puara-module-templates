@@ -4,6 +4,7 @@
 // Puara Module : OSC-Receive template                                        //
 //                                                                            //  
 // This template demonstrates how to set up a basic OSC receiver.             //
+// Please refer to CNMAT's OSC repository on Github for more details on OSC.  //  
 //                                                                            //
 // Puara Module Manager facilitates embedded sytem development by providing   //
 // a set of pre-defined modules that manage filesystem, webserver and network //
@@ -61,10 +62,8 @@ void setup() {
  If needed, define your pins here. Refer to your board's documentation for 
  appropriate pin numbers. The numbers given here are only placeholders.
 */
-
-/*  Example of setting pins 7 and 8 as outputs.                                */
+/*  Example of setting pin 7 as output.                                */
     // pinMode(7, OUTPUT);
-    // pinMode(8, OUTPUT);
 
 }
 
@@ -75,8 +74,7 @@ void loop() {
 * Please refer to CNMAT's OSC library documentation on Github for more details. 
 * 
 * This template's example expects a float on the OSC address "/hi/there". 
-* Received message would have the following format : 
-* /hi/there f 0.34 
+* Received message would have the following format :   /hi/there f 0.34 
 *
 * "hi" and "there" are placeholders and can be changed for what user prefers.
 * At the time of this writing, these we're the supported data types : 
@@ -86,6 +84,11 @@ void loop() {
 * argument is at position 0, the second at position 1, etc. 
 * User may use functions such as getInt(0), getFloat(1), getString(2), 
 * getRgba(3), getMidi(4) etc. to access the data in the message.
+*
+* UDP detail : as this template parses UDP message, try to contain your exchanged
+* messages between 500 and 1400 bytes to avoid fragmentation. If your message is 
+* too big, it might be dropped (lost). For example, if sending strings, send sentences 
+* rather than paragraphs.
 */
     OSCMessage inmsg;
     int size = Udp.parsePacket();
@@ -93,35 +96,20 @@ void loop() {
         inmsg.fill(Udp.read());
     }
     if (!inmsg.hasError()) {
-/* Evaluates if the received OSC message address is "hi/there/" and message at position "0" is a float */        
-// User may receive more than one value in a message by checking position inmsg.isFloat(1) or more.
+/* Process your received OSC message in here. Following line evaluates received OSC message */
+/* address and if type of message at position "0" is float                                  */        
         if (inmsg.fullMatch("/hi/there") && inmsg.isFloat(0)) {
             Serial.print("got a float on address /hi/there : ");
             Serial.println(inmsg.getFloat(0));
 
-// Example of using the received float value to set the brightness of an LED on pin 7
+// Example of using the received float at position 0 to set the brightness of an LED on pin 7
             float value = inmsg.getFloat(0);
             int brightness = (int)(value * 255.0); // Assuming value is between 0.0 and 1.0
-            analogWrite(7, brightness);
-
-
-
-        }
+//            analogWrite(7, brightness);
+            Serial.print("Writing brightness value to pin 7 : ");
+            Serial.println(brightness);
+       }
     }
-
-/* From the CNMAT/OSC/OSCMessage.h documentation : 
-
- 	TESTING DATA : testers take a position as an argument
-    User may test the data type of the argument at position 'int'. Accepted types are :
-    bool isInt(int);    bool isInt64(int);  bool isFloat(int);  bool isBlob(int);
-	bool isChar(int);   bool isString(int); bool isDouble(int); bool isBoolean(int);
-    bool isTime(int);   bool isRgba(int);   bool isMidi(int);   bool isEvent(int);
-    
-*/
-
-
-
-
     // For faster/slower transmission, manage speed of process here. 
     // This following tasks currently runs at 1 Hz (1 message per second).
     vTaskDelay(1000 / portTICK_PERIOD_MS);

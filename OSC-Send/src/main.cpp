@@ -4,6 +4,7 @@
 // Puara Module : OSC-Send template                                           //
 //                                                                            //  
 // This template demonstrates how to set up a basic OSC transmitter.          //
+// Please refer to CNMAT's OSC repository on Github for more details on OSC.  //  
 //                                                                            //
 // Puara Module Manager facilitates embedded sytem development by providing   //
 // a set of pre-defined modules that manage filesystem, webserver and network //
@@ -116,6 +117,8 @@ void loop() {
         msg1.add(sensor);
     //  msg1.add(sensor_analog);
     //  msg1.add(button);
+
+/* To send a group of OSCMessage together, see OSCBundle in CNMAT's OSC repo. */
 
         Udp.beginPacket(oscIP_1.c_str(), oscPort_1);
         msg1.send(Udp);
