@@ -27,8 +27,13 @@ void setup() {
      * The Puara start function initializes the spiffs, reads the config and custom JSON
      * settings, starts the wi-fi AP, connects to SSID, starts the webserver, serial
      * listening, MDNS service, and scans for WiFi networks.
+     *
+     * The first parameter governs which method puara will use to read serial command, the default beign UART.
+     *
+     * The second parameter governs which debug log level should be printed. The default is to
+     * print warnings and errors but you can print more.
      */
-    puara.start();
+    puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
     /*
      * Printing custom settings stored. The data/config.json values will print during
      * Initialization (puara.start)
