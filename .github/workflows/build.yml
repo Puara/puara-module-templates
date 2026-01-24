@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # we have 6 pio templates, which we want to build for 4 different boards
+        # we have 8 pio templates, which we want to build for 4 different boards
         # we have two filesystems we want to test on boards that support them
         template:
           - name: basic
@@ -20,9 +20,17 @@ jobs:
             fs: littlefs
           - name: basic-gestures 
             fs: spiffs
-          - name: basic-osc
+          - name: OSC_Duplex
             fs: littlefs
-          - name: basic-osc
+          - name: OSC_Duplex
+            fs: spiffs            
+          - name: OSC_Send
+            fs: littlefs
+          - name: OSC_Send
+            fs: spiffs            
+          - name: OSC_Receive
+            fs: littlefs
+          - name: OSC_Receive
             fs: spiffs            
           - name: button-osc
             fs: littlefs 
