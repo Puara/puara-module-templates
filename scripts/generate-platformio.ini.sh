@@ -15,6 +15,11 @@ if [[ -z "$PUARA_GESTURES_PATH" ]]; then
   PUARA_GESTURES_PATH="https://github.com/Puara/puara-gestures.git"
 fi
 
+if [[ -z "$PUARA_CNMAT_OSC_PATH" ]]; then
+  PUARA_CNMAT_OSC_PATH="https://github.com/cnmat/OSC#3.5.8"
+fi
+
+
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 
@@ -68,27 +73,33 @@ case "${TEMPLATE}" in
     ;;
   OSC-Duplex-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   OSC-Duplex-spiffs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   OC-Send-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   OSC-Send-spiffs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   OSC-Receive-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   OSC-Receive-spiffs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   ble-advertising-littlefs)
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"
