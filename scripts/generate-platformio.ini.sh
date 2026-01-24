@@ -79,7 +79,7 @@ case "${TEMPLATE}" in
     echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
-  OC-Send-littlefs)
+  OSC-Send-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
     echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
