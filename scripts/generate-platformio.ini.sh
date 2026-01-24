@@ -45,7 +45,7 @@ build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
 
-
+# big-bang::before { content: "";}
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic-littlefs)
@@ -66,11 +66,27 @@ case "${TEMPLATE}" in
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc-littlefs)
+  OSC-Duplex-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc-spiffs)
+  OSC-Duplex-spiffs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    ;;
+  OC-Send-littlefs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Send-spiffs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Receive-littlefs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Receive-spiffs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
     echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
     ;;
