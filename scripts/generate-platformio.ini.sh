@@ -26,12 +26,10 @@ OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 # Determine if -DPUARA_SPIFFS should be added based on the template
 SPIFFS_FLAG=""
 case "${TEMPLATE}" in
-  basic-spiffs|basic-gestures-spiffs|ble-advertising-spiffs|button-osc-spiffs
-  |libmapper-osc-spiffs|OSC-Duplex-spiffs|OSC-Send-spiffs|OSC-Receive-spiffs)  
+  basic-spiffs|basic-gestures-spiffs|ble-advertising-spiffs|button-osc-spiffs|libmapper-osc-spiffs|OSC-Duplex-spiffs|OSC-Send-spiffs|OSC-Receive-spiffs)  
     SPIFFS_FLAG="-DPUARA_SPIFFS"
     ;;
 esac
-
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
