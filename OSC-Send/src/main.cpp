@@ -66,8 +66,6 @@ void setup() {
   puara.start();
   Udp.begin(puara.getVarNumber("localPORT"));
   puara.set_settings_changed_handler(onSettingsChanged);
-  //  Retrieve OSC IP/PORT from user defined data. User may modify these in
-  //  webpage
   oscIP = puara.getVarText("oscIP");
   oscPort = puara.getVarNumber("oscPORT");
 
@@ -107,7 +105,7 @@ void loop() {
    */
   if (!oscIP.empty() && oscIP != "0.0.0.0") {
 
-    /* OSCmessage uses "device" and "id" fields from config.json file. */
+    /* puara.dmi_name() uses "device" and "id" fields from config.json file.  */
     /* User may define these fields and must rebuild filesystem to change the */
     /* OSC address name. Default OSC address name is "Puara_001". */
 

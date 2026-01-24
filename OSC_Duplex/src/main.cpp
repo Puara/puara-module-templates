@@ -3,7 +3,7 @@
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
 // Puara Module : OSC-Receive template                                        //
 //                                                                            //
-// This template demonstrates how to set up a basic OSC receiver.             //
+// This template joins both OSC-Receive and OSC-Send as a single template.    //
 // Please refer to CNMAT's OSC repository on Github for more details on OSC.  //
 //                                                                            //
 // Puara Module Manager facilitates embedded sytem development by providing   //
@@ -47,91 +47,150 @@ int oscPort{};
 // Dummy sensor data
 float sensor;
 
+/*
+ * The onSettingsChanged() function is called when settings are saved in the web
+ * interface (click on "Save" button). This allows user to change variables on
+ * their board without needing to go through the code build/flash process again.
+ * Here we use it to change the UDP port for OSC reception and transmission.
+ */
 void onSettingsChanged() {
-    Udp.begin(puara.getVarNumber("localPORT"));
-    oscIP = puara.getVarText("oscIP");
-    oscPort = puara.getVarNumber("oscPORT");
+  Udp.begin(puara.getVarNumber("localPORT"));
+  oscIP = puara.getVarText("oscIP");
+  oscPort = puara.getVarNumber("oscPORT");
 }
 
 void setup() {
-    #ifdef Arduino_h
-        Serial.begin(115200);
-    #endif
+#ifdef Arduino_h
+  Serial.begin(115200);
+#endif
+  puara.start();
+  Udp.begin(puara.getVarNumber("localPORT"));
+  puara.set_settings_changed_handler(onSettingsChanged);
+  oscIP = puara.getVarText("oscIP");
+  oscPort = puara.getVarNumber("oscPORT");
 
-    /*
-     * The Puara start function initializes the spiffs, reads the config and custom JSON
-     * settings, start the wi-fi AP, connects to SSID, starts the webserver, serial
-     * listening, MDNS service, and scans for WiFi networks.
-     */
-    puara.start();
-    Udp.begin(puara.getVarNumber("localPORT"));
+  /*
+   If needed, define your pins here. Refer to your board's documentation for
+   appropriate pin numbers. The numbers given here are only placeholders.
+  */
 
-    // This allows us to reconfigure the UDP reception port
-    puara.set_settings_changed_handler(onSettingsChanged);
-    oscIP = puara.getVarText("oscIP");
-    oscPort = puara.getVarNumber("oscPORT");
+  /*  Example of setting pin 7 as an input. */
+  // pinMode(7, INPUT);
+
+  /*  Example of setting pin 2 as an input with internal pull-up resistor. */
+  /*  Default value of pin 2 is now HIGH when not connected to ground. */
+  // pinMode(2, INPUT_PULLUP);
+
+  /*  Example of setting pin 9 as output.                                */
+  // pinMode(9, OUTPUT);
 }
 
 void loop() {
 
+  // If using actual sensors, read their values here instead of the dummy data.
+  
+  /* Example for reading an analog sensor connected to pin 7 */
+  // int sensor_analog = analogRead(7);
 
-    // Update the dummy sensor variable with a random number
-    sensor = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/10));
+  /* Example for reading a digital signal (LOW/HIGH) connected to pin 2 */
+  // int button = digitalRead(2);
 
-    // print the dummy sensor data
-    Serial.print("Dummy sensor value: ");
-    Serial.println(sensor);
+  // Update and print the dummy sensor variable with a random number
+  sensor = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 10));
+  Serial.print("Dummy sensor value: ");
+  Serial.println(sensor);
 
-    /*
-     * Sending OSC messages.
-     * If you're not planning to send messages to both addresses (OSC1 and OSC2),
-     * it is recommended to set the address to 0.0.0.0 to avoid cluttering the
-     * network (WiFiUdp will print a warning message in those cases).
-     */
-    if (!oscIP.empty() && oscIP != "0.0.0.0") { // set namespace and send OSC message for address 1
-        OSCMessage msg1(("/" + puara.dmi_name()).c_str());
-        msg1.add(sensor);
-        Udp.beginPacket(oscIP.c_str(), oscPort);
-        msg1.send(Udp);
-        Udp.endPacket();
-        msg1.empty();
-        std::cout << "Message send to " << oscIP << ":" << oscPort << std::endl;
+//****************************************************************************//
+//  SENDING OSC MESSAGES                                                      //  
+//  This sends the sensor value to the defined OSC IP : port.                 //  
+//****************************************************************************//
+
+  if (!oscIP.empty() && oscIP != "0.0.0.0") {
+
+    /* puara.dmi_name() uses "device" and "id" fields from config.json file.  */
+    /* User may define these fields and must rebuild filesystem to change the */
+    /* OSC address name. Default OSC address name is "Puara_001". */
+
+    OSCMessage out_msg(("/" + puara.dmi_name()).c_str());
+
+    /* Add messages by appending to msgSend as shown below using msgSend.add(). All */
+    /* messages will be sent simultaneously in the same packet. */
+
+    out_msg.add(sensor);
+    //  out_msg.add(sensor_analog);
+    //  out_msg.add(button);
+
+    /* To send a group of OSCMessage together, see OSCBundle in CNMAT's OSC
+     * repo. */
+
+    Udp.beginPacket(oscIP.c_str(), oscPort);
+    out_msg.send(Udp);
+    Udp.endPacket();
+    out_msg.empty();
+    std::cout << "Message send to " << oscIP << ":" << oscPort << std::endl;
+  }
+
+//****************************************************************************//
+//  RECEIVING OSC MESSAGES                                                    //
+//                                                                            //
+//  This template's example expects a float between [0,1] on the OSC address  //
+//  "/led/brightness". Received message would have the following format :     //
+//  /led/brightness f 0.34                                                    //
+//  "led" and "brightness" are placeholders and can be changed for what user  //
+//  prefers. At the time of this writing, these we're the supported data      //
+//  types : int, int64, float, double, char, string, blob, boolean, time,     //
+//  rgba, midi, event.                                                        //
+//  Received OSC message arguments are accessed by their position. The first  //
+//  argument is at position 0, the second at position 1, etc.                 //
+//  User may use functions such as getInt(0), getFloat(1), getString(2),      //
+//  getRgba(3), getMidi(4) etc. to access the data in the message.            //
+//                                                                            //
+//  UDP detail : as this template parses UDP message, try to contain your     //
+//  exchanged messages between 500 and 1400 bytes to avoid fragmentation. If  //
+//  your message is too big, it might be dropped (lost). For example, if      //
+//  sending strings, send sentences rather than paragraphs.                   //
+ //***************************************************************************//  
+  OSCMessage inmsg;
+  int size = Udp.parsePacket();
+  while (size--) {
+    inmsg.fill(Udp.read());
+  }
+
+  /* Process your received OSC message in here. */
+  if (!inmsg.hasError()) {
+    if (inmsg.fullMatch("/led/brightness") && inmsg.isFloat(0)) {
+
+      // Example of using the received float at position 0 to set the brightness
+      // of an LED on pin 7
+      float value = inmsg.getFloat(0);
+      int brightness =
+          (int)(value * 255.0); // Assuming value is between 0.0 and 1.0
+      // analogWrite(7, brightness);
+      Serial.print("Writing brightness value to pin 7 : ");
+      Serial.println(brightness);
     }
+  }
 
-    /*
-     * Receiving OSC messages. This expects a float value on the OSC address /hi/there.
-     */
-    OSCMessage inmsg;
-    int size = Udp.parsePacket();
-    while (size--) {
-        inmsg.fill(Udp.read());
-    }
-    if (!inmsg.hasError()) {
-        if (inmsg.fullMatch("/hi/there") && inmsg.isFloat(0)) {
-            Serial.print("got a float on address /hi/there : ");
-            // you could receive more than one value in a message by checking inmsg.isFloat(1) or more.
-            Serial.println(inmsg.getFloat(0));
-        }
-    }
 
-    // run at 1 Hz (1 message per second)
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+  /* For faster/slower transmission, manage speed of process here.            */
+  /* This following tasks currently runs at 1 Hz (1 message per second).      */
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 /*
- * The Arduino header defines app_main and conflicts with having an app_main function
- * in code. This ifndef makes the code valid in case we remove the Arduino header in
- * the future.
+ * The Arduino header defines app_main and conflicts with having an app_main
+ * function in code. This ifndef makes the code valid in case we remove the
+ * Arduino header in the future.
  */
 #ifndef Arduino_h
-    extern "C" {
-        void app_main(void);
-    }
+extern "C" {
+void app_main(void);
+}
 
-    void app_main() {
-        setup();
-        while(1) {
-            loop();
-        }
-    }
+void app_main() {
+  setup();
+  while (1) {
+    loop();
+  }
+}
 #endif
