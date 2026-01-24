@@ -20,17 +20,17 @@ jobs:
             fs: littlefs
           - name: basic-gestures 
             fs: spiffs
-          - name: OSC_Duplex
+          - name: OSC-Duplex
             fs: littlefs
-          - name: OSC_Duplex
+          - name: OSC-Duplex
             fs: spiffs            
-          - name: OSC_Send
+          - name: OSC-Send
             fs: littlefs
-          - name: OSC_Send
+          - name: OSC-Send
             fs: spiffs            
-          - name: OSC_Receive
+          - name: OSC-Receive
             fs: littlefs
-          - name: OSC_Receive
+          - name: OSC-Receive
             fs: spiffs            
           - name: button-osc
             fs: littlefs 
