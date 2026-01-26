@@ -15,17 +15,21 @@ if [[ -z "$PUARA_GESTURES_PATH" ]]; then
   PUARA_GESTURES_PATH="https://github.com/Puara/puara-gestures.git"
 fi
 
+if [[ -z "$PUARA_CNMAT_OSC_PATH" ]]; then
+  PUARA_CNMAT_OSC_PATH="https://github.com/cnmat/OSC#3.5.8"
+fi
+
+
 # We'll put the temporary platformio.ini file in the current template folder
 OUTPUT_FILE="${TEMPLATE}/platformioTemp.ini"
 
 # Determine if -DPUARA_SPIFFS should be added based on the template
 SPIFFS_FLAG=""
 case "${TEMPLATE}" in
-  basic-spiffs|basic-gestures-spiffs|ble-advertising-spiffs|button-osc-spiffs|libmapper-osc-spiffs|basic-osc-spiffs)
+  basic-spiffs|basic-gestures-spiffs|ble-advertising-spiffs|button-osc-spiffs|libmapper-osc-spiffs|OSC-Duplex-spiffs|OSC-Send-spiffs|OSC-Receive-spiffs)  
     SPIFFS_FLAG="-DPUARA_SPIFFS"
     ;;
 esac
-
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
@@ -44,7 +48,7 @@ build_unflags = -std=gnu++11 -std=gnu++14 -std=gnu++17
 lib_deps =
 EOL
 
-
+# big-bang::before { content: "";}
 # Add dependencies based on the template
 case "${TEMPLATE}" in
   basic-littlefs)
@@ -65,13 +69,35 @@ case "${TEMPLATE}" in
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc-littlefs)
+  OSC-Duplex-littlefs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
-  basic-osc-spiffs)
+  OSC-Duplex-spiffs)
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    https://github.com/cnmat/OSC#3.5.8" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Send-littlefs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Send-spiffs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Receive-littlefs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
+    ;;
+  OSC-Receive-spiffs)
+    echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
+    echo "    $PUARA_CNMAT_OSC_PATH" >> "${OUTPUT_FILE}"
+    echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   ble-advertising-littlefs)
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"

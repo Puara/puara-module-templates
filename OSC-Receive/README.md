@@ -1,6 +1,8 @@
-# Basic OSC
+# OSC-Receive
 
-This is a template that sends and receives OSC messages.
+This template demonstrates how to use Puara modules to receives OSC messages.
+
+Please refer to CNMAT's OSC repository on Github for more details on OSC. 
 
 ## Known issue.
 
