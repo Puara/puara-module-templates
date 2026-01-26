@@ -27,13 +27,13 @@ jobs:
           - name: OSC-Send
             fs: littlefs
           - name: OSC-Send
-            fs: spiffs            
+            fs: spiffs
           - name: OSC-Receive
             fs: littlefs
           - name: OSC-Receive
             fs: spiffs            
           - name: button-osc
-            fs: littlefs 
+            fs: littlefs
           - name: button-osc
             fs: spiffs             
           - name: libmapper-osc

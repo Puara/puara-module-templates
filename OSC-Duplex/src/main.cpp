@@ -1,7 +1,7 @@
 //****************************************************************************//
 // Société des Arts Technologiques (SAT)                                      //
 // Input Devices and Music Interaction Laboratory (IDMIL), McGill University  //
-// Puara Module : OSC-Receive template                                        //
+// Puara Module : OSC-Duplex template                                        //
 //                                                                            //
 // This template joins both OSC-Receive and OSC-Send as a single template.    //
 // Please refer to CNMAT's OSC repository on Github for more details on OSC.  //

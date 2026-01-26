@@ -1,6 +1,9 @@
-# Basic OSC
+# OSC-Duplex
 
 This is a template that sends and receives OSC messages.
+It is a merge of both approaches seen in OSC-Receive and OSC-Send templates. 
+
+Please refer to CNMAT's OSC repository on Github for more details on OSC. 
 
 ## Known issue.
 
