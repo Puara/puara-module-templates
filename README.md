@@ -1,12 +1,30 @@
-# Puara Module Template (Module Manager)
+# Puara Module Templates for PlatformIO
 
-[![Build](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml/badge.svg)](https://github.com/Puara/puara-module-templates/actions/workflows/build.yml)
+--- 
 
-This repository contains several templates to be used as a base to create devices that can be controlled over the network the Puara Framework.
+**Société des Arts Technologiques (SAT)**  
+**Input Devices and Music Interaction Laboratory (IDMIL)**
+
+--- 
+
+This repository contains several platformIO templates to be used as a base to create devices that can be controlled over the network.
+
+---
 
 ## Overview
 
-Puara Module Manager facilitates embedded system development by providing a set of pre-defined modules that manage filesystem, web server, and network connections so users can focus on prototyping the rest of their system.
+Puara Module facilitates embedded system development by providing a set of pre-defined modules that manage filesystem, web server, and network connections so users can focus on prototyping the rest of their system.
+
+### Why Use This?
+
+This project is designed for artists and creators interested in:
+- Developing distributed systems
+- Creating interactive installations
+- Building network-based projects
+- Innovating digital instruments
+- Designing new forms of creative interfaces
+
+---
 
 ## How It Works
 
@@ -47,6 +65,8 @@ User may also type the network name followed by `.local` in the browser's addres
   <img width="150" src="https://github.com/user-attachments/assets/d0254aa6-c1f2-400f-97c6-873a5597637b">
 </p>
 
+---
+
 ## Available Templates
 
 This repository includes several PlatformIO templates that demonstrate different use cases and functionalities. Each template includes a `data/` folder containing configuration files (`config.json`, `settings.json`) and web interface files (HTML and CSS).
@@ -55,6 +75,8 @@ This repository includes several PlatformIO templates that demonstrate different
 
 1. Access the `PLATFORMIO` Project Tasks by clicking on the extension button on the left
 2. Make sure you upload both the filesystem (`Build`/`Upload Filesystem Image` under the `Platform` icon) and the firmware (`Build`/`Upload` under the `General` icon)
+
+---
 
 ### 1. Basic Example
 
@@ -66,6 +88,8 @@ A minimal example demonstrating core Puara Module functionality. This template:
 
 This is the best starting point for learning how to use the Puara framework.
 
+---
+
 ### 2. OSC-Send Example
 
 Demonstrates how to set up a basic OSC transmitter. This template:
@@ -75,6 +99,8 @@ Demonstrates how to set up a basic OSC transmitter. This template:
 - Includes example code for reading analog sensors and digital signals
 
 **Note**: Please refer to [CNMAT's OSC repository](https://github.com/CNMAT/OSC) on GitHub for more details on OSC.
+
+---
 
 ### 3. OSC-Receive Example
 
@@ -88,6 +114,8 @@ The example expects a float between [0,1] on the OSC address `/led/brightness` w
 
 **Note**: Please refer to [CNMAT's OSC repository](https://github.com/CNMAT/OSC) on GitHub for more details on OSC.
 
+---
+
 ### 4. OSC-Duplex Example
 
 Combines both OSC-Send and OSC-Receive functionality in a single sketch. This template:
@@ -97,6 +125,8 @@ Combines both OSC-Send and OSC-Receive functionality in a single sketch. This te
 - Useful for bidirectional device communication scenarios
 
 **Note**: Please refer to [CNMAT's OSC repository](https://github.com/CNMAT/OSC) on GitHub for more details on OSC.
+
+---
 
 ### 5. BLE Advertising Example
 
@@ -108,12 +138,16 @@ Demonstrates BLE (Bluetooth Low Energy) advertising without requiring device con
 
 For detailed setup instructions and configuration options, refer to the template's README file.
 
+---
+
 ### 6. Basic Gestures Example
 
 Extends the basic template with gesture recognition capabilities using an IMU (Inertial Measurement Unit). This template:
 - Demonstrates how to read and process IMU sensor data
 - Includes gesture detection logic
 - Shows integration with the Puara module system
+
+---
 
 ### 7. Button OSC Example
 
@@ -122,6 +156,8 @@ Demonstrates how to use button inputs with OSC messaging. This template:
 - Sends button state changes as OSC messages
 - Shows event-driven communication patterns
 
+---
+
 ### 8. Libmapper OSC Example
 
 Demonstrates integration with libmapper, a distributed signal mapping system. This template:
@@ -129,11 +165,18 @@ Demonstrates integration with libmapper, a distributed signal mapping system. Th
 - Combines libmapper with OSC messaging capabilities
 - Shows how to use the Puara framework with advanced mapping scenarios
 
-## More Info on the research related with [Puara](https://github.com/Puara)
+---
 
-- [SAT](http://www.sat.qc.ca)
+
+## References
+
+Learn more about the research related to Puara: 
+
+- [Puara GitHub Repository](https://github.com/Puara)
+- [SAT](http://www.sat.qc.ca) // [SAT-R&D](https://sat.qc.ca/fr/recherche/)
 - [IDMIL](http://www.idmil.org)
-- [Edu Meneses](https://www.edumeneses.com)
+
+---
 
 ## Licensing
 
