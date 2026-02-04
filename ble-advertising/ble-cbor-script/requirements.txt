@@ -1,0 +1,7 @@
+async-timeout==4.0.3
+asyncio==3.4.3
+bleak==0.22.2
+cbor2==5.6.4
+dbus-fast==2.22.1
+python-osc==1.8.3
+typing_extensions==4.12.2
