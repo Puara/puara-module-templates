@@ -1,11 +1,11 @@
 # Puara Module Templates for PlatformIO
 
---- 
+---
 
-**Société des Arts Technologiques (SAT)**  
+**Société des Arts Technologiques (SAT)**
 **Input Devices and Music Interaction Laboratory (IDMIL)**
 
---- 
+---
 
 This repository contains several platformIO templates to be used as a base to create devices that can be controlled over the network.
 
@@ -52,7 +52,7 @@ This project is designed for artists and creators interested in:
 > Most embedded projects only upload the **code** that runs on the device. However, in this project, the device also needs a **filesystem** to store important data, such as configuration files, templates, or other resources that the code relies on. These two parts—**code** and **filesystem**—serve different purposes and must be built and uploaded separately.
 > The **executable code** tells the device what to do, includes the logic, instructions, and behavior of the device such as how to read a sensor, process data, or send information over Wi-Fi.
 > The **filesystem** is like a "hard drive" for the device, where additional files are stored and can include configuration files, templates, or other resources that the code needs to function properly. In our approach, the filesystem stores a JSON file with user settings for the network configurations and some global variables that can be modified through the browser without needing to reflash the whole system.
-> 
+>
 
 
 ---
@@ -63,18 +63,18 @@ This project is designed for artists and creators interested in:
 **Every template related to Puara Module has a different set of options but they all generally respect the following explanation.**
 The following sections are detailed more thoroughly in the [Puara Module](https://github.com/Puara/puara-module) doumentation.
 
-### 1. Establishing WiFi 
+### 1. Establishing WiFi
 
-When initiating the program, the module manager will try to connect to the WiFi Network (SSID) defined in `config.json`. 
+When initiating the program, the module manager will try to connect to the WiFi Network (SSID) defined in `config.json`.
 The `puara-module` supports three modes of operation:
 
 1. **Station - Access Point (STA-AP) Mode** (Default):
-   - The device connects to an existing WiFi network (station). 
+   - The device connects to an existing WiFi network (station).
    - The device creates its own WiFi network (access point).
    - User has two ways to communicate with the board.
-   
+
 2. **Access Point (AP) Mode**:
-   - The device does not connect to an existing WiFi network. 
+   - The device does not connect to an existing WiFi network.
    - The device creates its own WiFi network (access point).
 
 3. **Station (STA) Mode**:
@@ -91,7 +91,7 @@ Once the web server is running, you can access it in two ways:
 
 1. **Via IP Address**: Navigate to the device's IP address in your web browser (e.g., `http://192.168.4.1` for AP mode, or the assigned IP in STA/STA-AP modes which can be retrieved using `puara.staIP()`).
 
-2. **Via mDNS Hostname**: If mDNS is enabled, you can access the device using its hostname (e.g., `http://your-device-name.local`). Default `config.json`values enable mDNS with the Puara_001, and browser is accessible with `puara_001.local`. 
+2. **Via mDNS Hostname**: If mDNS is enabled, you can access the device using its hostname (e.g., `http://your-device-name.local`). Default `config.json`values enable mDNS with the Puara_001, and browser is accessible with `puara_001.local`.
 
 Using the web browser, users can modify variables that keep their value after reboot/shutdown of device without needing to rebuild/upload their program.
 Access these values in the program by using:
@@ -124,17 +124,17 @@ The `/data/settings.json` file stores custom application settings as an array of
 ```
 User may add/modify fields in this file and then upload the new filesystem in order to have a more custom device.
 
---- 
+---
 
 For more detailed documentation, please refer to the mdBook in the puara-module's github repository.
 
---- 
+---
 
 
 ## Available Templates
 
-The [puara-module-templates](https://github.com/Puara/puara-module-templates) repository includes multiple examples demonstrating different use cases and functionalities. 
-Each example includes a `data/` folder containing configuration files (`config.json`, `settings.json`) and web interface files (HTML and CSS). 
+The [puara-module-templates](https://github.com/Puara/puara-module-templates) repository includes multiple examples demonstrating different use cases and functionalities.
+Each example includes a `data/` folder containing configuration files (`config.json`, `settings.json`) and web interface files (HTML and CSS).
 
  ⚠️ **After building and uploading the firmware to your board, you must also upload the filesystem**.
 
@@ -213,10 +213,11 @@ Extends the basic template with gesture recognition (Puara-Gestures) capabilitie
 
 ### 7. Button OSC Example
 
-Demonstrates how to use button inputs with OSC messaging. This template:
-- Reads digital button inputs
-- Sends button state changes as OSC messages
+Demonstrates how to use button inputs with puara gestures and OSC messaging. This template:
+- Reads digital button inputs (simulated button in template cas be replaced a real button)
 - Shows event-driven communication patterns
+- Evaluates the user interaction with button to determine if button is being held, pressed once, twice, or three times in a row, and such...
+- Sends button state changes as OSC messages
 
 ---
 
@@ -232,7 +233,7 @@ Demonstrates integration with libmapper, a distributed signal mapping system. Th
 
 ## References
 
-Learn more about the research related to Puara: 
+Learn more about the research related to Puara:
 
 - [Puara GitHub Repository](https://github.com/Puara)
 - [SAT](http://www.sat.qc.ca) // [SAT-R&D](https://sat.qc.ca/fr/recherche/)
