@@ -1,6 +1,6 @@
 # BLE CBOR to OSC
 
-This python script works in conjunction with the esp32 template defined [here](https://github.com/guillaumeriousat/puara-module-template/tree/feat/ble-advert-template) to expose sensor values sent as CBOR by BLE advertisement packages as osc messages.
+This Python script works in conjunction with the BLE-advertising example to expose sensor values sent as CBOR by BLE advertisement packages as OSC messages.
 
 ## Installation
 
