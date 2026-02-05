@@ -16,6 +16,8 @@ pip install -r requirements.txt
 
 ### Runnning script
 
+```bash
 `python ble-cbor-to-osc.py`
+```
 
 You can specify the osc output's address and port with `-a` and `-p`.
