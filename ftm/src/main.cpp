@@ -17,13 +17,14 @@ void setup() {
     #endif
 
     puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
-    puara.initiateFTM(); 
+    //puara.start();
+    puara.configureFTM(); 
 
 }
 
 void loop() {
 
-
+    puara.requestFTM();
     // run at 1 Hz (1 message per second)
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

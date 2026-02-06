@@ -4,7 +4,7 @@
     "author": "chu",
     "institution": "SAT",
     "APpasswd": "ftm_test",
-    "wifiSSID": "chu",
-    "wifiPSK": "choochoo",
+    "wifiSSID": "ftm_001",
+    "wifiPSK": "ftm_test",
     "persistentAP": 1
 }
