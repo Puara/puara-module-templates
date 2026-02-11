@@ -1,16 +1,16 @@
 {
     "settings": [
         {
-            "name": "Hitchhiker",
-            "value": "Ford"
+            "name": "frame count",
+            "value": 32
         },
         {
-            "name": "answer_to_everything",
-            "value": 42
+            "name": "burst period",
+            "value": 10
         },
         {
-            "name": "variable3",
-            "value": 12.345
+            "name": "manual FTM offset",
+            "value": 0
         }
     ]
 }

@@ -43,24 +43,45 @@
 
 #include "Arduino.h"
 #include "puara.h"
+#include "ftm_utils.h"
 
 #include <iostream>
 
 Puara puara;
 
-uint8_t frame_count = 64;
-uint16_t burst_period = 10;
+// Default FTM configuration to be updated by values in settings.json in setup()
+uint8_t frame_count;
+uint16_t burst_period;
+int16_t manual_ftm_offset;
 
 // Timing measurement variables
 unsigned long ftm_request_start_time = 0;
 
-// Helper function to format elapsed time as min:sec:ms
-void formatElapsedTime(unsigned long elapsed_ms, char* buffer, size_t buffer_size) {
-    unsigned long minutes = elapsed_ms / 60000;
-    unsigned long seconds = (elapsed_ms % 60000) / 1000;
-    unsigned long milliseconds = elapsed_ms % 1000;
-    snprintf(buffer, buffer_size, "%02lu:%02lu:%03lu", minutes, seconds, milliseconds);
+// Moving average filter for distance smoothing (window size = 5)
+MovingAverage distanceFilter(5);
+
+void onSettingsChanged() {
+  puara.end_ftm_request_session(); // End ongoing FTM session to apply new settings immediately
+  
+  // Discard any pending report from the old configuration
+  if (puara.is_ftm_report_available()) {
+    puara.set_ftm_report_as_consumed();
+  }
+  
+  // Reset the moving average filter since config changed
+  distanceFilter.reset();
+
+  frame_count = puara.getVarNumber("frame count");
+  burst_period = puara.getVarNumber("burst period");
+  puara.configureFTM(frame_count, burst_period); 
+  
+  Serial.printf("Settings updated - frames: %u, burst: %u\n", frame_count, burst_period);
+  
+  ftm_request_start_time = millis();
+  puara.requestFTM(); // Trigger new FTM procedure with updated settings
 }
+
+
 
 void setup() {
     #ifdef Arduino_h
@@ -69,13 +90,17 @@ void setup() {
 
     //puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
     puara.start();
+    puara.set_settings_changed_handler(onSettingsChanged);
+    frame_count = puara.getVarNumber("frame count");
+    burst_period = puara.getVarNumber("burst period");
+    //manual_ftm_offset = puara.getVarNumber("manual FTM offset");
 
     /* Configure FTM : (number of frames sent [16 (default), 24, 32, 64], burst mode [])
     //    Arguments and default values : (frame count = 32, burst period = 4)
     //    Frame Count :   No. of FTM frames requested in terms of 4 or 8 bursts 
     //                    (allowed values - 0(No pref), 16, 24, 32, 64) 
     //    Burst Period : Requested period between FTM bursts in 100's of milliseconds 
-    //                   (allowed values 0(No pref) - 100) 
+    //                   (allowed values 0(No pref) 2- 255) 
     */
     puara.configureFTM(frame_count, burst_period); 
 
@@ -93,7 +118,6 @@ void setup() {
 
 void loop() {
 
-
     if(puara.is_ftm_report_available()){
         // Calculate elapsed time since FTM request
         unsigned long elapsed_ms = millis() - ftm_request_start_time;
@@ -103,8 +127,11 @@ void loop() {
         uint32_t distance_cm = puara.get_last_distance_cm();
         uint32_t rtt_ns = puara.get_last_rtt_ns();
         
-        Serial.printf("FTM Report - Distance: %u cm, RTT: %u ns, Response Time: %s (frames: %u, burst: %u)\n", 
-                      distance_cm, rtt_ns, time_buffer, frame_count, burst_period);
+        // Apply moving average filter
+        float filtered_distance = distanceFilter.addSample((float)distance_cm);
+        
+        Serial.printf("FTM Report - Raw: %u cm, Filtered: %.1f cm, RTT: %u ns, Time: %s (frames: %u, burst: %u)\n", 
+                      distance_cm, filtered_distance, rtt_ns, time_buffer, frame_count, burst_period);
         
         puara.set_ftm_report_as_consumed();
         
