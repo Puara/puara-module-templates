@@ -143,4 +143,165 @@ public:
     }
 };
 
+//============================================================================//
+// FTM Calibration                                                            //
+//============================================================================//
+
+/**
+ * @brief FTM Calibration utility for startup calibration
+ * 
+ * Usage:
+ *   FTMCalibration calibrator(100.0f, 100);  // 100cm known distance, 100 samples
+ *   
+ *   // During calibration (in loop):
+ *   if (calibrator.isCalibrating()) {
+ *       calibrator.addSample(raw_distance);
+ *   }
+ *   
+ *   // After calibration:
+ *   float calibrated = calibrator.apply(raw_distance);
+ */
+class FTMCalibration {
+private:
+    float known_distance_cm;      // The actual distance during calibration
+    uint32_t target_samples;      // Number of samples to collect
+    uint32_t samples_collected;   // Current sample count
+    float accumulated_sum;        // Sum of all samples
+    float offset_cm;              // Calculated offset (measured - actual)
+    bool calibration_complete;    // Flag indicating calibration is done
+
+public:
+    /**
+     * @brief Construct a new FTM Calibration object
+     * @param known_dist_cm The actual/true distance during calibration (default 100cm)
+     * @param num_samples Number of samples to collect (default 100)
+     */
+    FTMCalibration(float known_dist_cm = 100.0f, uint32_t num_samples = 100)
+        : known_distance_cm(known_dist_cm)
+        , target_samples(num_samples)
+        , samples_collected(0)
+        , accumulated_sum(0.0f)
+        , offset_cm(0.0f)
+        , calibration_complete(false) {
+    }
+
+    /**
+     * @brief Add a calibration sample
+     * @param measured_distance_cm The raw FTM distance measurement
+     * @return true if calibration just completed, false otherwise
+     */
+    bool addSample(float measured_distance_cm) {
+        if (calibration_complete) {
+            return false;
+        }
+
+        accumulated_sum += measured_distance_cm;
+        samples_collected++;
+
+        // Check if we have enough samples
+        if (samples_collected >= target_samples) {
+            float measured_avg = accumulated_sum / samples_collected;
+            offset_cm = measured_avg - known_distance_cm;
+            calibration_complete = true;
+            return true;  // Calibration just finished
+        }
+
+        return false;
+    }
+
+    /**
+     * @brief Check if calibration is still in progress
+     * @return true if still collecting samples
+     */
+    bool isCalibrating() const {
+        return !calibration_complete;
+    }
+
+    /**
+     * @brief Check if calibration is complete
+     * @return true if calibration finished
+     */
+    bool isCalibrated() const {
+        return calibration_complete;
+    }
+
+    /**
+     * @brief Get the current progress
+     * @return Number of samples collected so far
+     */
+    uint32_t getSamplesCollected() const {
+        return samples_collected;
+    }
+
+    /**
+     * @brief Get the target number of samples
+     * @return Total samples needed for calibration
+     */
+    uint32_t getTargetSamples() const {
+        return target_samples;
+    }
+
+    /**
+     * @brief Get progress as percentage
+     * @return Progress 0-100
+     */
+    uint8_t getProgressPercent() const {
+        return (uint8_t)((samples_collected * 100) / target_samples);
+    }
+
+    /**
+     * @brief Get the calculated offset
+     * @return Offset in cm (positive = measured too high, negative = measured too low)
+     */
+    float getOffset() const {
+        return offset_cm;
+    }
+
+    /**
+     * @brief Get the known/reference distance used for calibration
+     * @return Known distance in cm
+     */
+    float getKnownDistance() const {
+        return known_distance_cm;
+    }
+
+    /**
+     * @brief Get the average measured distance during calibration
+     * @return Average measured distance in cm
+     */
+    float getMeasuredAverage() const {
+        if (samples_collected == 0) return 0.0f;
+        return accumulated_sum / samples_collected;
+    }
+
+    /**
+     * @brief Apply calibration offset to a raw measurement
+     * @param raw_distance_cm The raw FTM measurement
+     * @return Calibrated distance (raw - offset), clamped to >= 0
+     */
+    float apply(float raw_distance_cm) const {
+        float calibrated = raw_distance_cm - offset_cm;
+        return (calibrated < 0.0f) ? 0.0f : calibrated;
+    }
+
+    /**
+     * @brief Manually set the offset (useful for restoring saved calibration)
+     * @param offset New offset value in cm
+     */
+    void setOffset(float offset) {
+        offset_cm = offset;
+        calibration_complete = true;
+    }
+
+    /**
+     * @brief Reset calibration to start fresh
+     */
+    void reset() {
+        samples_collected = 0;
+        accumulated_sum = 0.0f;
+        offset_cm = 0.0f;
+        calibration_complete = false;
+    }
+};
+
 #endif // FTM_UTILS_H
