@@ -51,10 +51,6 @@
 
 Puara puara;
 
-// Physical distances to sample (in cm)
-const int distances[] = {150, 300, 450, 600, 750, 900, 1050, 1200, 1350, 1500, 1650, 1800, 1950, 2100, 2250, 2400, 2550};
-const size_t NUM_DISTANCES = sizeof(distances) / sizeof(distances[0]);  // 17
-
 // Configuration pairs for automated sampling (frame_count, burst_period)
 // Focused on configs that complete in under 2 seconds
 struct FTMConfig {
@@ -63,27 +59,28 @@ struct FTMConfig {
 };
 
 const FTMConfig configs[] = {
-    // configurations that give an answer in less than 1 second based on prior testing
-    // frame_count=16: burst_periods 2,4,6
-    {16, 2}, {16, 4}, {16, 6},
-    // frame_count=24: burst_periods 2
-    {24, 2}
+    // frame_count=16: burst_periods 2,4,6,8,10,12,14,16
+    {16, 2}, {16, 4}, {16, 6}, {16, 8}, {16, 10}, {16, 12}, {16, 14}, {16, 16},
+    // frame_count=24: burst_periods 2,4,6
+    {24, 2}, {24, 4}, {24, 5},
+    // frame_count=32: burst_period 2
+    {32, 2},
+    // frame_count=64: burst_period 2
+    {64, 2}
 };
 const size_t NUM_CONFIGS = sizeof(configs) / sizeof(configs[0]);  // 13
 const int SAMPLES_PER_CONFIG = 1000;
 
-// Current state
-size_t distance_idx = 0;
+// Current configuration state
 size_t config_idx = 0;
 int sample_count = 0;
 bool sampling_complete = false;
-bool waiting_for_user = false;  // Flag to wait for user confirmation between distances
-bool all_distances_complete = false;
 
 // Current active configuration values
 uint8_t frame_count;
 uint16_t burst_period;
-int physical_distance; 
+
+int physical_distance = 300; // cm 
 
 // Timing measurement variables
 unsigned long ftm_request_start_time = 0;
@@ -95,24 +92,8 @@ void advanceToNextConfig() {
     config_idx++;
     
     if (config_idx >= NUM_CONFIGS) {
-        // All configs done for this distance
         sampling_complete = true;
-        
-        // Check if there are more distances
-        if (distance_idx + 1 < NUM_DISTANCES) {
-            Serial.println("#");
-            Serial.printf("# ========== DISTANCE %d cm COMPLETE ==========\n", physical_distance);
-            Serial.printf("# Next distance: %d cm\n", distances[distance_idx + 1]);
-            Serial.println("# Move device to next position, then press ENTER to continue...");
-            Serial.println("#");
-            waiting_for_user = true;
-        } else {
-            all_distances_complete = true;
-            Serial.println("#");
-            Serial.println("# ==========================================");
-            Serial.println("# ALL DISTANCES AND CONFIGURATIONS COMPLETE!");
-            Serial.println("# ==========================================");
-        }
+        Serial.println("# Sampling complete! All configurations tested.");
         return;
     }
     
@@ -122,31 +103,6 @@ void advanceToNextConfig() {
     
     Serial.printf("# Config %zu/%zu: frame_count=%u, burst_period=%u\n", 
                   config_idx + 1, NUM_CONFIGS, frame_count, burst_period);
-}
-
-// Function to advance to next distance
-void advanceToNextDistance() {
-    distance_idx++;
-    physical_distance = distances[distance_idx];
-    config_idx = 0;
-    sample_count = 0;
-    sampling_complete = false;
-    waiting_for_user = false;
-    
-    // Reset to first config
-    frame_count = configs[0].frame_count;
-    burst_period = configs[0].burst_period;
-    puara.configureFTM(frame_count, burst_period);
-    
-    Serial.println("#");
-    Serial.printf("# ========== STARTING DISTANCE %zu/%zu: %d cm ==========\n", 
-                  distance_idx + 1, NUM_DISTANCES, physical_distance);
-    Serial.printf("# Config 1/%zu: frame_count=%u, burst_period=%u\n", 
-                  NUM_CONFIGS, frame_count, burst_period);
-    
-    // Start sampling
-    ftm_request_start_time = millis();
-    puara.requestFTM();
 }
 
 /*
@@ -176,58 +132,6 @@ void setup() {
     //puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
     puara.start();
 
-    // Verify if external AP / connected SSID is an FTM responder 
-    if(!puara.get_ftm_responder_state()){
-        Serial.println("# External Access Point is not an FTM responder. Please connect to an FTM responder to perform ranging.");
-    }
-
-    // Display available distances and prompt user to select starting position
-    Serial.println("#");
-    Serial.println("# ==========================================");
-    Serial.println("# FTM CALIBRATION - DISTANCE SELECTION");
-    Serial.println("# ==========================================");
-    Serial.println("# Available distances (cm):");
-    for (size_t i = 0; i < NUM_DISTANCES; i++) {
-        Serial.printf("#   %zu: %d cm\n", i, distances[i]);
-    }
-    Serial.println("#");
-    Serial.println("# Enter the index (0-16) of starting distance, then press ENTER:");
-    Serial.println("# (Default: 0 for 150cm if no input within 60 seconds)");
-    
-    // Wait for user input with timeout
-    unsigned long start_wait = millis();
-    String input = "";
-    while (millis() - start_wait < 60000) {  // 60 second timeout
-        if (Serial.available()) {
-            char c = Serial.read();
-            if (c == '\n' || c == '\r') {
-                break;
-            }
-            if (c >= '0' && c <= '9') {
-                input += c;
-            }
-        }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
-    
-    // Parse input or use default
-    if (input.length() > 0) {
-        int idx = input.toInt();
-        if (idx >= 0 && idx < (int)NUM_DISTANCES) {
-            distance_idx = idx;
-        } else {
-            Serial.printf("# Invalid index %d, using 0\n", idx);
-            distance_idx = 0;
-        }
-    } else {
-        Serial.println("# No input received, using default (index 0)");
-        distance_idx = 0;
-    }
-    
-    physical_distance = distances[distance_idx];
-    Serial.printf("# Selected starting distance: %d cm (index %zu)\n", physical_distance, distance_idx);
-    Serial.println("#");
-
     // Initialize first configuration
     frame_count = configs[0].frame_count;
     burst_period = configs[0].burst_period;
@@ -239,34 +143,19 @@ void setup() {
     //    Burst Period : Requested period between FTM bursts in 100's of milliseconds 
     //                   (allowed values 0(No pref) 2- 255) 
     */
-    puara.configureFTM(frame_count, burst_period);
+    puara.configureFTM(frame_count, burst_period); 
+
+    // Verify if external AP / connected SSID is an FTM responder 
+    if(!puara.get_ftm_responder_state()){
+        Serial.println("# External Access Point is not an FTM responder. Please connect to an FTM responder to perform ranging.");
+    }
 
     // Print CSV header for data logging
     Serial.println("physical_distance_cm,frame_count,burst_period,estimated_distance_cm,rtt_ns,elapsed_ms");
-    Serial.printf("# ========== STARTING DISTANCE %zu/%zu: %d cm ==========\n", 
-                  distance_idx + 1, NUM_DISTANCES, physical_distance);
-    Serial.printf("# Sampling %zu configs x %d samples = %zu samples per distance\n", 
+    Serial.printf("# Starting automated sampling: %zu configs x %d samples = %zu total\n", 
                   NUM_CONFIGS, SAMPLES_PER_CONFIG, NUM_CONFIGS * SAMPLES_PER_CONFIG);
     Serial.printf("# Config 1/%zu: frame_count=%u, burst_period=%u\n", 
                   NUM_CONFIGS, frame_count, burst_period);
-
-    // Wait for user to confirm they're ready before starting
-    Serial.println("#");
-    Serial.println("# ==========================================");
-    Serial.println("# Position your sensors, then press ENTER to start sampling...");
-    Serial.println("# ==========================================");
-    
-    // Wait indefinitely for user input
-    while (!Serial.available()) {
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-    }
-    // Clear the input buffer
-    while (Serial.available()) {
-        Serial.read();
-    }
-    
-    Serial.println("# Starting FTM sampling...");
-    Serial.println("#");
 
     // Send initial FTM request to trigger the first measurement
     ftm_request_start_time = millis();
@@ -275,26 +164,6 @@ void setup() {
 
 
 void loop() {
-    
-    // Check if all distances are complete
-    if (all_distances_complete) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        return;
-    }
-    
-    // Wait for user confirmation to proceed to next distance
-    if (waiting_for_user) {
-        if (Serial.available()) {
-            // Read and discard input (any key press)
-            while (Serial.available()) {
-                Serial.read();
-            }
-            // Advance to next distance
-            advanceToNextDistance();
-        }
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-        return;
-    }
 
     // Stop if all sampling is complete
     if (sampling_complete) {
