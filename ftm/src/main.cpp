@@ -192,12 +192,12 @@ void setup() {
     }
     Serial.println("#");
     Serial.println("# Enter the index (0-16) of starting distance, then press ENTER:");
-    Serial.println("# (Default: 0 for 150cm if no input within 10 seconds)");
+    Serial.println("# (Default: 0 for 150cm if no input within 60 seconds)");
     
     // Wait for user input with timeout
     unsigned long start_wait = millis();
     String input = "";
-    while (millis() - start_wait < 10000) {  // 10 second timeout
+    while (millis() - start_wait < 60000) {  // 60 second timeout
         if (Serial.available()) {
             char c = Serial.read();
             if (c == '\n' || c == '\r') {
@@ -249,6 +249,24 @@ void setup() {
                   NUM_CONFIGS, SAMPLES_PER_CONFIG, NUM_CONFIGS * SAMPLES_PER_CONFIG);
     Serial.printf("# Config 1/%zu: frame_count=%u, burst_period=%u\n", 
                   NUM_CONFIGS, frame_count, burst_period);
+
+    // Wait for user to confirm they're ready before starting
+    Serial.println("#");
+    Serial.println("# ==========================================");
+    Serial.println("# Position your sensors, then press ENTER to start sampling...");
+    Serial.println("# ==========================================");
+    
+    // Wait indefinitely for user input
+    while (!Serial.available()) {
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+    }
+    // Clear the input buffer
+    while (Serial.available()) {
+        Serial.read();
+    }
+    
+    Serial.println("# Starting FTM sampling...");
+    Serial.println("#");
 
     // Send initial FTM request to trigger the first measurement
     ftm_request_start_time = millis();
