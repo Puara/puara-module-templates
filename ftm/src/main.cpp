@@ -60,15 +60,11 @@ struct FTMConfig {
 
 const FTMConfig configs[] = {
     // frame_count=16: burst_periods 2,4,6,8,10,12,14,16
-    {16, 2}, {16, 4}, {16, 6}, {16, 8}, {16, 10}, {16, 12}, {16, 14}, {16, 16},
+    {16, 2}, {16, 4}, {16, 6}, {16, 8},
     // frame_count=24: burst_periods 2,4,6
-    {24, 2}, {24, 4}, {24, 5},
-    // frame_count=32: burst_period 2
-    {32, 2},
-    // frame_count=64: burst_period 2
-    {64, 2}
+    {24, 2}
 };
-const size_t NUM_CONFIGS = sizeof(configs) / sizeof(configs[0]);  // 13
+const size_t NUM_CONFIGS = sizeof(configs) / sizeof(configs[0]);  // 5
 const int SAMPLES_PER_CONFIG = 1000;
 
 // Current configuration state
@@ -151,7 +147,7 @@ void setup() {
     }
 
     // Print CSV header for data logging
-    Serial.println("physical_distance_cm,frame_count,burst_period,estimated_distance_cm,rtt_ns,elapsed_ms");
+    Serial.println("physical_distance_cm,frame_count,burst_period,estimated_distance_cm,rtt_ns,rssi_dbm,elapsed_ms");
     Serial.printf("# Starting automated sampling: %zu configs x %d samples = %zu total\n", 
                   NUM_CONFIGS, SAMPLES_PER_CONFIG, NUM_CONFIGS * SAMPLES_PER_CONFIG);
     Serial.printf("# Config 1/%zu: frame_count=%u, burst_period=%u\n", 
@@ -193,6 +189,7 @@ void loop() {
     
         uint32_t distance_cm = puara.get_last_distance_cm();
         uint32_t rtt_ns = puara.get_last_rtt_ns();
+        int rssi = puara.get_rssi_of_ftm_frame();
         
         // Skip samples with zero/invalid readings (likely errors)
         if (distance_cm == 0 && rtt_ns == 0) {
@@ -204,7 +201,7 @@ void loop() {
         }
 
         // Print CSV data row
-        Serial.printf("%d,%u,%u,%lu,%lu,%lu\n", physical_distance, frame_count, burst_period, distance_cm, rtt_ns, elapsed_ms);
+        Serial.printf("%d,%u,%u,%lu,%lu,%d,%lu\n", physical_distance, frame_count, burst_period, distance_cm, rtt_ns, rssi, elapsed_ms);
         
         puara.set_ftm_report_as_consumed();
         
