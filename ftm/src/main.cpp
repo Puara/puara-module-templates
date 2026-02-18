@@ -87,21 +87,31 @@ void setup() {
 
     auto responders = puara.get_scanned_responder_aps();
 
+    wifi_ftm_initiator_cfg_t ftm_config;
+
     for (const auto& ap : responders) {
+        std::copy(std::begin(ap.bssid), std::end(ap.bssid), std::begin(ftm_config.resp_mac));
+        ftm_config.channel = ap.primary_channel;
+        ftm_config.frm_count = frame_count;
+        ftm_config.burst_period = burst_period;
+        ftm_config.use_get_report_api = false; // use WIFI_EVENT_FTM_REPORT to get FTM report
+
         Serial.printf("SSID: %s, BSSID: %02x:%02x:%02x:%02x:%02x:%02x, Channel: %d\n",
             ap.ssid.c_str(),
             ap.bssid[0], ap.bssid[1], ap.bssid[2], ap.bssid[3], ap.bssid[4], ap.bssid[5],
             ap.primary_channel);
     }
 
+    esp_wifi_ftm_initiate_session(&ftm_config);
+    while(!puara.ftm_report_available()) {
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+    Serial.println("FTM session initiated and report is available.");
+    //puara.make_vector_FTM_configurations(frame_count, burst_period);
+
 //    puara.configureFTM(frame_count, burst_period, uint8_t* target_bssid, uint8_t target_channel){
 
 /*    puara.configureFTM(frame_count, burst_period); 
-
-    // Verify if external AP / connected SSID is an FTM responder 
-    if(!puara.get_ftm_responder_state()){
-        Serial.println("External Access Point is not an FTM responder. Please connect to an FTM responder to perform ranging.");
-    }
 
     // Send initial FTM request to trigger the first measurement
     ftm_request_start_time = millis();
