@@ -42,16 +42,16 @@
 
 #include "Arduino.h"
 #include "puara.h"
-#include "ftm_utils.h"
 
 #include <iostream>
 
 Puara puara;
-/*
+
 uint8_t frame_count = 16;  // [16 (default), 24, 32, 64]
-uint16_t burst_period = 10; // [0(No pref) 2- 255] in 100's of ms
-unsigned long ftm_request_start_time = 0;
-*/
+uint16_t burst_period = 2; // [0(No pref) 2- 255] in 100's of ms
+
+//unsigned long ftm_request_start_time = 0;
+
 /*
 // Update FTM configuration and trigger new measurement when settings are changed/saved from the web interface
 void onSettingsChanged() {
@@ -81,6 +81,20 @@ void setup() {
     #endif
 
     puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
+
+    int num_responder_aps = puara.get_num_responder_aps();
+    Serial.printf("Number of FTM responder APs detected in scan: %d\n", num_responder_aps);
+
+    auto responders = puara.get_scanned_responder_aps();
+
+    for (const auto& ap : responders) {
+        Serial.printf("SSID: %s, BSSID: %02x:%02x:%02x:%02x:%02x:%02x, Channel: %d\n",
+            ap.ssid.c_str(),
+            ap.bssid[0], ap.bssid[1], ap.bssid[2], ap.bssid[3], ap.bssid[4], ap.bssid[5],
+            ap.primary_channel);
+    }
+
+//    puara.configureFTM(frame_count, burst_period, uint8_t* target_bssid, uint8_t target_channel){
 
 /*    puara.configureFTM(frame_count, burst_period); 
 
