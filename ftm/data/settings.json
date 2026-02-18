@@ -2,14 +2,38 @@
     "settings": [
         {
             "name": "frame count",
-            "value": 32
+            "value": 16
         },
         {
             "name": "burst period",
-            "value": 10
+            "value": 4
         },
         {
             "name": "manual FTM offset",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_one-X-Position",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_one-Y-Position",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_two-X-Position",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_two-Y-Position",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_three-X-Position",
+            "value": 0
+        },
+        {
+            "name": "trilateration_station_three-Y-Position",
             "value": 0
         }
     ]

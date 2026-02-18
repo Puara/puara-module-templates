@@ -85,9 +85,9 @@ void setup() {
     int num_responder_aps = puara.get_num_responder_aps();
     Serial.printf("Number of FTM responder APs detected in scan: %d\n", num_responder_aps);
 
-    auto responders = puara.get_scanned_responder_aps();
+    const auto responders = puara.get_scanned_responder_aps();
 
-    wifi_ftm_initiator_cfg_t ftm_config;
+    auto ftm_configs = puara.make_FTM_Configuration_Vectors(responders, frame_count, burst_period);
 
     for (const auto& ap : responders) {
         std::copy(std::begin(ap.bssid), std::end(ap.bssid), std::begin(ftm_config.resp_mac));
@@ -102,12 +102,11 @@ void setup() {
             ap.primary_channel);
     }
 
-    esp_wifi_ftm_initiate_session(&ftm_config);
+    /*esp_wifi_ftm_initiate_session(&ftm_config);
     while(!puara.ftm_report_available()) {
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
-    Serial.println("FTM session initiated and report is available.");
-    //puara.make_vector_FTM_configurations(frame_count, burst_period);
+    Serial.println("FTM session initiated and report is available.");*/
 
 //    puara.configureFTM(frame_count, burst_period, uint8_t* target_bssid, uint8_t target_channel){
 
