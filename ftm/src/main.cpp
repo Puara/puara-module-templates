@@ -47,12 +47,12 @@
 #include <iostream>
 
 Puara puara;
-
+/*
 uint8_t frame_count = 16;  // [16 (default), 24, 32, 64]
 uint16_t burst_period = 10; // [0(No pref) 2- 255] in 100's of ms
 unsigned long ftm_request_start_time = 0;
-
-
+*/
+/*
 // Update FTM configuration and trigger new measurement when settings are changed/saved from the web interface
 void onSettingsChanged() {
 
@@ -74,15 +74,15 @@ void onSettingsChanged() {
     ftm_request_start_time = millis();
     puara.requestFTM(); // Trigger new FTM procedure with updated settings
 }
-
+*/
 void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
     #endif
 
-    puara.start();
+    puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
 
-    puara.configureFTM(frame_count, burst_period); 
+/*    puara.configureFTM(frame_count, burst_period); 
 
     // Verify if external AP / connected SSID is an FTM responder 
     if(!puara.get_ftm_responder_state()){
@@ -92,10 +92,11 @@ void setup() {
     // Send initial FTM request to trigger the first measurement
     ftm_request_start_time = millis();
     puara.requestFTM();
+    */
 }
 
 void loop() {
-
+/*
     if(puara.is_ftm_report_available()){
         // Calculate elapsed time since FTM request
         elapsed_ms = millis() - ftm_request_start_time;
@@ -115,8 +116,9 @@ void loop() {
         puara.requestFTM();
     }
 
+    */
     // Small yield to prevent tight busy-wait (optional but recommended)
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 
