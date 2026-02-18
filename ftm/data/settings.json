@@ -1,0 +1,16 @@
+{
+    "settings": [
+        {
+            "name": "frame count",
+            "value": 32
+        },
+        {
+            "name": "burst period",
+            "value": 10
+        },
+        {
+            "name": "manual FTM offset",
+            "value": 0
+        }
+    ]
+}
