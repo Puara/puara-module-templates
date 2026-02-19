@@ -13,27 +13,39 @@
             "value": 0
         },
         {
-            "name": "trilateration_station_one-X-Position",
+            "name": "AP_one_SSID",
+            "value": "ftm_responder_001"
+        },
+        {
+            "name": "AP_one_x_pos",
             "value": 0
         },
         {
-            "name": "trilateration_station_one-Y-Position",
+            "name": "AP_one_y_pos",
             "value": 0
         },
         {
-            "name": "trilateration_station_two-X-Position",
+            "name": "AP_two_SSID",
+            "value": "ftm_responder_002"
+        },
+        {
+            "name": "AP_two_x_pos",
             "value": 0
         },
         {
-            "name": "trilateration_station_two-Y-Position",
+            "name": "AP_two_y_pos",
             "value": 0
         },
         {
-            "name": "trilateration_station_three-X-Position",
+            "name": "AP_three_SSID",
+            "value": "ftm_responder_003"
+        },
+        {
+            "name": "AP_three_x_pos",
             "value": 0
         },
         {
-            "name": "trilateration_station_three-Y-Position",
+            "name": "AP_three_y_pos",
             "value": 0
         }
     ]

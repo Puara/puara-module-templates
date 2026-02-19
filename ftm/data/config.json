@@ -1,10 +1,10 @@
 {
-    "device": "ftm",
-    "id": 2,
+    "device": "ftm_initiator",
+    "id": 1,
     "author": "chu",
     "institution": "SAT",
     "APpasswd": "ftm_test",
-    "wifiSSID": "ftm",
-    "wifiPSK": "ftm_test",
+    "wifiSSID": "no_connection_now",
+    "wifiPSK": "no_PSK",
     "persistentAP": 1
 }
