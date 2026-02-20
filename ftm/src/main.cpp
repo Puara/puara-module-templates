@@ -45,12 +45,27 @@
 
 #include <iostream>
 
+
+// MLAT modes for different numbers of responders
+#define UNILATERATION 1
+#define BILATERATION 2
+#define TRILATERATION 3
+#define QUADRILATERATION 4
+#define FIVE_POINT_MLAT 5
+#define SIX_POINT_MLAT 6
+
+// User selects the mode here:
+#define MLAT_MODE BILATERATION
+
 Puara puara;
 
 uint8_t frame_count = 16;  // [16 (default), 24, 32, 64]
 uint16_t burst_period = 2; // [0(No pref) 2- 255] in 100's of ms
+unsigned long ftm_request_start_time = 0;
 
-//unsigned long ftm_request_start_time = 0;
+std::map<std::string, wifi_ftm_initiator_cfg_t> responder_configs;
+
+std::vector<std::string> return_list_of_SSID(int num_inputs);
 
 /*
 // Update FTM configuration and trigger new measurement when settings are changed/saved from the web interface
@@ -82,66 +97,42 @@ void setup() {
 
     puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
 
-    int num_responder_aps = puara.get_num_responder_aps();
-    Serial.printf("Number of FTM responder APs detected in scan: %d\n", num_responder_aps);
+    const auto returned_ssids = return_list_of_SSID(MLAT_MODE);
 
-    const auto responders = puara.get_scanned_responder_aps();
+    // Return a map of responders defined by user and their wifi_ftm_cfg_t struct info (MAC, channel)
+    responder_configs = puara.get_map_of_responder_configs(frame_count, burst_period, returned_ssids); 
 
-    auto ftm_configs = puara.make_FTM_Configuration_Vectors(responders, frame_count, burst_period);
-
-    for (const auto& ap : responders) {
-        std::copy(std::begin(ap.bssid), std::end(ap.bssid), std::begin(ftm_config.resp_mac));
-        ftm_config.channel = ap.primary_channel;
-        ftm_config.frm_count = frame_count;
-        ftm_config.burst_period = burst_period;
-        ftm_config.use_get_report_api = false; // use WIFI_EVENT_FTM_REPORT to get FTM report
-
-        Serial.printf("SSID: %s, BSSID: %02x:%02x:%02x:%02x:%02x:%02x, Channel: %d\n",
-            ap.ssid.c_str(),
-            ap.bssid[0], ap.bssid[1], ap.bssid[2], ap.bssid[3], ap.bssid[4], ap.bssid[5],
-            ap.primary_channel);
-    }
-
-    /*esp_wifi_ftm_initiate_session(&ftm_config);
-    while(!puara.ftm_report_available()) {
-        vTaskDelay(1 / portTICK_PERIOD_MS);
-    }
-    Serial.println("FTM session initiated and report is available.");*/
-
-//    puara.configureFTM(frame_count, burst_period, uint8_t* target_bssid, uint8_t target_channel){
-
-/*    puara.configureFTM(frame_count, burst_period); 
-
-    // Send initial FTM request to trigger the first measurement
-    ftm_request_start_time = millis();
-    puara.requestFTM();
-    */
 }
 
 void loop() {
-/*
-    if(puara.is_ftm_report_available()){
-        // Calculate elapsed time since FTM request
-        elapsed_ms = millis() - ftm_request_start_time;
-    
-        uint32_t distance_cm = puara.get_last_distance_cm();
-        uint32_t rtt_ns = puara.get_last_rtt_ns();
-        int rssi = puara.get_rssi_of_ftm_frame();
+    for(auto& [ssid, cfg] : responder_configs) {
+        Serial.printf("Responder SSID: %s\n", ssid.c_str());
+        esp_wifi_ftm_initiate_session(&cfg);
         
-        // Print data 
-        Serial.printf("Frame Count : %u, Burst Period : %u, Distance : %lu cm, RTT : %lu ns, RSSI : %d dBm, Elapsed Time : %lu ms\n",
-             frame_count, burst_period, distance_cm, rtt_ns, rssi, elapsed_ms);
-        
+        while(!puara.ftm_report_available()) {
+            // Wait for the FTM report to be available
+            vTaskDelay(1 / portTICK_PERIOD_MS); // Check every 1 ms
+        }
+        Serial.printf("Received FTM report for SSID: %s\n", ssid.c_str());
         puara.set_ftm_report_as_consumed();
-        
-        // Request next FTM measurement
-        ftm_request_start_time = millis();
-        puara.requestFTM();
     }
+}
 
-    */
-    // Small yield to prevent tight busy-wait (optional but recommended)
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+
+std::vector<std::string> return_list_of_SSID(int num_inputs) {
+    
+  std::vector<std::string> ssid_list;
+
+  for (int i = 1; i <= num_inputs; ++i) {
+    std::string key = "Responder" + std::to_string(i) + "_SSID";
+    std::string ssid = puara.getVarText(key);
+    if (!ssid.empty()) {
+        Serial.printf("Retrieved SSID for Responder %d: %s\n", i, ssid.c_str());
+      ssid_list.push_back(ssid);
+    }
+  }
+  return ssid_list;
 }
 
 

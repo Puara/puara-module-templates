@@ -9,43 +9,75 @@
             "value": 4
         },
         {
-            "name": "manual FTM offset",
-            "value": 0
-        },
-        {
-            "name": "AP_one_SSID",
+            "name": "Responder1_SSID",
             "value": "ftm_responder_001"
         },
         {
-            "name": "AP_one_x_pos",
+            "name": "Responder1_x_pos",
             "value": 0
         },
         {
-            "name": "AP_one_y_pos",
+            "name": "Responder1_y_pos",
             "value": 0
         },
         {
-            "name": "AP_two_SSID",
+            "name": "Responder2_SSID",
             "value": "ftm_responder_002"
         },
         {
-            "name": "AP_two_x_pos",
+            "name": "Responder2_x_pos",
             "value": 0
         },
         {
-            "name": "AP_two_y_pos",
+            "name": "Responder2_y_pos",
             "value": 0
         },
         {
-            "name": "AP_three_SSID",
+            "name": "Responder3_SSID",
             "value": "ftm_responder_003"
         },
         {
-            "name": "AP_three_x_pos",
+            "name": "Responder3_x_pos",
             "value": 0
         },
         {
-            "name": "AP_three_y_pos",
+            "name": "Responder3_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder4_SSID",
+            "value": "ftm_responder_004"
+        },
+        {
+            "name": "Responder4_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder4_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder5_SSID",
+            "value": "ftm_responder_005"
+        },
+        {
+            "name": "Responder5_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder5_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder6_SSID",
+            "value": "ftm_responder_006"
+        },
+        {
+            "name": "Responder6_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder6_y_pos",
             "value": 0
         }
     ]
