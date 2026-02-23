@@ -46,7 +46,7 @@
 #include <iostream>
 
 
-// MLAT modes for different numbers of responders
+// Multilateration (MLAT) modes for different numbers of responders
 #define UNILATERATION 1
 #define BILATERATION 2
 #define TRILATERATION 3
@@ -55,17 +55,17 @@
 #define SIX_POINT_MLAT 6
 
 // User selects the mode here:
-#define MLAT_MODE BILATERATION
+#define MLAT_MODE UNILATERATION
 
 Puara puara;
 
-uint8_t frame_count = 16;  // [16 (default), 24, 32, 64]
+uint8_t frame_count = 24;  // [16 (default), 24, 32, 64]
 uint16_t burst_period = 2; // [0(No pref) 2- 255] in 100's of ms
 unsigned long ftm_request_start_time = 0;
 
 std::map<std::string, wifi_ftm_initiator_cfg_t> responder_configs;
 
-std::vector<std::string> return_list_of_SSID(int num_inputs);
+void init_FTM(int mlat_mode, auto &responder_cfgs);
 
 /*
 // Update FTM configuration and trigger new measurement when settings are changed/saved from the web interface
@@ -95,36 +95,39 @@ void setup() {
         Serial.begin(115200);
     #endif
 
-    puara.start(PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE);
-
-    const auto returned_ssids = return_list_of_SSID(MLAT_MODE);
-
-    // Return a map of responders defined by user and their wifi_ftm_cfg_t struct info (MAC, channel)
-    responder_configs = puara.get_map_of_responder_configs(frame_count, burst_period, returned_ssids); 
-
+    puara.start(/*PuaraAPI::UART_MONITOR, ESP_LOG_VERBOSE*/);
+    init_FTM(MLAT_MODE, responder_configs);
 }
 
 void loop() {
     for(auto& [ssid, cfg] : responder_configs) {
         Serial.printf("Responder SSID: %s\n", ssid.c_str());
+        ftm_request_start_time = millis();
         esp_wifi_ftm_initiate_session(&cfg);
         
         while(!puara.ftm_report_available()) {
             // Wait for the FTM report to be available
             vTaskDelay(1 / portTICK_PERIOD_MS); // Check every 1 ms
+            if(millis() - ftm_request_start_time > 1000) { // Timeout after 1 second
+                Serial.printf("Timeout waiting for FTM report for SSID: %s\n", ssid.c_str());
+                break;
+            }
         }
-        Serial.printf("Received FTM report for SSID: %s\n", ssid.c_str());
-        puara.set_ftm_report_as_consumed();
+        if(puara.ftm_report_available()) {
+            unsigned long elapsed_ms = millis() - ftm_request_start_time;
+            Serial.printf("Received FTM report for SSID: %s in %lu ms\n", ssid.c_str(), elapsed_ms);
+            puara.set_ftm_report_as_consumed();
+        }
     }
 }
 
 
 
-std::vector<std::string> return_list_of_SSID(int num_inputs) {
+void init_FTM(int mlat_mode, auto &responder_cfgs) {
     
   std::vector<std::string> ssid_list;
 
-  for (int i = 1; i <= num_inputs; ++i) {
+  for (int i = 1; i <= mlat_mode; ++i) {
     std::string key = "Responder" + std::to_string(i) + "_SSID";
     std::string ssid = puara.getVarText(key);
     if (!ssid.empty()) {
@@ -132,7 +135,9 @@ std::vector<std::string> return_list_of_SSID(int num_inputs) {
       ssid_list.push_back(ssid);
     }
   }
-  return ssid_list;
+    // Return a map of responders defined by user and their wifi_ftm_cfg_t struct info (MAC, channel)
+    responder_cfgs = puara.get_map_of_responder_configs(frame_count, burst_period, ssid_list); 
+
 }
 
 
