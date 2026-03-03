@@ -55,7 +55,7 @@
 #define SIX_POINT_MLAT 6
 
 // User selects the mode here:
-#define MLAT_MODE UNILATERATION
+#define MLAT_MODE QUADRILATERATION
 
 Puara puara;
 
@@ -67,29 +67,6 @@ std::map<std::string, wifi_ftm_initiator_cfg_t> responder_configs;
 
 void init_FTM(int mlat_mode, auto &responder_cfgs);
 
-/*
-// Update FTM configuration and trigger new measurement when settings are changed/saved from the web interface
-void onSettingsChanged() {
-
-    // End ongoing FTM session to apply new settings immediately
-    puara.end_ftm_request_session();
-  
-    // Discard any pending report from the old configuration
-    if (puara.is_ftm_report_available()) {
-        puara.set_ftm_report_as_consumed();
-    }
-    frame_count = puara.getVarNumber("frame count");
-    burst_period = puara.getVarNumber("burst period");
-
-    // Add a delay to help ensure the previous session is fully terminated before starting a new one
-    vTaskDelay(100 / portTICK_PERIOD_MS);
-
-    puara.configureFTM(frame_count, burst_period); 
-
-    ftm_request_start_time = millis();
-    puara.requestFTM(); // Trigger new FTM procedure with updated settings
-}
-*/
 void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
@@ -116,6 +93,10 @@ void loop() {
         if(puara.ftm_report_available()) {
             unsigned long elapsed_ms = millis() - ftm_request_start_time;
             Serial.printf("Received FTM report for SSID: %s in %lu ms\n", ssid.c_str(), elapsed_ms);
+            
+            PuaraAPI::FTM::ftm_report_info report = puara.get_last_ftm_report();
+            Serial.printf("Report details - RTT: %u ns, Distance: %u m, RSSI: %d\n", report.rtt_est, report.dist_est, report.rssi);
+            
             puara.set_ftm_report_as_consumed();
         }
     }

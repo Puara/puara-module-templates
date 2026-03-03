@@ -26,7 +26,7 @@
         },
         {
             "name": "Responder2_x_pos",
-            "value": 0
+            "value": 20
         },
         {
             "name": "Responder2_y_pos",
@@ -42,7 +42,7 @@
         },
         {
             "name": "Responder3_y_pos",
-            "value": 0
+            "value": 15
         },
         {
             "name": "Responder4_SSID",
@@ -50,11 +50,11 @@
         },
         {
             "name": "Responder4_x_pos",
-            "value": 0
+            "value": 20
         },
         {
             "name": "Responder4_y_pos",
-            "value": 0
+            "value": 15
         },
         {
             "name": "Responder5_SSID",
