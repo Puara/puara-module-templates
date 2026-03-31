@@ -35,7 +35,7 @@ esac
 PLATFORM="https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip"
 case "${BOARD}" in
   m5stick-c)
-    PLATFORM="espressif"
+    PLATFORM="espressif32"
     ;;
 esac
 
