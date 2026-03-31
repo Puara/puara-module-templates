@@ -35,7 +35,7 @@ esac
 cat <<EOL > "${OUTPUT_FILE}"
 [platformio]
 [env:template]
-platform = espressif32
+platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
 board = ${BOARD}
 framework = arduino
 board_build.partitions = min_spiffs_no_OTA.csv
