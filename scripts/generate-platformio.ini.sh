@@ -102,13 +102,13 @@ case "${TEMPLATE}" in
   ble-advertising-littlefs)
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
+    echo "    h2zero/NimBLE-Arduino" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = littlefs" >> "${OUTPUT_FILE}"
     ;;
   ble-advertising-spiffs)
     echo "    $PUARA_GESTURES_PATH" >> "${OUTPUT_FILE}"
     echo "    $PUARA_MODULE_PATH" >> "${OUTPUT_FILE}"
-    echo "    arduino-libraries/ArduinoBLE" >> "${OUTPUT_FILE}"
+    echo "    h2zero/NimBLE-Arduino" >> "${OUTPUT_FILE}"
     echo "board_build.filesystem = spiffs" >> "${OUTPUT_FILE}"
     ;;
   button-osc-littlefs)
