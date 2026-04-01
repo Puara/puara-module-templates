@@ -6,8 +6,8 @@
 
 #include "Arduino.h"
 
-// On Arduino, make sure to install the ArduinoBLE library
-#include "ArduinoBLE.h"
+// nimBLE-Arduino library for BLE functionality
+#include "NimBLEDevice.h"
 #include "MicroCbor.hpp"
 
 // Include Puara's module manager
@@ -27,9 +27,8 @@ void setup() {
     #ifdef Arduino_h
         Serial.begin(115200);
     #endif
-    if (!BLE.begin()) {
-        Serial.println("starting Bluetooth® Low Energy module failed!");
-    }
+    // Initialize NimBLE device
+    NimBLEDevice::init(puara.dmi_name());
 
     /*
      * The Puara start function initializes the spiffs, reads the config and custom JSON
@@ -67,7 +66,7 @@ uint16_t period_ms = static_cast<uint16_t>((1/target_frequency) * 1000);
 std::vector<uint8_t> advert_data(32);
 
 void loop() {
-    // Update dummy sensor with random number and send (OSC and libmapper)
+    // Update dummy sensor with random number
     sensor1 = static_cast <int32_t>(rand());
     sensor2 = static_cast <int32_t>(rand());
 
@@ -89,28 +88,35 @@ void loop() {
       return;
     }
 
-    // Prefix the CBOR data with the Bluetooth manufacturer ID.
-    advert_data.insert(advert_data.begin(), manufacturer_id[1]);
-    advert_data.insert(advert_data.begin(), manufacturer_id[0]);
-
-    // This part sets up the Bluetooth advertisement
-    BLE.stopAdvertise();
-    // the valid intervals are 20ms to 10.24 seconds and are calculated as 0.625ms * <your input> in steps of 0.625ms.
-    // 32 is 20ms and 1638 is +-10.24s.
-    // If you choose not to call this function, the default is 100ms
-    BLE.setAdvertisingInterval(ble_interval_value);
-
-    // Set scan response to the device name. Yes, we need to do that every single loop. This is probably
-    // a quirk of the Arduino BLE lib.
-    BLEAdvertisingData scan_data;
-    scan_data.setLocalName(puara.dmi_name().c_str());
-    BLE.setScanResponseData(scan_data);
-
-    // Set the advertising payload.
-    BLEAdvertisingData advertisement_payload;
-    advertisement_payload.setManufacturerData(advert_data.data(), advert_data.size());
-    BLE.setAdvertisingData(advertisement_payload);
-    BLE.advertise();
+    // Set up the advertisement with NimBLE
+    NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
+    
+    // Prepend manufacturer ID to the CBOR data
+    std::vector<uint8_t> ble_data;
+    ble_data.push_back(manufacturer_id[0]);
+    ble_data.push_back(manufacturer_id[1]);
+    ble_data.insert(ble_data.end(), advert_data.begin(), advert_data.end());
+    
+    // Create advertisement data with manufacturer data
+    NimBLEAdvertisementData advertisementData;
+    advertisementData.setManufacturerData(ble_data);
+    
+    // Configure scan response data with device name
+    NimBLEAdvertisementData scanResponseData;
+    scanResponseData.setName(puara.dmi_name());
+    
+    // Apply the advertising configuration
+    pAdvertising->setAdvertisementData(advertisementData);
+    pAdvertising->setScanResponseData(scanResponseData);
+    
+    // Set advertising interval (valid range: 20ms to 10.24s in 0.625ms steps)
+    // 32 is 20ms and 16384 is 10.24s
+    pAdvertising->setMinInterval(ble_interval_value);
+    pAdvertising->setMaxInterval(ble_interval_value);
+    
+    // Start advertising
+    pAdvertising->start();
+    
     // run at the target frequency
     vTaskDelay(period_ms / portTICK_PERIOD_MS);
 }
