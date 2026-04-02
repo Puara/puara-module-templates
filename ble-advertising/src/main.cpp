@@ -19,7 +19,7 @@ Puara puara;
 int32_t sensor1, sensor2;
 
 // Update rates in frequency and period
-float target_frequency = 50.0;
+float target_frequency = 500.0;
 // BLE advertising intervals are quantized in steps of 0.625ms and
 // is configured with the setAdvertisingInterval function.
 uint16_t ble_interval_value = static_cast<uint16_t>((1/target_frequency)/0.000625);
@@ -50,7 +50,7 @@ void setup() {
     std::cout << "\n"
     << "Settings stored in settings.json:\n"
     << "Hitchhiker: " << puara.getVarText ("Hitchhiker") << "\n"
-    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything")
+    << "answer_to_everything: " << puara.getVarNumber("answer_to_everything") << "\n"
     << "You may change these to have custom values kept in memory for your project.\n" 
     << std::endl;
 
@@ -62,7 +62,7 @@ void setup() {
 
     // Set up the advertisement with NimBLE and give it name and manufacturer data
     pAdvertising = NimBLEDevice::getAdvertising();
-    pAdvertising->setName(puara.dmi_name().c_str());
+    pAdvertising->setName(puara.dmi_name());
 }
 
 
@@ -92,9 +92,9 @@ void loop() {
     advert_data.insert(advert_data.begin(), manufacturer_id[1]);
     advert_data.insert(advert_data.begin(), manufacturer_id[0]);
 
-    pAdvertising->stop();
-    pAdvertising->clearData();
-
+//    pAdvertising->stop();
+//    pAdvertising->clearData();
+    pAdvertising->reset();
     NimBLEAdvertisementData advertisementData;
     advertisementData.setManufacturerData(advert_data.data(), advert_data.size());
     pAdvertising->setAdvertisementData(advertisementData);
