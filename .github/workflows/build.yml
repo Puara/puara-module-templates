@@ -61,6 +61,17 @@ jobs:
             board: esp32-c6-devkitc-1
             extra_flags: "-DBOARD_HAS_PSRAM"
             # think about adding esp32 : e22, s2, c2, c5, c61, h2, h21, h4, 
+        exclude:
+          - template:
+              name: libmapper-osc
+              fs: littlefs
+            environment:
+              name: ESP32-C6
+          - template:
+              name: libmapper-osc
+              fs: spiffs
+            environment:
+              name: ESP32-C6
 
     steps:
       - uses: actions/checkout@v4
