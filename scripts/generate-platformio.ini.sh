@@ -31,11 +31,17 @@ case "${TEMPLATE}" in
     ;;
 esac
 
+# Determine platform based on the board or template
+PLATFORM="https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip"
+if [[ "${BOARD}" == "m5stick-c" || "${TEMPLATE}" == libmapper-osc* ]]; then
+  PLATFORM="espressif32"
+fi
+
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
 [platformio]
 [env:template]
-platform = espressif32
+platform = ${PLATFORM}
 board = ${BOARD}
 framework = arduino
 board_build.partitions = min_spiffs_no_OTA.csv
