@@ -7,7 +7,7 @@ EXTRA_FLAGS=$3
 
 if [[ -z "$PUARA_MODULE_PATH" ]]; then
 # If no hash given, points to main head
-  PUARA_MODULE_COMMIT_HASH=""
+  PUARA_MODULE_COMMIT_HASH="#1fbf250418e6ecb6b54f18be0a694efd5808e8d3"
   PUARA_MODULE_PATH="https://github.com/Puara/puara-module.git$PUARA_MODULE_COMMIT_HASH"
 fi
 
@@ -31,11 +31,13 @@ case "${TEMPLATE}" in
     ;;
 esac
 
-# Determine platform based on the board or template
+# Determine platform based on the board
 PLATFORM="https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip"
-if [[ "${BOARD}" == "m5stick-c" || "${TEMPLATE}" == libmapper-osc* ]]; then
-  PLATFORM="espressif32"
-fi
+case "${BOARD}" in
+  m5stick-c)
+    PLATFORM="espressif32"
+    ;;
+esac
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
