@@ -19,7 +19,7 @@ Puara puara;
 int32_t sensor1, sensor2;
 
 // Update rates in frequency and period
-float target_frequency = 500.0;
+float target_frequency = 50.0;
 // BLE advertising intervals are quantized in steps of 0.625ms and
 // is configured with the setAdvertisingInterval function.
 uint16_t ble_interval_value = static_cast<uint16_t>((1/target_frequency)/0.000625);
@@ -92,8 +92,6 @@ void loop() {
     advert_data.insert(advert_data.begin(), manufacturer_id[1]);
     advert_data.insert(advert_data.begin(), manufacturer_id[0]);
 
-//    pAdvertising->stop();
-//    pAdvertising->clearData();
     pAdvertising->reset();
     NimBLEAdvertisementData advertisementData;
     advertisementData.setManufacturerData(advert_data.data(), advert_data.size());
