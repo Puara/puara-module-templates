@@ -31,13 +31,11 @@ case "${TEMPLATE}" in
     ;;
 esac
 
-# Determine platform based on the board
+# Determine platform based on the board or template
 PLATFORM="https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip"
-case "${BOARD}" in
-  m5stick-c)
-    PLATFORM="espressif32"
-    ;;
-esac
+if [[ "${BOARD}" == "m5stick-c" || "${TEMPLATE}" == libmapper-osc* ]]; then
+  PLATFORM="espressif32"
+fi
 
 # Write the file
 cat <<EOL > "${OUTPUT_FILE}"
