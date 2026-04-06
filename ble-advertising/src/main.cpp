@@ -96,8 +96,8 @@ void loop() {
     NimBLEAdvertisementData advertisementData;
     advertisementData.setManufacturerData(advert_data.data(), advert_data.size());
     pAdvertising->setAdvertisementData(advertisementData);
-    pAdvertising->start()
-    ;
+    pAdvertising->start();
+
     // run at the target frequency
     vTaskDelay(period_ms / portTICK_PERIOD_MS);
 }
