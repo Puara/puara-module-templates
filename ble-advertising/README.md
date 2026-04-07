@@ -13,7 +13,7 @@ This dummy sensor data can be replaced by data from the pins on the board you ar
 - BLE advertising of data at 50Hz.
 - CBOR encoding of sensor data for efficient transmission.
 - Integration with the Puara module manager for streamlined setup and configuration.
-- Compatibility with the BLE-CBOR-to-OSC script for decoding and forwarding data as OSC messages.
+- Compatibility with the included ble-cbor-to-osc.py script for decoding and forwarding data as OSC messages.
 
 ## Prerequisites
 
@@ -33,21 +33,20 @@ This dummy sensor data can be replaced by data from the pins on the board you ar
 
 The BLE-CBOR-to-OSC script listens for BLE advertisements, decodes the CBOR data, and forwards it as OSC messages. Follow these steps to set it up:
 
-1. Clone the [BLE-CBOR-to-OSC repository](https://gitlab.com/sat-mtl/collaborations/2024-iot/ble-cbor-to-osc).
-2. Navigate to the repository folder:
+1. Navigate to the script's folder:
     ```bash
-    cd ble-cbor-to-osc/
+    cd puara-module-templates/ble-advertising/ble-cbor-script
     ```
-3. Create and activate a Python virtual environment:
+2. Create and activate a Python virtual environment:
     ```bash
     python -m venv venv
     source venv/bin/activate
     ```
-4. Install the required dependencies:
+3. Install the required dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-5. Run the script:
+4. Run the script:
     ```bash
     python ble-cbor-to-osc.py
     ```
