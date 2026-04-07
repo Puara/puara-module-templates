@@ -100,7 +100,7 @@ Combines both OSC-Send and OSC-Receive functionality in a single sketch. This te
 
 ### 5. BLE Advertising Example
 
-Demonstrates conectionless data transmission via BLE advertising. This template:
+Demonstrates connectionless data transmission via BLE advertising. This template:
 - Uses BLE advertising to broadcast device information
 - Encodes sensor data as CBOR payloads in BLE manufacturer data packets
 - Broadcasts at configurable frequency (default 50Hz)
