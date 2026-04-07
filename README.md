@@ -192,11 +192,11 @@ Combines both OSC-Send and OSC-Receive functionality in a single sketch. This te
 
 ### 5. BLE Advertising Example
 
-Demonstrates BLE (Bluetooth Low Energy) advertising without requiring device connections. This template:
+Demonstrates connectionless data transmission via BLE advertising. This template:
 - Uses BLE advertising to broadcast device information
 - Encodes sensor data as CBOR payloads in BLE manufacturer data packets
 - Broadcasts at configurable frequency (default 50Hz)
-- Works seamlessly with the [BLE-CBOR-to-OSC script](https://gitlab.com/sat-mtl/collaborations/2024-iot/ble-cbor-to-osc)
+- Works seamlessly with the included ble-cbor-to-osc.py script to receive the data and convert it to osc messages
 
 For detailed setup instructions and configuration options, refer to the template's README file.
 
