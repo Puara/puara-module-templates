@@ -1,0 +1,84 @@
+{
+    "settings": [
+        {
+            "name": "frame count",
+            "value": 16
+        },
+        {
+            "name": "burst period",
+            "value": 4
+        },
+        {
+            "name": "Responder1_SSID",
+            "value": "ftm_responder_001"
+        },
+        {
+            "name": "Responder1_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder1_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder2_SSID",
+            "value": "ftm_responder_002"
+        },
+        {
+            "name": "Responder2_x_pos",
+            "value": 20
+        },
+        {
+            "name": "Responder2_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder3_SSID",
+            "value": "ftm_responder_003"
+        },
+        {
+            "name": "Responder3_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder3_y_pos",
+            "value": 15
+        },
+        {
+            "name": "Responder4_SSID",
+            "value": "ftm_responder_004"
+        },
+        {
+            "name": "Responder4_x_pos",
+            "value": 20
+        },
+        {
+            "name": "Responder4_y_pos",
+            "value": 15
+        },
+        {
+            "name": "Responder5_SSID",
+            "value": "ftm_responder_005"
+        },
+        {
+            "name": "Responder5_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder5_y_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder6_SSID",
+            "value": "ftm_responder_006"
+        },
+        {
+            "name": "Responder6_x_pos",
+            "value": 0
+        },
+        {
+            "name": "Responder6_y_pos",
+            "value": 0
+        }
+    ]
+}
